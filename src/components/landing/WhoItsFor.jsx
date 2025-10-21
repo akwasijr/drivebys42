@@ -5,6 +5,63 @@ import { Link } from 'react-router-dom';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const personas = [
+  {
+    role: 'Researchers',
+    emoji: '🔍',
+    color: 'from-studio-coral to-studio-pink',
+    borderColor: 'border-studio-coral/30 hover:border-studio-coral/60',
+    bgColor: 'bg-studio-coral/5',
+    description: 'Transform research data into actionable insights. AI synthesizes interview notes, survey responses, and usage data into clear findings the entire team understands.',
+    benefit: 'Move from scattered notes to synthesized insights in hours'
+  },
+  {
+    role: 'Designers',
+    emoji: '🎨',
+    color: 'from-studio-pink to-studio-purple',
+    borderColor: 'border-studio-pink/30 hover:border-studio-pink/60',
+    bgColor: 'bg-studio-pink/5',
+    description: 'Build high-fidelity prototypes that test real interactions. AI generates design variations, maintains consistency, and enables rapid iteration with user feedback.',
+    benefit: 'Clickable prototypes in minutes, not weeks'
+  },
+  {
+    role: 'Storytellers',
+    emoji: '📖',
+    color: 'from-studio-purple to-studio-pink',
+    borderColor: 'border-studio-purple/30 hover:border-studio-purple/60',
+    bgColor: 'bg-studio-purple/5',
+    description: 'Craft compelling narratives with consistency. AI helps refine copy, ensures brand voice alignment, and articulates product stories that resonate across channels.',
+    benefit: 'Coherent messaging across all touchpoints'
+  },
+  {
+    role: 'Product Managers',
+    emoji: '🎯',
+    color: 'from-studio-coral to-studio-purple',
+    borderColor: 'border-studio-coral/20 hover:border-studio-coral/50',
+    bgColor: 'bg-studio-coral/5',
+    description: 'Ship features backed by evidence. See the complete journey from research through delivery, make data-driven roadmap decisions, and continuously validate with users.',
+    benefit: 'Full visibility into progress from research to launched features'
+  },
+  {
+    role: 'Leaders',
+    emoji: '👥',
+    color: 'from-studio-pink to-studio-coral',
+    borderColor: 'border-studio-pink/20 hover:border-studio-pink/50',
+    bgColor: 'bg-studio-pink/5',
+    description: 'Transform organizational capability. Build teams that move faster without sacrificing quality. Make the shift to AI-First methodology that drives continuous innovation.',
+    benefit: 'Empower teams to double delivery speed within 6 months'
+  },
+  {
+    role: 'Engineers',
+    emoji: '⚡',
+    color: 'from-studio-purple to-studio-coral',
+    borderColor: 'border-studio-purple/20 hover:border-studio-purple/50',
+    bgColor: 'bg-studio-purple/5',
+    description: 'Build at the speed of design. Vibe Coding generates production-ready components from design files, eliminating back-and-forth handoffs. Focus on architecture and optimization.',
+    benefit: 'Reduce design-to-code time by 70%'
+  }
+];
+
 const WhoItsFor = () => {
   const sectionRef = useRef(null);
 
@@ -18,8 +75,8 @@ const WhoItsFor = () => {
         },
         y: 80,
         opacity: 0,
-        stagger: 0.2,
-        duration: 1,
+        stagger: 0.15,
+        duration: 0.8,
         ease: 'power3.out',
       });
     }, sectionRef);
@@ -34,86 +91,42 @@ const WhoItsFor = () => {
       className="py-24 md:py-32 bg-gradient-to-b from-gray-950 via-pink-900/20 to-gray-950"
     >
       <div className="container mx-auto px-6">
-        {/* Section Header */}
-        <div className="text-center mb-20">
-          <h2 className="text-5xl md:text-7xl font-display font-bold mb-6 text-white">
+      {/* Section Header */}
+        <div className="text-center mb-16">
+          <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-studio-pink via-studio-coral to-studio-pink bg-clip-text text-transparent">
             Who It's For
           </h2>
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+            Everyone in your organization benefits from the AI-First way of working
+          </p>
         </div>
 
         {/* Persona Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Designers Card */}
-          <div className="persona-card group">
-            <div className="bg-gray-900/50 backdrop-blur-xl rounded-3xl p-8 h-full border border-white/10 hover:border-white/20 transition-all duration-300">
-              {/* Icon */}
-              <div className="w-16 h-16 rounded-2xl bg-studio-pink/20 flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-studio-pink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                </svg>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+          {personas.map((persona, index) => (
+            <div key={index} className="persona-card group h-full">
+              <div className={`${persona.bgColor} backdrop-blur-xl rounded-2xl p-6 h-full border ${persona.borderColor} hover:shadow-lg hover:shadow-studio-pink/10 transition-all duration-300 flex flex-col`}>
+                {/* Emoji Icon */}
+                <div className="text-5xl mb-4">{persona.emoji}</div>
+
+                {/* Role Title */}
+                <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r ${persona.color} bg-clip-text text-transparent">
+                  {persona.role}
+                </h3>
+
+                {/* Description */}
+                <p className="text-gray-300 text-sm mb-4 flex-grow leading-relaxed">
+                  {persona.description}
+                </p>
+
+                {/* Benefit Card */}
+                <div className="mt-auto p-3 bg-black/40 rounded-lg border border-white/5">
+                  <p className="text-xs text-studio-pink font-semibold mb-1">Key Benefit</p>
+                  <p className="text-sm text-gray-200">{persona.benefit}</p>
+                </div>
               </div>
-
-              {/* Title */}
-              <h3 className="text-4xl font-bold mb-6 text-white">Designers</h3>
-
-              {/* Description */}
-              <p className="text-gray-400 text-lg mb-8 leading-relaxed">
-                Build high-fidelity prototypes that go beyond Figma. Test with real users, gather feedback, and iterate quickly, creating near-production experiences without writing code.
-              </p>
-
-              {/* CTA */}
-              <Link
-                to="/docs/designer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-studio-pink/20 hover:bg-studio-pink/30 border border-studio-pink/40 rounded-xl text-studio-pink font-semibold transition-all"
-              >
-                Enter Designer Docs →
-              </Link>
             </div>
-          </div>
-
-          {/* Engineers Card */}
-          <div className="persona-card group">
-            <div className="bg-gray-900/50 backdrop-blur-xl rounded-3xl p-8 h-full border border-white/10 relative overflow-hidden">
-              {/* Coming Soon Badge */}
-              <div className="absolute top-6 right-6 bg-studio-purple/20 border border-studio-purple/40 text-studio-purple text-xs font-bold px-3 py-1 rounded-full">
-                COMING SOON
-              </div>
-
-              {/* Icon */}
-              <div className="w-16 h-16 rounded-2xl bg-studio-purple/10 flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-studio-purple/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-
-              {/* Title */}
-              <h3 className="text-4xl font-bold mb-6 text-gray-500">Engineers</h3>
-
-              {/* Description */}
-              <p className="text-gray-500 text-lg mb-8 leading-relaxed">
-                AI-powered tools for precision and performance. Coming soon.
-              </p>
-
-              {/* CTA */}
-              <button
-                disabled
-                className="inline-flex items-center gap-2 px-6 py-3 bg-studio-purple/10 border border-studio-purple/20 rounded-xl text-studio-purple/50 font-semibold cursor-not-allowed"
-              >
-                Coming Soon
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Additional Info */}
-        <div className="text-center mt-12">
-          <p className="text-gray-500">
-            Join our community and shape the future of DRIVE for engineers
-          </p>
-          <button className="mt-4 px-6 py-3 border border-white/10 hover:border-white/20 rounded-xl text-gray-400 hover:text-white transition-all">
-            Get Notified When Engineering Docs Launch
-          </button>
+          ))}
         </div>
       </div>
     </section>

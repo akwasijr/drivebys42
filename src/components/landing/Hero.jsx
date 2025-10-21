@@ -9,12 +9,14 @@ const Hero = () => {
   const heroRef = useRef(null);
   const titleRef = useRef(null);
   const wordRef = useRef(null);
-  const [currentWord, setCurrentWord] = useState('Test');
+  const [currentWord, setCurrentWord] = useState('Research');
   const [hasAnimatedOnce, setHasAnimatedOnce] = useState(false);
 
   const cyclingWords = [
-    { word: 'Test', meaning: 'Validate with real users' },
-    { word: 'Iterate', meaning: 'Refine based on feedback' }
+    { word: 'Research', meaning: 'Understand, discover, synthesize' },
+    { word: 'Design', meaning: 'Conceptualize and explore' },
+    { word: 'Prototype', meaning: 'Materialize intent into code' },
+    { word: 'Deliver', meaning: 'Ship and validate with users' }
   ];
 
   useEffect(() => {
@@ -298,7 +300,7 @@ const Hero = () => {
               
               {/* Second line */}
               <div className="second-line text-[clamp(4rem,12vw,10rem)] text-gray-100">
-                <span className="word-1">ideas</span> <span className="word-2">faster</span>
+                <span className="word-1">with</span> <span className="word-2">AI</span>
               </div>
             </h1>
 
@@ -311,7 +313,7 @@ const Hero = () => {
           {/* Subtitle */}
           <div className="hero-subtitle max-w-2xl mx-auto mb-6">
             <p className="text-xl md:text-2xl text-gray-400">
-              Transform UX workflows with AI-assisted design and rapid validation
+              A new way of working that transforms how organizations research, design, prototype, and deliver
             </p>
           </div>
 
@@ -321,7 +323,7 @@ const Hero = () => {
               to="/docs"
               className="inline-flex items-center gap-2.5 px-6 py-3 bg-transparent hover:bg-studio-pink/10 border-2 border-studio-pink text-studio-pink rounded-full text-base font-semibold transition-all duration-300"
             >
-              Get Started
+              Explore the Framework
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>

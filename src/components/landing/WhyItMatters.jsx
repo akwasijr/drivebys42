@@ -7,54 +7,46 @@ gsap.registerPlugin(ScrollTrigger);
 
 const impactHighlights = [
   {
-    title: 'Rapid Iteration',
-    description: 'Test, learn, and refine in real-time',
-    signal: 'Ship cycles accelerate with every loop',
-    accent: 'from-studio-coral via-studio-pink to-studio-purple',
-    glow: 'from-studio-coral/40 via-studio-pink/30 to-studio-purple/40',
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v6m0 0h6m-6 0l3.5-3.5M20 20v-6m0 0h-6m6 0l-3.5 3.5" />
-      </svg>
-    ),
+    stage: 'Research',
+    problem: 'Scattered insights',
+    solution: 'Synthesized findings',
+    description: 'AI synthesizes research data, identifies patterns, surfaces actionable insights teams can immediately act on',
+    icon: '🔍',
   },
   {
-    title: 'Unified Teams',
-    description: 'Design and dev working as one',
-    signal: 'Shared context across every sprint',
-    accent: 'from-studio-purple via-studio-pink to-studio-coral',
-    glow: 'from-studio-purple/35 via-studio-pink/30 to-studio-coral/35',
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5.5 7a3.5 3.5 0 117 0 3.5 3.5 0 01-7 0zM11 14.5c0-1.105-.895-2-2-2H6c-1.105 0-2 .895-2 2V18h7v-3.5zM18.5 9.5a3 3 0 10-6 0 3 3 0 006 0zM20 18v-2.5c0-1.105-.895-2-2-2h-1.5" />
-      </svg>
-    ),
+    stage: 'Design',
+    problem: 'Endless iteration cycles',
+    solution: 'Rapid exploration',
+    description: 'Generate multiple design directions, maintain consistency, explore variations in real-time with user feedback',
+    icon: '🎨',
   },
   {
-    title: 'User-Validated',
-    description: 'Ship features users actually need',
-    signal: 'Evidence anchors every roadmap decision',
-    accent: 'from-studio-pink via-studio-purple to-studio-coral',
-    glow: 'from-studio-pink/35 via-studio-purple/30 to-studio-coral/40',
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4 10-10" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h5l2-3h9a1 1 0 011 1v12a1 1 0 01-1 1h-6" />
-      </svg>
-    ),
+    stage: 'Storytelling',
+    problem: 'Inconsistent messaging',
+    solution: 'Coherent narratives',
+    description: 'AI refines copy, ensures narrative consistency across touchpoints, articulates brand story coherently',
+    icon: '📖',
   },
   {
-    title: 'Fast Prototyping',
-    description: 'From concept to tested prototype quickly',
-    signal: 'Clickable experiences in minutes, not weeks',
-    accent: 'from-studio-coral via-studio-purple to-studio-pink',
-    glow: 'from-studio-coral/40 via-studio-purple/30 to-studio-pink/35',
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M13 4l3 3-6.75 6.75a2 2 0 00-.5.86l-.43 1.71a.5.5 0 00.61.61l1.71-.43a2 2 0 00.86-.5L20 8l3 3V4h-10z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 19h14" />
-      </svg>
-    ),
+    stage: 'Prototyping',
+    problem: 'Weeks to prototype',
+    solution: 'Minutes to interactive demo',
+    description: 'Vibe Coding generates production-ready components, accelerates development, enables rapid validation cycles',
+    icon: '⚡',
+  },
+  {
+    stage: 'Delivery',
+    problem: 'Manual deployment',
+    solution: 'Optimized shipping',
+    description: 'AI optimizes performance, automates deployment quality checks, monitors metrics in production',
+    icon: '🚀',
+  },
+  {
+    stage: 'Innovation',
+    problem: 'Unknown user needs',
+    solution: 'Data-driven iteration',
+    description: 'AI analyzes usage patterns, recommends improvements, identifies next opportunities automatically',
+    icon: '💡',
   },
 ];
 
@@ -216,7 +208,7 @@ const WhyItMatters = () => {
           {/* Current State - Problems */}
           <div className="comparison-box bg-gray-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10">
             <h3 className="section-header text-3xl font-bold mb-8 text-white">
-              Traditional
+              The Challenge
             </h3>
             <div className="problem-container space-y-6">
               <div className="problem-item">
@@ -226,9 +218,9 @@ const WhyItMatters = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
-                  <h4 className="font-semibold text-white text-lg">Slow Handoffs</h4>
+                  <h4 className="font-semibold text-white text-lg">Fragmented Workflows</h4>
                 </div>
-                <p className="text-gray-400 text-sm ml-12">Designers wait days for engineering feedback on feasibility</p>
+                <p className="text-gray-400 text-sm ml-12">Each stage (research, design, storytelling, prototyping) uses different tools and teams rarely see the full picture</p>
               </div>
 
               <div className="problem-item">
@@ -238,9 +230,9 @@ const WhyItMatters = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
-                  <h4 className="font-semibold text-white text-lg">Lost Context</h4>
+                  <h4 className="font-semibold text-white text-lg">Manual, Repetitive Work</h4>
                 </div>
-                <p className="text-gray-400 text-sm ml-12">Design rationale disappears between Figma and implementation</p>
+                <p className="text-gray-400 text-sm ml-12">AI capabilities not integrated; teams spend time on data synthesis, design iteration, and component building instead of strategy</p>
               </div>
 
               <div className="problem-item">
@@ -250,9 +242,9 @@ const WhyItMatters = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
-                  <h4 className="font-semibold text-white text-lg">Endless Iterations</h4>
+                  <h4 className="font-semibold text-white text-lg">Lost Context at Handoffs</h4>
                 </div>
-                <p className="text-gray-400 text-sm ml-12">Testing happens too late when changes are expensive</p>
+                <p className="text-gray-400 text-sm ml-12">When work transitions between stages or teams, context and rationale are lost, leading to rework and misalignment</p>
               </div>
 
               <div className="problem-item">
@@ -262,9 +254,9 @@ const WhyItMatters = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
-                  <h4 className="font-semibold text-white text-lg">Team Friction</h4>
+                  <h4 className="font-semibold text-white text-lg">No Continuous Loop</h4>
                 </div>
-                <p className="text-gray-400 text-sm ml-12">Misaligned expectations create tension between disciplines</p>
+                <p className="text-gray-400 text-sm ml-12">Innovation insights don't feed back into research; organizations stay in reactive mode rather than learning and evolving</p>
               </div>
             </div>
           </div>
@@ -274,7 +266,7 @@ const WhyItMatters = () => {
             className="comparison-box rounded-3xl p-8 border border-white/10 bg-gray-900/50 backdrop-blur-xl"
           >
             <h3 className="section-header text-3xl font-bold mb-8 text-white">
-              DRIVE
+              DRIVE Solution
             </h3>
             <div className="solution-container space-y-6">
               <div className="solution-item">
@@ -284,9 +276,9 @@ const WhyItMatters = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h4 className="font-semibold text-white text-lg">Real-Time Collaboration</h4>
+                  <h4 className="font-semibold text-white text-lg">Unified Platform</h4>
                 </div>
-                <p className="text-gray-400 text-sm ml-12">Design and development happen simultaneously in one environment</p>
+                <p className="text-gray-400 text-sm ml-12">One environment for all 6 stages; teams see the full journey from research insight through delivery to continuous improvement</p>
               </div>
 
               <div className="solution-item">
@@ -296,9 +288,9 @@ const WhyItMatters = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h4 className="font-semibold text-white text-lg">Instant Prototyping</h4>
+                  <h4 className="font-semibold text-white text-lg">AI Amplification</h4>
                 </div>
-                <p className="text-gray-400 text-sm ml-12">Transform ideas into interactive prototypes in minutes not days</p>
+                <p className="text-gray-400 text-sm ml-12">AI synthesizes research, generates design variations, refines narratives, powers prototyping, optimizes delivery, analyzes feedback automatically</p>
               </div>
 
               <div className="solution-item">
@@ -308,9 +300,9 @@ const WhyItMatters = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h4 className="font-semibold text-white text-lg">Continuous Validation</h4>
+                  <h4 className="font-semibold text-white text-lg">Context Preserved</h4>
                 </div>
-                <p className="text-gray-400 text-sm ml-12">Test with real users early and iterate based on actual feedback</p>
+                <p className="text-gray-400 text-sm ml-12">Decision rationale, design constraints, and strategic intent travel with the work through every stage — no information loss</p>
               </div>
 
               <div className="solution-item">
@@ -320,9 +312,9 @@ const WhyItMatters = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h4 className="font-semibold text-white text-lg">Unified Workflow</h4>
+                  <h4 className="font-semibold text-white text-lg">Continuous Learning Loop</h4>
                 </div>
-                <p className="text-gray-400 text-sm ml-12">One tool for the entire journey from concept to shipped feature</p>
+                <p className="text-gray-400 text-sm ml-12">Innovation stage feeds directly back into research; organizations become smarter, faster, and more responsive to user needs</p>
               </div>
             </div>
           </div>
@@ -330,23 +322,40 @@ const WhyItMatters = () => {
 
         {/* Impact Section */}
         <div className="stats-container relative">
-          <div className="relative grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-            {impactHighlights.map(({ title, description, signal, icon }) => (
+          <h3 className="text-center text-3xl font-bold mb-12 text-white">
+            AI Amplification at Every Stage
+          </h3>
+          <div className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {impactHighlights.map(({ stage, problem, solution, description, icon }) => (
               <div
-                key={title}
-                className="impact-card group relative p-8 transition duration-300 ease-out hover:-translate-y-1"
+                key={stage}
+                className="impact-card group relative p-6 bg-gradient-to-br from-gray-900 to-gray-800 border border-studio-pink/20 hover:border-studio-pink/50 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-studio-pink/10"
               >
                 <div className="flex h-full flex-col">
-                  <div className="mb-6">
-                    <span className="flex h-12 w-12 items-center justify-center text-white">
-                      {icon}
-                    </span>
+                  <div className="mb-4 text-4xl">{icon}</div>
+                  <h4 className="text-xl font-semibold text-studio-pink mb-2">{stage}</h4>
+                  
+                  <div className="mb-4 space-y-2">
+                    <div className="flex items-start gap-2">
+                      <span className="text-red-400 mt-1">✕</span>
+                      <div>
+                        <p className="text-xs font-semibold text-gray-400">Challenge:</p>
+                        <p className="text-sm text-gray-300">{problem}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-green-400 mt-1">✓</span>
+                      <div>
+                        <p className="text-xs font-semibold text-gray-400">Solution:</p>
+                        <p className="text-sm text-gray-300">{solution}</p>
+                      </div>
+                    </div>
                   </div>
-                  <h4 className="text-2xl font-semibold text-white mb-3">{title}</h4>
-                  <p className="text-sm text-gray-300 leading-relaxed">{description}</p>
-                  <div className="mt-auto pt-6 flex items-center gap-2 text-sm text-gray-400">
-                    <span className="inline-flex h-1.5 w-1.5 rounded-full bg-studio-pink" />
-                    <span>{signal}</span>
+
+                  <div className="mt-auto pt-4 border-t border-studio-pink/10">
+                    <p className="text-xs text-gray-400 leading-relaxed">
+                      <span className="text-studio-pink font-semibold">How DRIVE helps:</span> {description}
+                    </p>
                   </div>
                 </div>
               </div>
