@@ -1,0 +1,26 @@
+<svg width="768" height="1152" viewBox="0 0 768 1152" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="swirl-gradient" x1="240" y1="120" x2="556" y2="996" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF4BC8" />
+      <stop offset="0.28" stop-color="#F058FF" />
+      <stop offset="0.58" stop-color="#7A5CFF" />
+      <stop offset="1" stop-color="#0E89FF" />
+    </linearGradient>
+    <radialGradient id="swirl-highlight" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(306 252) rotate(48) scale(268 236)">
+      <stop offset="0" stop-color="#FF85DD" stop-opacity="0.7" />
+      <stop offset="1" stop-color="#FF85DD" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="swirl-highlight-bottom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(458 844) rotate(63) scale(352 320)">
+      <stop offset="0" stop-color="#4BC8FF" stop-opacity="0.65" />
+      <stop offset="1" stop-color="#4BC8FF" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="swirl-ridge" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(372 540) rotate(90) scale(320 140)">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22" />
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M502 96C563.8 131.1 598.6 205.7 587.6 283.4C577.1 357.8 535.7 400 497.2 445.3C457.1 492.9 446.5 550.5 494.6 620.4C565.4 723.3 548.6 842.7 437.6 922.1C323.3 1003.8 190.4 970.3 138.1 886.2C85.7 801.9 111.9 689.6 213.9 619.5C274.4 577.9 353.5 588.3 406.3 530.9C438 496.4 447.6 440 397.8 379.6C320.2 285 271.7 176.7 304.4 93.4C340.1 0.2 430.7 52.4 502 96Z" fill="url(#swirl-gradient)" />
+  <path d="M502 96C563.8 131.1 598.6 205.7 587.6 283.4C577.1 357.8 535.7 400 497.2 445.3C457.1 492.9 446.5 550.5 494.6 620.4C565.4 723.3 548.6 842.7 437.6 922.1C323.3 1003.8 190.4 970.3 138.1 886.2C85.7 801.9 111.9 689.6 213.9 619.5C274.4 577.9 353.5 588.3 406.3 530.9C438 496.4 447.6 440 397.8 379.6C320.2 285 271.7 176.7 304.4 93.4C340.1 0.2 430.7 52.4 502 96Z" fill="url(#swirl-highlight)" />
+  <path d="M502 96C563.8 131.1 598.6 205.7 587.6 283.4C577.1 357.8 535.7 400 497.2 445.3C457.1 492.9 446.5 550.5 494.6 620.4C565.4 723.3 548.6 842.7 437.6 922.1C323.3 1003.8 190.4 970.3 138.1 886.2C85.7 801.9 111.9 689.6 213.9 619.5C274.4 577.9 353.5 588.3 406.3 530.9C438 496.4 447.6 440 397.8 379.6C320.2 285 271.7 176.7 304.4 93.4C340.1 0.2 430.7 52.4 502 96Z" fill="url(#swirl-highlight-bottom)" opacity="0.72" />
+  <path d="M502 96C563.8 131.1 598.6 205.7 587.6 283.4C577.1 357.8 535.7 400 497.2 445.3C457.1 492.9 446.5 550.5 494.6 620.4C565.4 723.3 548.6 842.7 437.6 922.1C323.3 1003.8 190.4 970.3 138.1 886.2C85.7 801.9 111.9 689.6 213.9 619.5C274.4 577.9 353.5 588.3 406.3 530.9C438 496.4 447.6 440 397.8 379.6C320.2 285 271.7 176.7 304.4 93.4C340.1 0.2 430.7 52.4 502 96Z" fill="url(#swirl-ridge)" />
+</svg>
