@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ScrambleText from '../common/ScrambleText';
+import { HiMagnifyingGlass, HiXMark, HiCheck } from 'react-icons/hi2';
+import { FaPalette, FaBook, FaBolt, FaRocket, FaLightbulb } from 'react-icons/fa6';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,42 +13,42 @@ const impactHighlights = [
     problem: 'Scattered insights',
     solution: 'Synthesized findings',
     description: 'AI synthesizes research data, identifies patterns, surfaces actionable insights teams can immediately act on',
-    icon: '🔍',
+    icon: HiMagnifyingGlass,
   },
   {
     stage: 'Design',
     problem: 'Endless iteration cycles',
     solution: 'Rapid exploration',
     description: 'Generate multiple design directions, maintain consistency, explore variations in real-time with user feedback',
-    icon: '🎨',
+    icon: FaPalette,
   },
   {
     stage: 'Storytelling',
     problem: 'Inconsistent messaging',
     solution: 'Coherent narratives',
     description: 'AI refines copy, ensures narrative consistency across touchpoints, articulates brand story coherently',
-    icon: '📖',
+    icon: FaBook,
   },
   {
     stage: 'Prototyping',
     problem: 'Weeks to prototype',
     solution: 'Minutes to interactive demo',
     description: 'Vibe Coding generates production-ready components, accelerates development, enables rapid validation cycles',
-    icon: '⚡',
+    icon: FaBolt,
   },
   {
     stage: 'Delivery',
     problem: 'Manual deployment',
     solution: 'Optimized shipping',
     description: 'AI optimizes performance, automates deployment quality checks, monitors metrics in production',
-    icon: '🚀',
+    icon: FaRocket,
   },
   {
     stage: 'Innovation',
     problem: 'Unknown user needs',
     solution: 'Data-driven iteration',
     description: 'AI analyzes usage patterns, recommends improvements, identifies next opportunities automatically',
-    icon: '💡',
+    icon: FaLightbulb,
   },
 ];
 
@@ -326,25 +328,25 @@ const WhyItMatters = () => {
             AI Amplification at Every Stage
           </h3>
           <div className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {impactHighlights.map(({ stage, problem, solution, description, icon }) => (
+            {impactHighlights.map(({ stage, problem, solution, description, icon: Icon }) => (
               <div
                 key={stage}
                 className="impact-card group relative p-6 bg-gradient-to-br from-gray-900 to-gray-800 border border-studio-pink/20 hover:border-studio-pink/50 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-studio-pink/10"
               >
                 <div className="flex h-full flex-col">
-                  <div className="mb-4 text-4xl">{icon}</div>
+                  <Icon className="text-4xl text-studio-pink mb-4" />
                   <h4 className="text-xl font-semibold text-studio-pink mb-2">{stage}</h4>
                   
                   <div className="mb-4 space-y-2">
                     <div className="flex items-start gap-2">
-                      <span className="text-red-400 mt-1">✕</span>
+                      <HiXMark className="text-red-400 mt-1 flex-shrink-0" />
                       <div>
                         <p className="text-xs font-semibold text-gray-400">Challenge:</p>
                         <p className="text-sm text-gray-300">{problem}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-green-400 mt-1">✓</span>
+                      <HiCheck className="text-green-400 mt-1 flex-shrink-0" />
                       <div>
                         <p className="text-xs font-semibold text-gray-400">Solution:</p>
                         <p className="text-sm text-gray-300">{solution}</p>
