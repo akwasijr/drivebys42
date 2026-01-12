@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { VscCode } from 'react-icons/vsc';
 import { TbSparkles } from 'react-icons/tb';
-import { FaClock, FaBook, FaCheckCircle, FaRocket, FaBullseye, FaBug, FaSearch, FaChevronDown, FaExclamationTriangle, FaLightbulb, FaRobot, FaTimesCircle, FaUser, FaCamera, FaPalette, FaRulerCombined, FaSyncAlt, FaCopy, FaCheck, FaServer, FaCodeBranch, FaWrench, FaFolderOpen, FaComment, FaImage, FaCode, FaBan, FaHeart, FaMagic } from 'react-icons/fa';
+import { FaClock, FaBook, FaCheckCircle, FaRocket, FaBullseye, FaBug, FaSearch, FaChevronDown, FaExclamationTriangle, FaLightbulb, FaRobot, FaTimesCircle, FaUser, FaCamera, FaPalette, FaRulerCombined, FaSyncAlt, FaCopy, FaCheck, FaServer, FaCodeBranch, FaWrench, FaFolderOpen, FaComment, FaImage, FaCode, FaBan, FaHeart, FaMagic, FaDownload } from 'react-icons/fa';
 import { MdArchitecture } from 'react-icons/md';
 
 const Documentation = () => {
@@ -5104,19 +5104,7 @@ Then refine to eliminate defaults and strengthen direction.</pre>
       case 'ui-constitution':
         return (
           <div className="prose prose-invert max-w-none">
-            <div className="flex items-center justify-between mb-6">
-              <h1 className="text-5xl font-bold text-white m-0">Anti-Default UI Constitution</h1>
-              <button
-                onClick={() => {
-                  const content = document.getElementById('constitution-content').innerText;
-                  navigator.clipboard.writeText(content);
-                  alert('Constitution copied to clipboard!');
-                }}
-                className="flex items-center gap-2 px-4 py-2 bg-studio-purple hover:bg-studio-pink text-white rounded-lg transition-colors text-sm font-medium"
-              >
-                <FaCopy /> Copy All
-              </button>
-            </div>
+            <h1 className="text-5xl font-bold text-white mb-2">Anti-Default UI Constitution</h1>
             <p className="text-gray-400 mb-6">Studio SaaS Interface Law · v1.0</p>
             
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
@@ -5126,13 +5114,57 @@ Then refine to eliminate defaults and strengthen direction.</pre>
                 </div>
                 <div>
                   <p className="text-white font-semibold mb-1">Use this file as AI context</p>
-                  <p className="text-gray-300 m-0">Copy this constitution and include it in your AI prompts or project context to suppress generic defaults and maintain studio-quality interfaces.</p>
+                  <p className="text-gray-300 m-0">Copy or download this constitution and include it in your AI prompts or project context to suppress generic defaults and maintain studio-quality interfaces.</p>
                 </div>
               </div>
             </div>
 
-            <div id="constitution-content" className="bg-gray-950 border border-gray-800 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
-              <pre className="text-gray-300 whitespace-pre-wrap m-0">{`# ANTI-DEFAULT UI CONSTITUTION
+            {/* Framed Constitution Content */}
+            <div className="relative bg-gradient-to-b from-studio-purple/5 to-studio-blue/5 border-2 border-studio-purple/30 rounded-2xl p-1 mb-8">
+              {/* Header bar with actions */}
+              <div className="flex items-center justify-between bg-gray-900 rounded-t-xl px-4 py-3 border-b border-gray-800">
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1.5">
+                    <span className="w-3 h-3 rounded-full bg-red-500/60"></span>
+                    <span className="w-3 h-3 rounded-full bg-yellow-500/60"></span>
+                    <span className="w-3 h-3 rounded-full bg-green-500/60"></span>
+                  </div>
+                  <span className="text-gray-400 text-sm font-mono">copilot-instructions.md</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      const content = document.getElementById('constitution-content').innerText;
+                      navigator.clipboard.writeText(content);
+                      alert('Constitution copied to clipboard!');
+                    }}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors text-sm font-medium border border-gray-700"
+                  >
+                    <FaCopy className="text-xs" /> Copy
+                  </button>
+                  <button
+                    onClick={() => {
+                      const content = document.getElementById('constitution-content').innerText;
+                      const blob = new Blob([content], { type: 'text/markdown' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'copilot-instructions.md';
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-studio-purple hover:bg-studio-pink text-white rounded-lg transition-colors text-sm font-medium"
+                  >
+                    <FaDownload className="text-xs" /> Download .md
+                  </button>
+                </div>
+              </div>
+              
+              {/* Content area */}
+              <div id="constitution-content" className="bg-gray-950 rounded-b-xl p-6 font-mono text-sm overflow-x-auto max-h-[600px] overflow-y-auto">
+                <pre className="text-gray-300 whitespace-pre-wrap m-0">{`# ANTI-DEFAULT UI CONSTITUTION
 Studio SaaS Interface Law · v1.0
 
 This file governs all SaaS / application interface generation within the studio.
@@ -5266,12 +5298,13 @@ Any of the following is an automatic redesign trigger:
 - Focus states must be clearly visible
 - Interactive elements must have hover states
 - Disabled states must be distinguishable but not invisible`}</pre>
+              </div>
             </div>
 
             <div className="bg-studio-purple/10 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2"><FaLightbulb className="text-studio-purple" /> How to Use</h3>
               <ol className="space-y-2 text-gray-300 list-decimal list-inside">
-                <li>Copy the constitution above using the "Copy All" button</li>
+                <li>Download the file or copy the content using the buttons above</li>
                 <li>Add it to your project's root as <code className="text-studio-coral bg-gray-800 px-1.5 py-0.5 rounded text-sm">.github/copilot-instructions.md</code> or <code className="text-studio-coral bg-gray-800 px-1.5 py-0.5 rounded text-sm">.ai-rules</code></li>
                 <li>Include it in your AI assistant's context or system prompt</li>
                 <li>Reference it when reviewing AI-generated interfaces</li>
