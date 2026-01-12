@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { VscCode } from 'react-icons/vsc';
 import { TbSparkles } from 'react-icons/tb';
-import { FaClock, FaBook, FaCheckCircle, FaRocket, FaBullseye, FaBug, FaSearch, FaChevronDown, FaExclamationTriangle, FaLightbulb, FaRobot, FaTimesCircle, FaUser, FaCamera, FaPalette, FaRulerCombined, FaSyncAlt, FaCopy, FaCheck, FaServer, FaCodeBranch, FaWrench, FaFolderOpen, FaComment, FaImage, FaCode, FaBan, FaHeart, FaMagic, FaDownload } from 'react-icons/fa';
+import { FaClock, FaBook, FaCheckCircle, FaRocket, FaBullseye, FaBug, FaSearch, FaChevronDown, FaExclamationTriangle, FaLightbulb, FaRobot, FaTimesCircle, FaUser, FaCamera, FaPalette, FaRulerCombined, FaSyncAlt, FaCopy, FaCheck, FaServer, FaCodeBranch, FaWrench, FaFolderOpen, FaComment, FaImage, FaCode, FaBan, FaHeart, FaMagic, FaDownload, FaHashtag } from 'react-icons/fa';
 import { MdArchitecture } from 'react-icons/md';
 
 const Documentation = () => {
@@ -13,6 +13,267 @@ const Documentation = () => {
   const [expandedBestPractices, setExpandedBestPractices] = useState([1]); // Track which best practice sections are open
   const [expandedMistakes, setExpandedMistakes] = useState([1]); // Track which mistake sections are open
   const [copiedCode, setCopiedCode] = useState(null);
+  const [activeSection, setActiveSection] = useState(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const searchInputRef = useRef(null);
+
+  // Search index - all searchable documentation content
+  const searchIndex = [
+    // Getting Started
+    { id: 'welcome', title: 'Documentation Overview', section: 'Overview', keywords: 'welcome home documentation drive framework ai assisted design development prototypes', description: 'DRIVE is the framework for AI-assisted design and development.' },
+    { id: 'what-is-vibe', title: 'What is Vibe Coding?', section: 'Getting Started', keywords: 'vibe coding mindset shift design first rapid prototyping ai partner iterate', description: 'Rapidly translating design intent into working code through AI-assisted development.' },
+    
+    // Tools & Setup
+    { id: 'setup', title: 'Setting Up Your Environment', section: 'Tools & Setup', keywords: 'setup install vs code vscode github copilot spark environment prerequisites', description: 'Get your tools ready for vibe coding with VS Code and GitHub Copilot.' },
+    { id: 'first-session', title: 'Your First DRIVE Session', section: 'Tools & Setup', keywords: 'first session tutorial beginner dashboard stats cards build create project', description: 'Build an interactive dashboard with stats cards in 30 minutes.' },
+    { id: 'best-practices', title: 'Best Practices & Common Mistakes', section: 'Tools & Setup', keywords: 'best practices mistakes tips tricks workflow efficiency prompts context', description: 'Proven strategies and common mistakes to help you succeed faster.' },
+    
+    // Design Fidelity
+    { id: 'matching-your-vision', title: 'Achieving Design Fidelity', section: 'Design Fidelity', keywords: 'design fidelity matching vision visual consistency pixel perfect', description: 'Techniques to ensure AI-generated code matches your design vision.' },
+    { id: 'design-system-prompts', title: 'Design System Prompts', section: 'Design Fidelity', keywords: 'design system tokens colors typography spacing components', description: 'Create consistent designs with design system prompts.' },
+    { id: 'figma-mcp', title: 'Figma MCP Integration', section: 'Design Fidelity', keywords: 'figma mcp model context protocol design to code integration setup token api', description: 'Connect Figma directly to your AI assistant for seamless design-to-code workflows.' },
+    { id: 'custom-assets', title: 'Adding Custom Assets', section: 'Design Fidelity', keywords: 'custom assets images icons brand logos fonts', description: 'Import images, icons, and brand assets into your prototypes.' },
+    
+    // Core Concepts
+    { id: 'prompting-and-design', title: 'Prompting & Design Pillars', section: 'Core Concepts', keywords: 'prompting strategies effective prompts four pillars typography color motion layout composition design distinctive', description: 'Master prompting and the four pillars of distinctive design.' },
+    { id: 'iterative-design', title: 'Iterative Design Process', section: 'Core Concepts', keywords: 'iterative design process build test refine feedback loop', description: 'Build, test, and refine in rapid cycles for better outcomes.' },
+    { id: 'context-management', title: 'Managing Project Context', section: 'Core Concepts', keywords: 'context management project files folders structure organization', description: 'Keep your AI assistant informed about your project.' },
+    { id: 'starter-prompts', title: 'Starter Prompts', section: 'Core Concepts', keywords: 'starter prompts templates examples layout component styling', description: 'Ready-to-use prompt templates for common design scenarios.' },
+    { id: 'anti-patterns-constitution', title: 'Design Anti-Patterns', section: 'Core Concepts', keywords: 'anti patterns defaults generic boring avoid mistakes rules instructions copilot claude download', description: 'Identify AI defaults and get downloadable rules to suppress them.' },
+  ];
+
+  // Search function
+  const performSearch = useCallback((query) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    const normalizedQuery = query.toLowerCase();
+    const words = normalizedQuery.split(/\s+/).filter(Boolean);
+
+    const results = searchIndex
+      .map((item) => {
+        const searchText = `${item.title} ${item.section} ${item.keywords} ${item.description}`.toLowerCase();
+        
+        // Calculate relevance score
+        let score = 0;
+        words.forEach((word) => {
+          if (item.title.toLowerCase().includes(word)) score += 10;
+          if (item.section.toLowerCase().includes(word)) score += 5;
+          if (item.keywords.includes(word)) score += 3;
+          if (item.description.toLowerCase().includes(word)) score += 2;
+        });
+
+        // Check if all words match somewhere
+        const allWordsMatch = words.every((word) => searchText.includes(word));
+        
+        return { ...item, score, matches: allWordsMatch };
+      })
+      .filter((item) => item.score > 0 || item.matches)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10);
+
+    setSearchResults(results);
+  }, []);
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    performSearch(query);
+  };
+
+  // Handle search result click
+  const handleResultClick = (pageId) => {
+    setActivePage(pageId);
+    setSearchOpen(false);
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+
+  // Keyboard shortcut for search (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+      if (e.key === 'Escape') {
+        setSearchOpen(false);
+        setSearchQuery('');
+        setSearchResults([]);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Focus search input when modal opens
+  useEffect(() => {
+    if (searchOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [searchOpen]);
+
+  // Highlight matching text
+  const highlightMatch = (text, query) => {
+    if (!query.trim()) return text;
+    const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+    let result = text;
+    words.forEach((word) => {
+      const regex = new RegExp(`(${word})`, 'gi');
+      result = result.replace(regex, '<mark class="bg-studio-pink/30 text-white">$1</mark>');
+    });
+    return result;
+  };
+
+  // "On this page" headings for each documentation page
+  const pageHeadings = {
+    'welcome': [],
+    'what-is-vibe': [
+      { id: 'the-mindset-shift', title: 'The Mindset Shift' },
+      { id: 'design-first-coding', title: 'Key Principles' },
+    ],
+    'setup': [
+      { id: 'prerequisites', title: 'Prerequisites Checklist' },
+      { id: 'install-vscode', title: 'Install VS Code' },
+      { id: 'vscode-copilot', title: 'VS Code + GitHub Copilot' },
+      { id: 'github-spark', title: 'GitHub Spark' },
+    ],
+    'first-session': [
+      { id: 'before-you-start', title: 'Before You Start' },
+      { id: 'create-project', title: 'Create Your Project' },
+      { id: 'first-component', title: 'Build Your First Component' },
+      { id: 'iterate-refine', title: 'Iterate & Refine' },
+    ],
+    'best-practices': [
+      { id: 'top-practices', title: 'Top 5 Best Practices' },
+      { id: 'common-mistakes', title: 'Common Mistakes' },
+    ],
+    'matching-your-vision': [
+      { id: 'core-challenge', title: 'The Core Challenge' },
+      { id: 'figma-mcp-method', title: 'Figma MCP Server (Best)' },
+      { id: 'screenshot-specs', title: 'Screenshot + Specs' },
+      { id: 'text-specs', title: 'Detailed Text Specs' },
+      { id: 'design-tokens', title: 'Extract Design Tokens' },
+      { id: 'common-gotchas', title: 'Common Gotchas' },
+      { id: 'compare-iterate', title: 'Compare & Iterate' },
+    ],
+    'figma-mcp': [
+      { id: 'what-is-mcp', title: 'What is MCP?' },
+      { id: 'setup-instructions', title: 'Setup Instructions' },
+      { id: 'using-figma-mcp', title: 'Using Figma MCP' },
+    ],
+    'custom-assets': [],
+    'ai-assistants': [
+      { id: 'choosing-assistant', title: 'Choosing an Assistant' },
+      { id: 'communication-tips', title: 'Communication Tips' },
+      { id: 'context-management', title: 'Context Management' },
+    ],
+    'prompting-strategies': [
+      { id: 'why-prompting-matters', title: 'Why Prompting Matters' },
+      { id: 'anatomy-of-prompt', title: 'Anatomy of a Great Prompt' },
+      { id: 'before-after', title: 'Before & After Examples' },
+      { id: 'prompting-techniques', title: 'Prompting Techniques' },
+      { id: 'advanced-tips', title: 'Advanced Tips' },
+    ],
+    'iterative-design': [
+      { id: 'why-iteration', title: 'Why Iteration Matters' },
+      { id: 'drive-loop', title: 'The DRIVE Iteration Loop' },
+      { id: 'iteration-strategies', title: 'Iteration Strategies' },
+      { id: 'feedback-integration', title: 'Feedback Integration' },
+      { id: 'version-control', title: 'Version Control' },
+      { id: 'when-to-stop', title: 'When to Stop Iterating' },
+    ],
+    'starter-prompts': [
+      { id: 'development-essentials', title: 'Development Essentials' },
+      { id: 'local-server', title: 'Starting a Local Server' },
+      { id: 'git-saving', title: 'Git: Saving Your Work' },
+      { id: 'installing-deps', title: 'Installing Dependencies' },
+      { id: 'fixing-errors', title: 'Fixing Common Errors' },
+      { id: 'file-management', title: 'File Management' },
+      { id: 'quick-design', title: 'Quick Design Tasks' },
+    ],
+    'context-management': [
+      { id: 'why-context', title: 'Why Context Matters' },
+      { id: 'types-of-context', title: 'Types of Context' },
+      { id: 'context-delivery', title: 'Context Delivery Methods' },
+      { id: 'file-organization', title: 'File Organization' },
+      { id: 'context-window', title: 'Context Window Management' },
+      { id: 'living-docs', title: 'Living Documentation' },
+    ],
+    'advanced-polish': [
+      { id: 'why-ai-converges', title: 'Why AI UI Converges' },
+      { id: 'break-convergence', title: 'How to Break Convergence' },
+      { id: 'aesthetic-framework', title: 'Aesthetic Direction Framework' },
+    ],
+    'prompting-and-design': [
+      { id: 'why-prompting-matters', title: 'Why Prompting Matters' },
+      { id: 'anatomy-of-prompt', title: 'Anatomy of a Great Prompt' },
+      { id: 'before-after', title: 'Before & After Examples' },
+      { id: 'prompting-techniques', title: 'Prompting Techniques' },
+      { id: 'four-pillars', title: 'Four Pillars of Design' },
+      { id: 'refinement-prompts', title: 'Refinement Prompts' },
+    ],
+    'anti-patterns-constitution': [
+      { id: 'anti-patterns-intro', title: 'Spot the Defaults' },
+      { id: 'typography-patterns', title: 'Typography' },
+      { id: 'color-patterns', title: 'Color' },
+      { id: 'layout-patterns', title: 'Layout' },
+      { id: 'motion-patterns', title: 'Motion' },
+      { id: 'ui-constitution', title: 'UI Constitution' },
+    ],
+  };
+
+  // Track scroll position to highlight current section in "On this page"
+  useEffect(() => {
+    const headings = pageHeadings[activePage];
+    if (!headings || headings.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: '-100px 0px -66% 0px',
+        threshold: 0
+      }
+    );
+
+    // Observe all section headings
+    headings.forEach((heading) => {
+      const element = document.getElementById(heading.id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, [activePage]);
+
+  // Scroll to section handler with offset for sticky header
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const headerOffset = 100; // Account for sticky header
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+      setActiveSection(sectionId);
+    }
+  };
 
   const copyToClipboard = async (code, id) => {
     try {
@@ -66,56 +327,241 @@ const Documentation = () => {
       case 'welcome':
         return (
           <div className="prose prose-invert max-w-none">
-            <h1 className="text-5xl font-bold text-white mb-6">Welcome to DRIVE</h1>
-            <p className="text-xl text-gray-300 mb-8">Design. Rapid. Iterate. Validate. Execute.</p>
-            
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">Why DRIVE was created</h2>
-              <p className="text-gray-300 mb-4">
-                Creating Figma prototypes is slow, inefficient, and doesn't capture exactly how the application should work. 
-                Prototypes often miss edge cases, interactions, and real-world behavior.
-              </p>
-              <p className="text-gray-300 mb-4">
-                <span className="text-studio-coral font-semibold">DRIVE changes everything.</span> With AI-assisted development, 
-                designers can now build, iterate, and validate in hours, not weeks. You can quickly deliver designs close to 
-                what the final implementation will look like and test them with real functionality.
-              </p>
-              <p className="text-gray-300">
-                Since we're able to move fast on the design, we can spend more time researching, building trust with users, 
-                and designing for the right problems. <span className="text-white font-semibold">This doesn't replace the way 
-                we work, it supercharges it!</span>
-              </p>
-            </div>
+            {/* Hero Section */}
+            <h1 className="text-5xl font-bold text-white mb-4">Documentation</h1>
+            <p className="text-xl text-gray-400 mb-12 max-w-3xl">
+              DRIVE is the framework for AI-assisted design and development. Design teams use DRIVE to rapidly build, 
+              iterate, and validate functional prototypes in hours instead of weeks.
+            </p>
 
-            <h2 className="text-3xl font-bold text-white mb-4">The DRIVE Promise</h2>
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                <div className="text-studio-coral text-4xl font-bold mb-2">Design</div>
-                <p className="text-gray-400">Start with intent, not specifications</p>
-              </div>
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                <div className="text-studio-pink text-4xl font-bold mb-2">Iterate</div>
-                <p className="text-gray-400">See it, adjust it, ship it in minutes</p>
-              </div>
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                <div className="text-studio-purple text-4xl font-bold mb-2">Execute</div>
-                <p className="text-gray-400">Ship quality, not perfection-paralysis</p>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <button
+            {/* Getting Started Section */}
+            <h2 className="text-2xl font-bold text-white mb-6">Getting Started</h2>
+            <div className="grid md:grid-cols-3 gap-4 mb-12">
+              <div 
                 onClick={() => setActivePage('what-is-vibe')}
-                className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-coral/50 transition-all cursor-pointer group"
               >
-                What is Vibe Coding? →
-              </button>
-              <button
+                <div className="w-10 h-10 rounded-lg bg-studio-coral/10 flex items-center justify-center mb-4">
+                  <FaRocket className="text-studio-coral text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">What is Vibe Coding?</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Understand the mindset shift from static mockups to AI-assisted functional prototypes.
+                </p>
+                <span className="text-studio-coral text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
                 onClick={() => setActivePage('first-session')}
-                className="px-6 py-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white rounded-xl transition-colors font-medium"
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-pink/50 transition-all cursor-pointer group"
               >
-                Your First Session →
-              </button>
+                <div className="w-10 h-10 rounded-lg bg-studio-pink/10 flex items-center justify-center mb-4">
+                  <FaClock className="text-studio-pink text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Your First Session</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Build your first working prototype in under an hour with step-by-step guidance.
+                </p>
+                <span className="text-studio-pink text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
+                onClick={() => setActivePage('best-practices')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-purple/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-studio-purple/10 flex items-center justify-center mb-4">
+                  <FaCheckCircle className="text-studio-purple text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Best Practices</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Proven strategies and common mistakes to help you succeed faster with AI tools.
+                </p>
+                <span className="text-studio-purple text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+            </div>
+
+            {/* Tools & Setup Section */}
+            <h2 className="text-2xl font-bold text-white mb-6">Tools & Setup</h2>
+            <div className="grid md:grid-cols-2 gap-4 mb-12">
+              <div 
+                onClick={() => setActivePage('setup')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-blue/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-studio-blue/10 flex items-center justify-center mb-4">
+                  <VscCode className="text-studio-blue text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Setting Up Your Environment</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Get VS Code, GitHub Copilot, and your workspace ready for vibe coding.
+                </p>
+                <span className="text-studio-blue text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
+                onClick={() => setActivePage('extensions')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-green-500/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center mb-4">
+                  <FaCodeBranch className="text-green-400 text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Recommended Extensions</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Essential VS Code extensions that enhance your DRIVE workflow.
+                </p>
+                <span className="text-green-400 text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+            </div>
+
+            {/* Design Fidelity Section */}
+            <h2 className="text-2xl font-bold text-white mb-6">Design Fidelity</h2>
+            <div className="grid md:grid-cols-3 gap-4 mb-12">
+              <div 
+                onClick={() => setActivePage('matching-your-vision')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-coral/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-studio-coral/10 flex items-center justify-center mb-4">
+                  <FaPalette className="text-studio-coral text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Achieving Design Fidelity</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Techniques to ensure AI-generated code matches your design vision.
+                </p>
+                <span className="text-studio-coral text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
+                onClick={() => setActivePage('figma-mcp')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-pink/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-studio-pink/10 flex items-center justify-center mb-4">
+                  <FaImage className="text-studio-pink text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Figma MCP Setup</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Connect Figma directly to your AI assistant for seamless design-to-code.
+                </p>
+                <span className="text-studio-pink text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
+                onClick={() => setActivePage('custom-assets')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-purple/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-studio-purple/10 flex items-center justify-center mb-4">
+                  <FaFolderOpen className="text-studio-purple text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Adding Custom Assets</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Import images, icons, and brand assets into your prototypes.
+                </p>
+                <span className="text-studio-purple text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+            </div>
+
+            {/* Core Concepts Section */}
+            <h2 className="text-2xl font-bold text-white mb-6">Core Concepts</h2>
+            <div className="grid md:grid-cols-2 gap-4 mb-12">
+              <div 
+                onClick={() => setActivePage('ai-assistants')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-blue/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-studio-blue/10 flex items-center justify-center mb-4">
+                  <FaRobot className="text-studio-blue text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Working with AI Assistants</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Learn to communicate effectively with AI tools for better results.
+                </p>
+                <span className="text-studio-blue text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
+                onClick={() => setActivePage('prompting-strategies')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-yellow-500/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center mb-4">
+                  <FaLightbulb className="text-yellow-400 text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Effective Prompting</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Master the art of writing prompts that get you exactly what you need.
+                </p>
+                <span className="text-yellow-400 text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
+                onClick={() => setActivePage('iterative-design')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-coral/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-studio-coral/10 flex items-center justify-center mb-4">
+                  <FaSyncAlt className="text-studio-coral text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Iterative Design Process</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Build, test, and refine in rapid cycles for better outcomes.
+                </p>
+                <span className="text-studio-coral text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
+                onClick={() => setActivePage('starter-prompts')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-pink/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-studio-pink/10 flex items-center justify-center mb-4">
+                  <FaBook className="text-studio-pink text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Starter Prompts</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Ready-to-use prompt templates for common design scenarios.
+                </p>
+                <span className="text-studio-pink text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+            </div>
+
+            {/* Advanced AI Design Section */}
+            <h2 className="text-2xl font-bold text-white mb-6">Advanced AI Design</h2>
+            <div className="grid md:grid-cols-3 gap-4 mb-8">
+              <div 
+                onClick={() => setActivePage('advanced-polish')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-purple/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-studio-purple/10 flex items-center justify-center mb-4">
+                  <MdArchitecture className="text-studio-purple text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">AI Design Guide</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Comprehensive guide to achieving distinctive, non-generic AI designs.
+                </p>
+                <span className="text-studio-purple text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
+                onClick={() => setActivePage('ai-design-anti-patterns')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-red-500/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center mb-4">
+                  <FaBan className="text-red-400 text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Anti-Patterns</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Identify and avoid common AI-generated design defaults.
+                </p>
+                <span className="text-red-400 text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
+                onClick={() => setActivePage('ui-constitution')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-coral/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-studio-coral/10 flex items-center justify-center mb-4">
+                  <FaDownload className="text-studio-coral text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">UI Constitution</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Downloadable rules file to suppress AI default styling patterns.
+                </p>
+                <span className="text-studio-coral text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
             </div>
           </div>
         );
@@ -129,7 +575,7 @@ const Documentation = () => {
               into working code through AI-assisted development.</span>
             </p>
 
-            <div className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-xl p-8 mb-8">
+            <div id="the-mindset-shift" className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-xl p-8 mb-8 scroll-mt-24">
               <h2 className="text-2xl font-bold text-white mb-4">The Mindset Shift</h2>
               <p className="text-gray-300 mb-4">From perfect specifications to iterative conversation:</p>
               <ul className="space-y-3 text-gray-300">
@@ -152,7 +598,7 @@ const Documentation = () => {
               </ul>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Key Principles</h2>
+            <h2 id="design-first-coding" className="text-3xl font-bold text-white mb-4 scroll-mt-24">Key Principles</h2>
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-white mb-3">Design by Building</h3>
@@ -180,14 +626,6 @@ const Documentation = () => {
               </div>
             </div>
 
-            <div className="bg-studio-pink/10 border border-studio-pink/30 rounded-xl p-6 mb-8">
-              <h3 className="text-xl font-bold text-white mb-3">DRIVE amplifies your workflow</h3>
-              <p className="text-gray-300">
-                DRIVE doesn't replace how you work—it makes you faster, more creative, and more effective. 
-                Work the way you already do, just with AI as your development partner.
-              </p>
-            </div>
-
             <button
               onClick={() => setActivePage('setup')}
               className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
@@ -203,7 +641,7 @@ const Documentation = () => {
             <h1 className="text-5xl font-bold text-white mb-6">Setting Up Your Environment</h1>
             <p className="text-xl text-gray-300 mb-8">Get your tools ready for vibe coding</p>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
+            <div id="prerequisites" className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8 scroll-mt-24">
               <h2 className="text-2xl font-bold text-white mb-4">Prerequisites Checklist</h2>
               <ul className="space-y-3 text-gray-300">
                 <li className="flex items-center gap-3">
@@ -221,7 +659,7 @@ const Documentation = () => {
               </ul>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Step 1: Install VS Code</h2>
+            <h2 id="install-vscode" className="text-3xl font-bold text-white mb-4 scroll-mt-24">Step 1: Install VS Code</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <p className="text-gray-300 mb-4">
                 Download VS Code for your operating system:
@@ -231,7 +669,7 @@ const Documentation = () => {
               </a>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Option 1: VS Code + GitHub Copilot</h2>
+            <h2 id="vscode-copilot" className="text-3xl font-bold text-white mb-4 scroll-mt-24">Option 1: VS Code + GitHub Copilot</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <p className="text-gray-300 mb-4">
                 <span className="text-white font-semibold">Best for:</span> Full-featured development with local file control
@@ -247,7 +685,7 @@ const Documentation = () => {
               </a>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Option 2: GitHub Spark</h2>
+            <h2 id="github-spark" className="text-3xl font-bold text-white mb-4 scroll-mt-24">Option 2: GitHub Spark</h2>
             <div className="bg-gradient-to-br from-studio-purple/20 to-studio-pink/20 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <p className="text-gray-300 mb-4">
                 <span className="text-white font-semibold">Best for:</span> Quick prototypes without any installation
@@ -2464,7 +2902,7 @@ Can you help me plan the component structure first?`}</code>
       case 'figma-mcp':
         return (
           <div className="prose prose-invert max-w-none">
-            <h1 className="text-5xl font-bold text-white mb-6">Figma MCP Server</h1>
+            <h1 id="what-is-mcp" className="text-5xl font-bold text-white mb-6 scroll-mt-24">Figma MCP Integration</h1>
             <p className="text-xl text-gray-300 mb-8">
               Connect your AI assistant directly to Figma for seamless design-to-code workflows
             </p>
@@ -2472,122 +2910,123 @@ Can you help me plan the component structure first?`}</code>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-4">What is Figma MCP?</h2>
               <p className="text-gray-300 mb-4">
-                The Figma Model Context Protocol (MCP) server enables your AI coding assistant to directly access your 
-                Figma files, read design specs, extract styles, and understand your design system—all without leaving your code editor.
+                The <strong>Model Context Protocol (MCP)</strong> is an open standard that allows AI assistants to connect 
+                to external tools and data sources. The official Figma MCP server enables GitHub Copilot, Claude, and other 
+                AI assistants to directly read your Figma files, extract design specs, and understand your design system.
               </p>
               <p className="text-gray-300">
-                <span className="text-studio-coral font-semibold">No more switching tabs.</span> No more manual spec copying. 
-                Your AI can see exactly what you see in Figma.
+                <span className="text-studio-coral font-semibold">No more context switching.</span> Your AI can see exactly 
+                what you see in Figma—colors, typography, spacing, components—all from within VS Code.
               </p>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Key Features</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">Key Capabilities</h2>
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
                   <FaPalette className="text-studio-pink" />
-                  Design Access
+                  Design Token Extraction
                 </h3>
-                <p className="text-gray-400">Read frames, components, and design tokens directly from Figma files</p>
+                <p className="text-gray-400">Automatically pulls colors, typography, spacing, and effects from your Figma variables and styles</p>
               </div>
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
                   <FaRulerCombined className="text-studio-coral" />
-                  Style Extraction
+                  Layout Understanding
                 </h3>
-                <p className="text-gray-400">Automatically extract colors, typography, spacing, and layout specs</p>
+                <p className="text-gray-400">Reads auto-layout settings, constraints, and frame hierarchy to generate proper CSS/Tailwind</p>
               </div>
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
                   <FaSyncAlt className="text-studio-blue" />
-                  Real-time Sync
+                  Live Access
                 </h3>
-                <p className="text-gray-400">Changes in Figma are instantly available to your AI assistant</p>
+                <p className="text-gray-400">Changes in Figma are immediately available—no manual export or sync needed</p>
               </div>
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
                   <FaBullseye className="text-studio-purple" />
-                  Component Library
+                  Component Awareness
                 </h3>
-                <p className="text-gray-400">AI understands your design system and reusable components</p>
+                <p className="text-gray-400">Understands your component library, variants, and design system structure</p>
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Installation</h2>
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <p className="text-gray-300 mb-4">Install the Figma MCP server via npm:</p>
-              <pre className="bg-gray-950 border border-gray-700 rounded-lg p-4 mb-4 overflow-x-auto relative group">
-                <button
-                  onClick={() => copyToClipboard('npm install -g @modelcontextprotocol/server-figma', 'npm-install-figma')}
-                  className="absolute top-2 right-2 p-1.5 bg-gray-800 hover:bg-gray-700 rounded transition-colors opacity-0 group-hover:opacity-100"
-                  aria-label="Copy code"
-                >
-                  {copiedCode === 'npm-install-figma' ? (
-                    <FaCheck className="text-green-400 text-xs" />
-                  ) : (
-                    <FaCopy className="text-gray-400 text-xs" />
-                  )}
-                </button>
-                <code className="text-studio-pink text-sm">npm install -g @modelcontextprotocol/server-figma</code>
-              </pre>
-              <p className="text-gray-300 mb-4">Or using the VS Code Copilot extension:</p>
-              <ol className="space-y-2 text-gray-300 list-decimal list-inside">
-                <li>Open VS Code settings</li>
-                <li>Search for "MCP Servers"</li>
-                <li>Add Figma MCP server configuration</li>
-                <li>Enter your Figma API token</li>
-              </ol>
+            <h2 id="setup-instructions" className="text-3xl font-bold text-white mb-4 scroll-mt-24">Setup Instructions</h2>
+            
+            <div className="bg-gradient-to-br from-studio-purple/20 to-studio-pink/20 border border-studio-purple/30 rounded-xl p-6 mb-6">
+              <h3 className="text-xl font-bold text-white mb-3">Prerequisites</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li className="flex items-center gap-3">
+                  <FaCheckCircle className="text-green-400 shrink-0" />
+                  <span>VS Code with GitHub Copilot extension installed</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <FaCheckCircle className="text-green-400 shrink-0" />
+                  <span>Figma account (free or paid)</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <FaCheckCircle className="text-green-400 shrink-0" />
+                  <span>Node.js 18+ installed on your machine</span>
+                </li>
+              </ul>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Getting Your Figma API Token</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <ol className="space-y-3 text-gray-300 list-decimal list-inside">
-                <li>Go to Figma → Settings → Account</li>
-                <li>Scroll to "Personal Access Tokens"</li>
-                <li>Click "Generate new token"</li>
-                <li>Name it "DRIVE MCP" and copy the token</li>
-                <li>Add to your MCP server configuration</li>
+              <h3 className="text-xl font-bold text-white mb-4">Step 1: Get Your Figma Access Token</h3>
+              <ol className="space-y-3 text-gray-300 list-decimal list-inside mb-4">
+                <li>Open Figma and go to <strong>Settings → Account</strong></li>
+                <li>Scroll down to <strong>"Personal access tokens"</strong></li>
+                <li>Click <strong>"Generate new token"</strong></li>
+                <li>Give it a name like "VS Code MCP" and set expiration</li>
+                <li>Copy the token immediately (you won't see it again!)</li>
               </ol>
-              <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-4 mt-4">
+              <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-4">
                 <p className="text-yellow-200 text-sm">
-                  <strong>Security Note:</strong> Keep your API token secure. Never commit it to version control. 
-                  Use environment variables or secure storage.
+                  <strong>🔐 Security:</strong> Store your token securely. Never commit it to version control or share it publicly.
                 </p>
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Configuration Example</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <p className="text-gray-300 mb-4">Add this to your MCP server configuration:</p>
+              <h3 className="text-xl font-bold text-white mb-4">Step 2: Configure MCP in VS Code</h3>
+              <p className="text-gray-300 mb-4">
+                Open your VS Code settings JSON (<code className="bg-gray-800 px-2 py-0.5 rounded text-studio-pink">Cmd+Shift+P</code> → "Preferences: Open User Settings (JSON)") 
+                and add the Figma MCP server:
+              </p>
               <pre className="bg-gray-950 border border-gray-700 rounded-lg p-4 overflow-x-auto relative group">
                 <button
                   onClick={() => copyToClipboard(`{
-  "mcpServers": {
-    "figma": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-figma"],
-      "env": {
-        "FIGMA_PERSONAL_ACCESS_TOKEN": "your-token-here"
+  "mcp": {
+    "servers": {
+      "figma": {
+        "command": "npx",
+        "args": ["-y", "figma-developer-mcp", "--stdio"],
+        "env": {
+          "FIGMA_API_KEY": "your-figma-token-here"
+        }
       }
     }
   }
-}`, 'figma-config')}
+}`, 'figma-mcp-config')}
                   className="absolute top-2 right-2 p-1.5 bg-gray-800 hover:bg-gray-700 rounded transition-colors opacity-0 group-hover:opacity-100"
                   aria-label="Copy code"
                 >
-                  {copiedCode === 'figma-config' ? (
+                  {copiedCode === 'figma-mcp-config' ? (
                     <FaCheck className="text-green-400 text-xs" />
                   ) : (
                     <FaCopy className="text-gray-400 text-xs" />
                   )}
                 </button>
-                <code className="text-studio-pink text-sm">{`{
-  "mcpServers": {
-    "figma": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-figma"],
-      "env": {
-        "FIGMA_PERSONAL_ACCESS_TOKEN": "your-token-here"
+                <code className="text-studio-pink text-sm whitespace-pre">{`{
+  "mcp": {
+    "servers": {
+      "figma": {
+        "command": "npx",
+        "args": ["-y", "figma-developer-mcp", "--stdio"],
+        "env": {
+          "FIGMA_API_KEY": "your-figma-token-here"
+        }
       }
     }
   }
@@ -2595,32 +3034,150 @@ Can you help me plan the component structure first?`}</code>
               </pre>
             </div>
 
-            <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-6 rounded-r mb-8">
-              <h3 className="text-xl font-bold text-white mb-3">Pro Tip</h3>
-              <p className="text-gray-300">
-                Once configured, your AI can reference Figma designs by file URL. Just paste a Figma link in your 
-                prompt and ask the AI to implement that design!
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
+              <h3 className="text-xl font-bold text-white mb-4">Step 3: Restart VS Code</h3>
+              <p className="text-gray-300 mb-4">
+                After saving your settings, restart VS Code completely. The MCP server will start automatically when you open Copilot Chat.
               </p>
+              <p className="text-gray-300">
+                You can verify it's working by opening Copilot Chat and asking: <code className="bg-gray-800 px-2 py-0.5 rounded text-studio-pink">"What MCP tools do you have access to?"</code>
+              </p>
+            </div>
+
+            <h2 id="using-figma-mcp" className="text-3xl font-bold text-white mb-4 scroll-mt-24">Using Figma MCP</h2>
+            
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+              <h3 className="text-xl font-bold text-white mb-4">Method 1: Direct Link (Recommended)</h3>
+              <p className="text-gray-300 mb-4">
+                Simply paste a Figma frame or component URL in your Copilot Chat:
+              </p>
+              <div className="bg-gray-950 border border-gray-700 rounded-lg p-4 relative group">
+                <button
+                  onClick={() => copyToClipboard('Implement this design as a React component with Tailwind CSS:\nhttps://www.figma.com/design/ABC123/MyProject?node-id=1-234\n\nMake it responsive and include hover states.', 'figma-prompt-1')}
+                  className="absolute top-2 right-2 p-1.5 bg-gray-800 hover:bg-gray-700 rounded transition-colors opacity-0 group-hover:opacity-100"
+                  aria-label="Copy code"
+                >
+                  {copiedCode === 'figma-prompt-1' ? (
+                    <FaCheck className="text-green-400 text-xs" />
+                  ) : (
+                    <FaCopy className="text-gray-400 text-xs" />
+                  )}
+                </button>
+                <p className="text-gray-400 text-sm mb-2">Example prompt:</p>
+                <code className="text-studio-pink text-sm">
+                  Implement this design as a React component with Tailwind CSS:
+                  <br />https://www.figma.com/design/ABC123/MyProject?node-id=1-234
+                  <br /><br />
+                  Make it responsive and include hover states.
+                </code>
+              </div>
+            </div>
+
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
+              <h3 className="text-xl font-bold text-white mb-4">Method 2: Screenshot + Description (No MCP)</h3>
+              <p className="text-gray-300 mb-4">
+                If MCP isn't set up, you can still use screenshots with Copilot Vision:
+              </p>
+              <ol className="space-y-3 text-gray-300 list-decimal list-inside mb-4">
+                <li>Take a screenshot of your Figma frame</li>
+                <li>Drag it into Copilot Chat or use the attach button</li>
+                <li>Add specific details about colors, spacing, fonts</li>
+              </ol>
+              <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
+                <p className="text-gray-400 text-sm mb-2">Example prompt with screenshot:</p>
+                <code className="text-studio-pink text-sm">
+                  Build this card component from the attached screenshot.
+                  <br /><br />
+                  Specs: 
+                  <br />• Background: #1a1a1a with subtle border
+                  <br />• Padding: 24px, border-radius: 16px
+                  <br />• Title: 20px semibold, Body: 14px regular
+                  <br />• Button: pink gradient with white text
+                </code>
+              </div>
+            </div>
+
+            <h2 className="text-3xl font-bold text-white mb-4">Pro Tips</h2>
+            <div className="space-y-4 mb-8">
+              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r">
+                <p className="text-white font-semibold mb-2">Select Specific Frames</p>
+                <p className="text-gray-300 text-sm">
+                  Right-click a frame in Figma and "Copy link to selection" to get a URL that points to exactly what you want to build.
+                </p>
+              </div>
+              
+              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
+                <p className="text-white font-semibold mb-2">Reference Your Design System</p>
+                <p className="text-gray-300 text-sm">
+                  Tell Copilot about your existing Tailwind config, component library, or design tokens so it generates consistent code.
+                </p>
+              </div>
+              
+              <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r">
+                <p className="text-white font-semibold mb-2">Iterate Incrementally</p>
+                <p className="text-gray-300 text-sm">
+                  Get the basic structure first, then refine. Ask for responsive behavior, animations, and edge cases in follow-up prompts.
+                </p>
+              </div>
+            </div>
+
+            <h2 className="text-3xl font-bold text-white mb-4">Troubleshooting</h2>
+            <div className="bg-red-900/20 border border-red-700/30 rounded-xl p-6 mb-8">
+              <ul className="space-y-3 text-gray-300">
+                <li className="flex items-start gap-3">
+                  <span className="text-red-400 font-bold">→</span>
+                  <span><strong>"Can't access Figma file"</strong> — Check that your token has access to the file. Team files may require additional permissions.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-red-400 font-bold">→</span>
+                  <span><strong>"MCP server not found"</strong> — Restart VS Code after adding the config. Check Node.js is installed and in your PATH.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-red-400 font-bold">→</span>
+                  <span><strong>"Token expired"</strong> — Generate a new token in Figma settings and update your VS Code config.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-red-400 font-bold">→</span>
+                  <span><strong>Styles not matching</strong> — AI interprets design intent, not exact properties. Provide specific values for critical measurements.</span>
+                </li>
+              </ul>
             </div>
 
             <div className="flex gap-4">
               <button
-                onClick={() => setActivePage('figma-to-code')}
+                onClick={() => setActivePage('matching-your-vision')}
                 className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
               >
-                See Full Workflow →
+                Achieving Design Fidelity →
               </button>
               <button
-                onClick={() => setActivePage('matching-your-vision')}
+                onClick={() => setActivePage('design-system-prompts')}
                 className="px-6 py-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white rounded-xl transition-colors font-medium"
               >
-                Achieving Design Fidelity
+                Design System Prompts
               </button>
             </div>
           </div>
         );
 
       case 'importing-designs':
+        // Redirect to figma-mcp since content is consolidated
+        return (
+          <div className="prose prose-invert max-w-none">
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
+              <h2 className="text-2xl font-bold text-white mb-4">Content Moved</h2>
+              <p className="text-gray-300 mb-6">
+                This content has been consolidated into the Figma MCP Integration guide.
+              </p>
+              <button
+                onClick={() => setActivePage('figma-mcp')}
+                className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
+              >
+                Go to Figma MCP Integration →
+              </button>
+            </div>
+          </div>
+        );
         return (
           <div className="prose prose-invert max-w-none">
             <h1 className="text-5xl font-bold text-white mb-6">Importing Figma Designs</h1>
@@ -3213,7 +3770,7 @@ Please:
             </p>
 
             <div className="bg-gradient-to-r from-studio-blue/20 to-studio-purple/20 border border-studio-blue/30 rounded-xl p-6 mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">Why Prompting Matters</h2>
+              <h2 id="why-prompting-matters" className="text-2xl font-bold text-white mb-4">Why Prompting Matters</h2>
               <p className="text-gray-300 mb-4">
                 The difference between frustration and flow in vibe coding often comes down to how you communicate with AI. 
                 A vague prompt gets vague results. A specific, context-rich prompt unlocks AI's full potential.
@@ -3224,7 +3781,7 @@ Please:
               </p>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Anatomy of a Great Prompt</h2>
+            <h2 id="anatomy-of-prompt" className="text-3xl font-bold text-white mb-4">Anatomy of a Great Prompt</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <div className="space-y-6">
                 <div>
@@ -3261,7 +3818,7 @@ Please:
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Before & After Examples</h2>
+            <h2 id="before-after" className="text-3xl font-bold text-white mb-4">Before & After Examples</h2>
             
             <div className="space-y-6 mb-8">
               {/* Example 1 */}
@@ -3336,7 +3893,7 @@ Please:
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Prompting Techniques</h2>
+            <h2 id="prompting-techniques" className="text-3xl font-bold text-white mb-4">Prompting Techniques</h2>
             
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
@@ -3399,7 +3956,7 @@ Please:
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Advanced Prompting Tips</h2>
+            <h2 id="advanced-tips" className="text-3xl font-bold text-white mb-4">Advanced Prompting Tips</h2>
             
             <div className="space-y-4 mb-8">
               <div className="bg-studio-blue/10 border-l-4 border-studio-blue p-4 rounded-r">
@@ -3487,7 +4044,7 @@ Please:
             </p>
 
             <div className="bg-gradient-to-r from-studio-purple/20 to-studio-pink/20 border border-studio-purple/30 rounded-xl p-6 mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">Why Iteration Matters</h2>
+              <h2 id="why-iteration" className="text-2xl font-bold text-white mb-4">Why Iteration Matters</h2>
               <p className="text-gray-300 mb-4">
                 Traditional design workflows move in waterfall: design → handoff → development → feedback → redesign. 
                 This cycle takes days or weeks. <span className="text-white font-semibold">DRIVE collapses this into minutes.</span>
@@ -3498,7 +4055,7 @@ Please:
               </p>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">The DRIVE Iteration Loop</h2>
+            <h2 id="drive-loop" className="text-3xl font-bold text-white mb-4">The DRIVE Iteration Loop</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 mb-8">
               <div className="grid md:grid-cols-4 gap-6">
                 <div className="text-center">
@@ -3547,7 +4104,7 @@ Please:
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Iteration Strategies</h2>
+            <h2 id="iteration-strategies" className="text-3xl font-bold text-white mb-4">Iteration Strategies</h2>
 
             <div className="space-y-6 mb-8">
               <div className="bg-gray-950 border border-gray-800 rounded-xl p-6">
@@ -3626,7 +4183,7 @@ Please:
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Feedback Integration</h2>
+            <h2 id="feedback-integration" className="text-3xl font-bold text-white mb-4">Feedback Integration</h2>
             
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
@@ -3656,7 +4213,7 @@ Please:
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Version Control for Iterations</h2>
+            <h2 id="version-control" className="text-3xl font-bold text-white mb-4">Version Control for Iterations</h2>
             
             <div className="bg-gray-950 border border-gray-800 rounded-xl p-6 mb-8">
               <h3 className="text-lg font-bold text-white mb-3">Git Commit Strategy</h3>
@@ -3680,7 +4237,7 @@ Please:
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">When to Stop Iterating</h2>
+            <h2 id="when-to-stop" className="text-3xl font-bold text-white mb-4">When to Stop Iterating</h2>
             
             <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-xl p-6 mb-8">
               <h3 className="text-yellow-300 font-bold mb-3">Know When "Good Enough" is Perfect</h3>
@@ -3715,10 +4272,10 @@ Please:
                 Project Context →
               </button>
               <button
-                onClick={() => setActivePage('prompting-strategies')}
+                onClick={() => setActivePage('prompting-and-design')}
                 className="px-6 py-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white rounded-xl transition-colors font-medium"
               >
-                ← Prompting Strategies
+                ← Prompting &amp; Design
               </button>
             </div>
           </div>
@@ -3733,7 +4290,7 @@ Please:
             </p>
 
             <div className="bg-gradient-to-r from-studio-coral/20 to-studio-purple/20 border border-studio-coral/30 rounded-xl p-6 mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">Why Context Matters</h2>
+              <h2 id="why-context" className="text-2xl font-bold text-white mb-4">Why Context Matters</h2>
               <p className="text-gray-300 mb-4">
                 AI doesn't remember your project unless you tell it. Every time you start a new chat or file, 
                 AI starts fresh—no memory of your design system, naming conventions, or project structure.
@@ -3744,7 +4301,7 @@ Please:
               </p>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Types of Context</h2>
+            <h2 id="types-of-context" className="text-3xl font-bold text-white mb-4">Types of Context</h2>
             
             <div className="grid md:grid-cols-3 gap-6 mb-8">
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
@@ -3790,7 +4347,7 @@ Please:
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Context Delivery Methods</h2>
+            <h2 id="context-delivery" className="text-3xl font-bold text-white mb-4">Context Delivery Methods</h2>
 
             <div className="space-y-6 mb-8">
               <div className="bg-gray-950 border border-gray-800 rounded-xl p-6">
@@ -3885,7 +4442,7 @@ function Button({ children, variant = 'primary' }) {
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">File Organization for Context</h2>
+            <h2 id="file-organization" className="text-3xl font-bold text-white mb-4">File Organization for Context</h2>
             
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <h3 className="text-lg font-bold text-white mb-4">Recommended Structure</h3>
@@ -3911,7 +4468,7 @@ function Button({ children, variant = 'primary' }) {
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Context Window Management</h2>
+            <h2 id="context-window" className="text-3xl font-bold text-white mb-4">Context Window Management</h2>
             
             <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-xl p-6 mb-8">
               <h3 className="text-yellow-300 font-bold mb-3 flex items-center gap-2">
@@ -3936,7 +4493,7 @@ function Button({ children, variant = 'primary' }) {
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Living Documentation</h2>
+            <h2 id="living-docs" className="text-3xl font-bold text-white mb-4">Living Documentation</h2>
             
             <div className="bg-gray-950 border border-gray-800 rounded-xl p-6 mb-8">
               <h3 className="text-lg font-bold text-white mb-3">Keep Context Current</h3>
@@ -4119,153 +4676,18 @@ function Button({ children, variant = 'primary' }) {
               </p>
             </div>
 
-            {/* TECHNICAL METHODS */}
-            <h2 className="text-3xl font-bold text-white mb-4 mt-12 flex items-center gap-3"><FaWrench className="text-studio-coral" /> Technical Methods (For More Control)</h2>
-            <p className="text-gray-400 mb-6">
-              If you want to understand how assets work in code, or need more control over how they're used, 
-              here are the technical approaches:
-            </p>
-
-            <h3 className="text-2xl font-bold text-white mb-4">Adding SVG Icons</h3>
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h4 className="text-xl font-bold text-white mb-4">Method 1: Inline SVG (Recommended)</h4>
-              <p className="text-gray-300 mb-4">Copy your SVG code directly into your component for full control over styling:</p>
-              <div className="bg-gray-950 border border-gray-700 rounded-lg p-4 mb-4 overflow-x-auto">
-                <code className="text-studio-pink text-sm">{`// In your React component
-<svg className="w-6 h-6 text-studio-pink" fill="currentColor" viewBox="0 0 24 24">
-  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-</svg>`}</code>
-              </div>
-              <p className="text-gray-400 text-sm">
-                <strong>Tip:</strong> Use <code className="text-studio-coral">currentColor</code> for fill/stroke so your icon inherits text color from Tailwind classes.
-              </p>
-            </div>
-
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h4 className="text-xl font-bold text-white mb-4">Method 2: SVG as Component</h4>
-              <p className="text-gray-300 mb-4">Create reusable icon components:</p>
-              <div className="bg-gray-950 border border-gray-700 rounded-lg p-4 mb-4 overflow-x-auto">
-                <code className="text-studio-pink text-sm">{`// src/components/icons/CustomIcon.jsx
-const CustomIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-    <path d="..." />
-  </svg>
-);
-
-export default CustomIcon;
-
-// Usage in your component
-import CustomIcon from './icons/CustomIcon';
-<CustomIcon className="w-8 h-8 text-studio-coral" />`}</code>
-              </div>
-            </div>
-
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h4 className="text-xl font-bold text-white mb-4">Method 3: Import SVG as Image</h4>
-              <p className="text-gray-300 mb-4">For simpler cases, import SVGs like regular images:</p>
-              <div className="bg-gray-950 border border-gray-700 rounded-lg p-4 mb-4 overflow-x-auto">
-                <code className="text-studio-pink text-sm">{`// Import the SVG file
-import logo from './assets/logo.svg';
-
-// Use in your component
-<img src={logo} alt="Logo" className="w-32 h-auto" />`}</code>
-              </div>
-              <p className="text-gray-400 text-sm">
-                <strong>Note:</strong> This method doesn't allow you to change colors with CSS.
-              </p>
-            </div>
-
-            <h3 className="text-2xl font-bold text-white mb-4">Adding Images (Technical)</h3>
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h4 className="text-xl font-bold text-white mb-4">Project Structure for Assets</h4>
-              <p className="text-gray-300 mb-4">Organize your images in a dedicated folder:</p>
-              <div className="bg-gray-950 border border-gray-700 rounded-lg p-4 mb-4 overflow-x-auto">
-                <code className="text-studio-pink text-sm">{`project/
-├── public/
-│   └── images/          ← Static images (referenced by URL)
-│       ├── hero-bg.jpg
-│       └── logo.png
-├── src/
-│   └── assets/          ← Imported images (bundled)
-│       ├── icons/
-│       │   └── custom-icon.svg
-│       └── images/
-│           └── feature-image.png`}</code>
-              </div>
-            </div>
-
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h4 className="text-xl font-bold text-white mb-4">Using Images in Code</h4>
-              <div className="space-y-4">
-                <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
-                  <p className="text-gray-400 text-sm mb-2">From public folder (use URL path):</p>
-                  <code className="text-studio-pink text-sm">{`<img src="/images/hero-bg.jpg" alt="Hero" className="w-full" />`}</code>
-                </div>
-                <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
-                  <p className="text-gray-400 text-sm mb-2">From src/assets (import first):</p>
-                  <code className="text-studio-pink text-sm">{`import featureImg from './assets/images/feature-image.png';
-<img src={featureImg} alt="Feature" className="w-full rounded-xl" />`}</code>
-                </div>
-              </div>
-            </div>
-
-            <h3 className="text-2xl font-bold text-white mb-4">Prompt Examples for AI (Technical)</h3>
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <p className="text-gray-300 mb-4">Tell AI to use your custom assets with file paths:</p>
-              <div className="space-y-4">
-                <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r">
-                  <p className="text-gray-400 text-xs mb-1">PROMPT</p>
-                  <p className="text-gray-300 text-sm">
-                    "I have a custom SVG icon at src/assets/icons/dashboard.svg. Create a navigation component 
-                    that imports and uses this icon for the dashboard link."
-                  </p>
-                </div>
-                <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
-                  <p className="text-gray-400 text-xs mb-1">PROMPT</p>
-                  <p className="text-gray-300 text-sm">
-                    "Replace the placeholder hero image with my custom image at /images/hero-background.jpg. 
-                    Make sure it covers the full section with object-cover."
-                  </p>
-                </div>
-                <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r">
-                  <p className="text-gray-400 text-xs mb-1">PROMPT</p>
-                  <p className="text-gray-300 text-sm">
-                    "Create an IconButton component that accepts an 'icon' prop with inline SVG. 
-                    The SVG should use currentColor so it inherits the button's text color."
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <h3 className="text-2xl font-bold text-white mb-4">Exporting from Figma</h3>
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <ol className="space-y-3 text-gray-300 list-decimal list-inside">
-                <li>Select your icon or image in Figma</li>
-                <li>Go to <span className="text-white font-medium">Export</span> in the right panel</li>
-                <li>Choose format: <span className="text-studio-coral font-medium">SVG</span> for icons, <span className="text-studio-coral font-medium">PNG/JPG</span> for images</li>
-                <li>For SVGs, enable "Include 'id' attribute" for better accessibility</li>
-                <li>Click Export and save to your project's assets folder</li>
-              </ol>
-              <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-4 mt-4">
-                <p className="text-yellow-200 text-sm">
-                  <strong>Pro Tip:</strong> When exporting icons from Figma, flatten complex shapes first 
-                  to get cleaner SVG code. Use the "Outline Stroke" option if your icon has strokes.
-                </p>
-              </div>
-            </div>
-
             <div className="flex gap-4">
               <button
-                onClick={() => setActivePage('importing-designs')}
+                onClick={() => setActivePage('figma-mcp')}
                 className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
               >
-                ← Importing Designs
+                ← Figma MCP Integration
               </button>
               <button
                 onClick={() => setActivePage('design-system-prompts')}
                 className="px-6 py-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white rounded-xl transition-colors font-medium"
               >
-                Design System Prompts
+                Design System Prompts →
               </button>
             </div>
           </div>
@@ -4280,14 +4702,14 @@ import logo from './assets/logo.svg';
             </p>
 
             <div className="bg-gradient-to-r from-studio-purple/20 to-studio-blue/20 border border-studio-purple/30 rounded-xl p-6 mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">Beyond Design: Development Essentials</h2>
+              <h2 id="development-essentials" className="text-2xl font-bold text-white mb-4">Beyond Design: Development Essentials</h2>
               <p className="text-gray-300">
                 Vibe coding isn't just about building UIs—you'll also need to save your work, preview it locally, 
                 and manage your project. Here are copy-paste prompts for common tasks that trip up non-developers.
               </p>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4 flex items-center gap-2">
+            <h2 id="local-server" className="text-3xl font-bold text-white mb-4 flex items-center gap-2">
               <FaServer className="text-studio-purple" />
               Starting a Local Server
             </h2>
@@ -4321,7 +4743,7 @@ import logo from './assets/logo.svg';
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4 flex items-center gap-2">
+            <h2 id="git-saving" className="text-3xl font-bold text-white mb-4 flex items-center gap-2">
               <FaCodeBranch className="text-studio-purple" />
               Git: Saving Your Work
             </h2>
@@ -4355,7 +4777,7 @@ import logo from './assets/logo.svg';
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4 flex items-center gap-2">
+            <h2 id="installing-deps" className="text-3xl font-bold text-white mb-4 flex items-center gap-2">
               <FaWrench className="text-studio-purple" />
               Installing Dependencies
             </h2>
@@ -4382,7 +4804,7 @@ import logo from './assets/logo.svg';
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4 flex items-center gap-2">
+            <h2 id="fixing-errors" className="text-3xl font-bold text-white mb-4 flex items-center gap-2">
               <FaBug className="text-studio-purple" />
               Fixing Common Errors
             </h2>
@@ -4409,7 +4831,7 @@ import logo from './assets/logo.svg';
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4 flex items-center gap-2">
+            <h2 id="file-management" className="text-3xl font-bold text-white mb-4 flex items-center gap-2">
               <FaFolderOpen className="text-studio-purple" />
               File Management
             </h2>
@@ -4436,7 +4858,7 @@ import logo from './assets/logo.svg';
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4 flex items-center gap-2">
+            <h2 id="quick-design" className="text-3xl font-bold text-white mb-4 flex items-center gap-2">
               <FaPalette className="text-studio-purple" />
               Quick Design Tasks
             </h2>
@@ -4495,7 +4917,7 @@ import logo from './assets/logo.svg';
       case 'advanced-polish':
         return (
           <div className="prose prose-invert max-w-none">
-            <h1 className="text-5xl font-bold text-white mb-6">AI Design Guide: Overview</h1>
+            <h1 className="text-5xl font-bold text-white mb-6">Overview</h1>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-xl bg-studio-blue/10 border border-studio-blue/20">
@@ -4510,7 +4932,7 @@ import logo from './assets/logo.svg';
               </div>
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8 border-t-2 border-t-studio-purple/40">
+            <div id="why-ai-converges" className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8 border-t-2 border-t-studio-purple/40">
               <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                 <FaSearch className="text-studio-purple" /> Why AI UI Converges
               </h2>
@@ -4528,7 +4950,7 @@ import logo from './assets/logo.svg';
               </ul>
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8 border-t-2 border-t-studio-pink/40">
+            <div id="break-convergence" className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8 border-t-2 border-t-studio-pink/40">
               <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                 <FaBullseye className="text-studio-pink" /> How to Break Convergence
               </h2>
@@ -4544,7 +4966,7 @@ import logo from './assets/logo.svg';
               </div>
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8 border-t-2 border-t-studio-blue/40">
+            <div id="aesthetic-framework" className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8 border-t-2 border-t-studio-blue/40">
               <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                 <MdArchitecture className="text-studio-blue" /> Aesthetic Direction Framework
               </h2>
@@ -4570,25 +4992,25 @@ import logo from './assets/logo.svg';
               </h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <button
-                  onClick={() => setActivePage('ai-design-pillars')}
+                  onClick={() => setActivePage('prompting-and-design')}
                   className="p-4 bg-gray-950 border border-gray-700 rounded-lg text-left hover:border-studio-pink/50 transition-colors"
                 >
-                  <p className="text-white font-semibold mb-1 flex items-center gap-2"><MdArchitecture className="text-studio-blue" /> Four Pillars</p>
-                  <p className="text-gray-400 text-sm">Typography, color, motion, composition</p>
+                  <p className="text-white font-semibold mb-1 flex items-center gap-2"><MdArchitecture className="text-studio-blue" /> Prompting &amp; Design Pillars</p>
+                  <p className="text-gray-400 text-sm">Effective prompting + typography, color, motion, composition</p>
                 </button>
                 <button
-                  onClick={() => setActivePage('ai-design-workflow')}
+                  onClick={() => setActivePage('anti-patterns-constitution')}
                   className="p-4 bg-gray-950 border border-gray-700 rounded-lg text-left hover:border-studio-pink/50 transition-colors"
                 >
-                  <p className="text-white font-semibold mb-1 flex items-center gap-2"><TbSparkles className="text-studio-pink" /> Workflow &amp; Prompts</p>
-                  <p className="text-gray-400 text-sm">Brief → prompt formula → refinement language</p>
+                  <p className="text-white font-semibold mb-1 flex items-center gap-2"><FaBug className="text-studio-purple" /> Anti-Patterns &amp; UI Constitution</p>
+                  <p className="text-gray-400 text-sm">Spot defaults + the complete UI Constitution</p>
                 </button>
                 <button
-                  onClick={() => setActivePage('ai-design-anti-patterns')}
+                  onClick={() => setActivePage('iterative-design')}
                   className="p-4 bg-gray-950 border border-gray-700 rounded-lg text-left hover:border-studio-pink/50 transition-colors"
                 >
-                  <p className="text-white font-semibold mb-1 flex items-center gap-2"><FaBug className="text-studio-purple" /> Anti-Patterns</p>
-                  <p className="text-gray-400 text-sm">Spot and eliminate AI defaults fast</p>
+                  <p className="text-white font-semibold mb-1 flex items-center gap-2"><FaSyncAlt className="text-studio-pink" /> Iterative Design</p>
+                  <p className="text-gray-400 text-sm">Master the design-build-test loop</p>
                 </button>
                 <button
                   onClick={() => setActivePage('starter-prompts')}
@@ -4608,10 +5030,375 @@ import logo from './assets/logo.svg';
                 ← Starter Prompts
               </button>
               <button
-                onClick={() => setActivePage('ai-design-pillars')}
+                onClick={() => setActivePage('prompting-and-design')}
                 className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
               >
-                Four Pillars →
+                Prompting &amp; Design →
+              </button>
+            </div>
+          </div>
+        );
+
+      case 'prompting-and-design':
+        return (
+          <div className="prose prose-invert max-w-none">
+            <h1 className="text-5xl font-bold text-white mb-6">Prompting &amp; Design Pillars</h1>
+            <p className="text-xl text-gray-300 mb-8">
+              Master the art of communicating with AI and execute across typography, color, motion, and composition
+            </p>
+
+            {/* Why Prompting Matters Section */}
+            <div id="why-prompting-matters" className="bg-gradient-to-r from-studio-blue/20 to-studio-purple/20 border border-studio-blue/30 rounded-xl p-6 mb-8">
+              <h2 className="text-2xl font-bold text-white mb-4">Why Prompting Matters</h2>
+              <p className="text-gray-300 mb-4">
+                The difference between frustration and flow in vibe coding often comes down to how you communicate with AI. 
+                A vague prompt gets vague results. A specific, context-rich prompt unlocks AI's full potential.
+              </p>
+              <p className="text-gray-300">
+                <span className="text-studio-blue font-semibold">Good prompting isn't about being technical—it's about being clear.</span> Think 
+                of it like briefing a designer: the more context and constraints you provide, the closer the first draft gets to your vision.
+              </p>
+            </div>
+
+            {/* Anatomy of a Great Prompt */}
+            <div id="anatomy-of-prompt" className="mb-8">
+              <h2 className="text-3xl font-bold text-white mb-4">Anatomy of a Great Prompt</h2>
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-bold text-studio-pink mb-2">1. Context (What &amp; Why)</h3>
+                    <p className="text-gray-400 text-sm mb-2">Set the stage. What are you building and why?</p>
+                    <div className="bg-gray-950 border border-gray-700 rounded-lg p-3">
+                      <code className="text-studio-pink text-sm">"I&apos;m building a SaaS dashboard for project management..."</code>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-bold text-studio-blue mb-2">2. Requirements (What it needs)</h3>
+                    <p className="text-gray-400 text-sm mb-2">List specific features, behaviors, and constraints</p>
+                    <div className="bg-gray-950 border border-gray-700 rounded-lg p-3">
+                      <code className="text-studio-blue text-sm">"...needs a sidebar navigation with icons, responsive mobile menu, and active state highlighting..."</code>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-bold text-studio-purple mb-2">3. Technical Details (How)</h3>
+                    <p className="text-gray-400 text-sm mb-2">Specify frameworks, libraries, patterns to use</p>
+                    <div className="bg-gray-950 border border-gray-700 rounded-lg p-3">
+                      <code className="text-studio-purple text-sm">"...using React hooks, Tailwind CSS, and React Router for navigation..."</code>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-bold text-studio-coral mb-2">4. Style &amp; Polish (Look &amp; Feel)</h3>
+                    <p className="text-gray-400 text-sm mb-2">Describe visual style, animations, interactions</p>
+                    <div className="bg-gray-950 border border-gray-700 rounded-lg p-3">
+                      <code className="text-studio-coral text-sm">"...with smooth transitions, hover effects, and a modern glassmorphism design"</code>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Before & After Examples */}
+            <div id="before-after" className="mb-8">
+              <h2 className="text-3xl font-bold text-white mb-4">Before &amp; After Examples</h2>
+              
+              <div className="space-y-6">
+                <div className="bg-gray-950 border border-gray-800 rounded-xl overflow-hidden">
+                  <div className="bg-red-900/20 border-b border-red-700/30 p-4">
+                    <p className="text-red-400 font-semibold mb-2 flex items-center gap-2">
+                      <FaTimesCircle className="text-red-400" />
+                      Vague Prompt
+                    </p>
+                    <code className="text-gray-400 text-sm">"Make a button"</code>
+                  </div>
+                  <div className="bg-green-900/20 p-4">
+                    <p className="text-green-400 font-semibold mb-2">✓ Specific Prompt</p>
+                    <code className="text-gray-300 text-sm">
+                      "Create a primary button component in React with:<br />
+                      - Props for label, onClick, disabled, loading states<br />
+                      - Tailwind CSS styling with gradient background (coral to pink)<br />
+                      - Hover animation that scales slightly and shifts gradient<br />
+                      - Loading state shows spinner and disables interaction<br />
+                      - Accessible with proper ARIA labels"
+                    </code>
+                  </div>
+                </div>
+
+                <div className="bg-gray-950 border border-gray-800 rounded-xl overflow-hidden">
+                  <div className="bg-red-900/20 border-b border-red-700/30 p-4">
+                    <p className="text-red-400 font-semibold mb-2 flex items-center gap-2">
+                      <FaTimesCircle className="text-red-400" />
+                      Vague Prompt
+                    </p>
+                    <code className="text-gray-400 text-sm">"Add animation to the hero section"</code>
+                  </div>
+                  <div className="bg-green-900/20 p-4">
+                    <p className="text-green-400 font-semibold mb-2">✓ Specific Prompt</p>
+                    <code className="text-gray-300 text-sm">
+                      "Add GSAP scroll-triggered animation to the hero section:<br />
+                      - Fade in and slide up title from 30px below on page load<br />
+                      - Stagger animation for each text line (0.2s delay between)<br />
+                      - Parallax effect on background gradient as user scrolls<br />
+                      - Smooth easing (power3.out)"
+                    </code>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Prompting Techniques */}
+            <div id="prompting-techniques" className="mb-8">
+              <h2 className="text-3xl font-bold text-white mb-4">Prompting Techniques</h2>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                  <h3 className="text-xl font-bold text-studio-pink mb-4">Progressive Enhancement</h3>
+                  <p className="text-gray-300 mb-3 text-sm">Build in layers, starting simple</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="bg-gray-950 border border-gray-700 rounded p-2">
+                      <p className="text-gray-500">Step 1:</p>
+                      <code className="text-studio-pink">"Create basic card component"</code>
+                    </div>
+                    <div className="bg-gray-950 border border-gray-700 rounded p-2">
+                      <p className="text-gray-500">Step 2:</p>
+                      <code className="text-studio-pink">"Add hover effects and shadows"</code>
+                    </div>
+                    <div className="bg-gray-950 border border-gray-700 rounded p-2">
+                      <p className="text-gray-500">Step 3:</p>
+                      <code className="text-studio-pink">"Make it responsive for mobile"</code>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                  <h3 className="text-xl font-bold text-studio-blue mb-4">Reference Examples</h3>
+                  <p className="text-gray-300 mb-3 text-sm">Point to similar work or screenshots</p>
+                  <div className="bg-gray-950 border border-gray-700 rounded p-3">
+                    <code className="text-studio-blue text-sm">
+                      "Create a pricing table similar to Stripe&apos;s pricing page, with:<br />
+                      - Three tier columns<br />
+                      - Toggle for monthly/annual<br />
+                      - Highlighted &apos;Popular&apos; tier"
+                    </code>
+                  </div>
+                </div>
+
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                  <h3 className="text-xl font-bold text-studio-purple mb-4">Constraint-Based</h3>
+                  <p className="text-gray-300 mb-3 text-sm">Tell AI what NOT to do</p>
+                  <div className="bg-gray-950 border border-gray-700 rounded p-3">
+                    <code className="text-studio-purple text-sm">
+                      "Create a modal component but:<br />
+                      - Don&apos;t use any external libraries<br />
+                      - Don&apos;t modify global styles<br />
+                      - Keep under 100 lines of code"
+                    </code>
+                  </div>
+                </div>
+
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                  <h3 className="text-xl font-bold text-studio-coral mb-4">Conversational Refinement</h3>
+                  <p className="text-gray-300 mb-3 text-sm">Iterate through dialogue</p>
+                  <div className="bg-gray-950 border border-gray-700 rounded p-3 space-y-1">
+                    <p className="text-studio-coral text-sm">"Create a search bar"</p>
+                    <p className="text-gray-500 text-xs">→ AI generates basic version</p>
+                    <p className="text-studio-coral text-sm">"Add autocomplete dropdown"</p>
+                    <p className="text-gray-500 text-xs">→ AI adds dropdown</p>
+                    <p className="text-studio-coral text-sm">"Highlight matching text"</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Four Pillars of Distinctive Design */}
+            <div id="four-pillars" className="mb-8">
+              <h2 className="text-3xl font-bold text-white mb-4">Four Pillars of Distinctive Design</h2>
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-xl bg-studio-purple/10 border border-studio-purple/20">
+                    <MdArchitecture className="text-studio-purple text-xl" />
+                  </div>
+                  <div>
+                    <p className="text-white font-semibold mb-1">Consistency creates distinction</p>
+                    <p className="text-gray-300 m-0">Execute across typography, color, motion, and composition as one coherent system.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-t-2 border-t-studio-blue/40">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaBook className="text-studio-blue" /> 1) Typography</h3>
+                  
+                  <div className="border border-gray-700 rounded-lg p-3 mb-3">
+                    <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaBan className="text-red-500" /> Avoid</p>
+                    <ul className="space-y-1 text-gray-300 text-sm">
+                      <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Inter/Roboto/Arial defaults</li>
+                      <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> One font everywhere</li>
+                      <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Predictable scale</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="border border-gray-700 rounded-lg p-3 mb-3">
+                    <p className="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaHeart className="text-green-500" /> Embrace</p>
+                    <ul className="space-y-1 text-gray-300 text-sm">
+                      <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Characterful fonts matching the vibe</li>
+                      <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Display + body pairing</li>
+                      <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Intentional hierarchy</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="border border-gray-700 rounded-lg p-3">
+                    <p className="text-studio-purple text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaMagic className="text-studio-purple" /> Prompt Ideas</p>
+                    <ul className="space-y-1 text-gray-400 text-sm italic">
+                      <li>"Editorial and magazine-like with dramatic scale contrast"</li>
+                      <li>"Brutalist with monospace and raw technical feel"</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-t-2 border-t-studio-pink/40">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaPalette className="text-studio-pink" /> 2) Color &amp; Theme</h3>
+                  
+                  <div className="border border-gray-700 rounded-lg p-3 mb-3">
+                    <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaBan className="text-red-500" /> Avoid</p>
+                    <ul className="space-y-1 text-gray-300 text-sm">
+                      <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Purple gradient cliché</li>
+                      <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Timid palette with no dominant base</li>
+                      <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Generic blue primary buttons</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="border border-gray-700 rounded-lg p-3 mb-3">
+                    <p className="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaHeart className="text-green-500" /> Embrace</p>
+                    <ul className="space-y-1 text-gray-300 text-sm">
+                      <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Dominant base + sharp accent</li>
+                      <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> CSS variables for consistency</li>
+                      <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Full commitment to light OR dark</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="border border-gray-700 rounded-lg p-3">
+                    <p className="text-studio-purple text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaMagic className="text-studio-purple" /> Prompt Ideas</p>
+                    <ul className="space-y-1 text-gray-400 text-sm italic">
+                      <li>"Deep blue base with electric cyan accents"</li>
+                      <li>"High contrast black/white with a single red accent"</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-t-2 border-t-studio-purple/40">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaRocket className="text-studio-purple" /> 3) Motion</h3>
+                  
+                  <div className="border border-gray-700 rounded-lg p-3 mb-3">
+                    <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaBan className="text-red-500" /> Avoid</p>
+                    <ul className="space-y-1 text-gray-300 text-sm">
+                      <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Fade-in on everything</li>
+                      <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Random micro-interactions</li>
+                      <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> 300ms ease-in-out everywhere</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="border border-gray-700 rounded-lg p-3 mb-3">
+                    <p className="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaHeart className="text-green-500" /> Embrace</p>
+                    <ul className="space-y-1 text-gray-300 text-sm">
+                      <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> One orchestrated entrance sequence</li>
+                      <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Motion that guides attention</li>
+                      <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Timing matched to the aesthetic</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="border border-gray-700 rounded-lg p-3">
+                    <p className="text-studio-purple text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaMagic className="text-studio-purple" /> Prompt Ideas</p>
+                    <ul className="space-y-1 text-gray-400 text-sm italic">
+                      <li>"Snappy: under 150–200ms"</li>
+                      <li>"Luxurious: weighted 800ms easing"</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-t-2 border-t-studio-coral/40">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaRulerCombined className="text-studio-coral" /> 4) Space &amp; Composition</h3>
+                  
+                  <div className="border border-gray-700 rounded-lg p-3 mb-3">
+                    <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaBan className="text-red-500" /> Avoid</p>
+                    <ul className="space-y-1 text-gray-300 text-sm">
+                      <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Perfect symmetry</li>
+                      <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Predictable centered layout</li>
+                      <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Flat hierarchy (no rhythm)</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="border border-gray-700 rounded-lg p-3 mb-3">
+                    <p className="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaHeart className="text-green-500" /> Embrace</p>
+                    <ul className="space-y-1 text-gray-300 text-sm">
+                      <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Asymmetry and intentional overlap</li>
+                      <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Layering and depth (purposeful)</li>
+                      <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Rhythm in spacing</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="border border-gray-700 rounded-lg p-3">
+                    <p className="text-studio-purple text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaMagic className="text-studio-purple" /> Prompt Ideas</p>
+                    <ul className="space-y-1 text-gray-400 text-sm italic">
+                      <li>"Editorial: dramatic whitespace and asymmetry"</li>
+                      <li>"Brutalist: dense, overlapping sections"</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Refinement Prompts */}
+            <div id="refinement-prompts" className="mb-8">
+              <h2 className="text-3xl font-bold text-white mb-4">Refinement Prompts</h2>
+              <p className="text-gray-300 mb-6">Use these prompts to iterate and refine AI-generated designs:</p>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
+                  <p className="text-white font-semibold mb-2">Discovery &amp; Diagnosis</p>
+                  <ul className="space-y-1 text-gray-300 text-sm">
+                    <li>• "Review this design and identify generic patterns."</li>
+                    <li>• "What feels most generic? What could be more distinctive?"</li>
+                  </ul>
+                </div>
+                <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
+                  <p className="text-white font-semibold mb-2">Simplification &amp; Clarity</p>
+                  <ul className="space-y-1 text-gray-300 text-sm">
+                    <li>• "Remove unnecessary complexity while keeping the vibe."</li>
+                    <li>• "Improve hierarchy—what should I see first?"</li>
+                  </ul>
+                </div>
+                <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
+                  <p className="text-white font-semibold mb-2">Visual Direction</p>
+                  <ul className="space-y-1 text-gray-300 text-sm">
+                    <li>• "Increase visual impact and strengthen hierarchy."</li>
+                    <li>• "Handle edge cases and validation states."</li>
+                  </ul>
+                </div>
+                <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
+                  <p className="text-white font-semibold mb-2">Polish &amp; Enhancement</p>
+                  <ul className="space-y-1 text-gray-300 text-sm">
+                    <li>• "Refine the overall aesthetic quality."</li>
+                    <li>• "Add thoughtful motion to key moments only."</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                onClick={() => setActivePage('advanced-polish')}
+                className="px-6 py-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white rounded-xl transition-colors font-medium"
+              >
+                ← Overview
+              </button>
+              <button
+                onClick={() => setActivePage('iterative-design')}
+                className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
+              >
+                Iterative Design →
               </button>
             </div>
           </div>
@@ -4635,31 +5422,40 @@ import logo from './assets/logo.svg';
 
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-t-2 border-t-studio-blue/40">
-                <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2"><FaBook className="text-studio-blue" /> 1) Typography</h3>
-                <p className="text-gray-400 text-sm font-semibold mb-2">Avoid</p>
-                <ul className="space-y-1 text-gray-300 text-sm mb-4">
-                  <li>• Inter/Roboto/Arial defaults</li>
-                  <li>• One font everywhere</li>
-                  <li>• Predictable scale</li>
-                </ul>
-                <p className="text-gray-400 text-sm font-semibold mb-2">Embrace</p>
-                <ul className="space-y-1 text-gray-300 text-sm mb-4">
-                  <li>• Characterful fonts matching the vibe</li>
-                  <li>• Display + body pairing</li>
-                  <li>• Intentional hierarchy</li>
-                </ul>
-                <p className="text-gray-400 text-sm font-semibold mb-2">Prompt ideas</p>
-                <ul className="space-y-1 text-gray-300 text-sm">
-                  <li>• “Editorial and magazine-like with dramatic scale contrast”</li>
-                  <li>• “Brutalist with monospace and raw technical feel”</li>
-                  <li>• “Luxury refined with sophisticated serif pairings”</li>
-                </ul>
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaBook className="text-studio-blue" /> 1) Typography</h3>
+                
+                <div className="border border-gray-700 rounded-lg p-3 mb-3">
+                  <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaBan className="text-red-500" /> Avoid</p>
+                  <ul className="space-y-1 text-gray-300 text-sm">
+                    <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Inter/Roboto/Arial defaults</li>
+                    <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> One font everywhere</li>
+                    <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Predictable scale</li>
+                  </ul>
+                </div>
+                
+                <div className="border border-gray-700 rounded-lg p-3 mb-3">
+                  <p className="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaHeart className="text-green-500" /> Embrace</p>
+                  <ul className="space-y-1 text-gray-300 text-sm">
+                    <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Characterful fonts matching the vibe</li>
+                    <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Display + body pairing</li>
+                    <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Intentional hierarchy</li>
+                  </ul>
+                </div>
+                
+                <div className="border border-gray-700 rounded-lg p-3">
+                  <p className="text-studio-purple text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaMagic className="text-studio-purple" /> Prompt Ideas</p>
+                  <ul className="space-y-1 text-gray-400 text-sm italic">
+                    <li>"Editorial and magazine-like with dramatic scale contrast"</li>
+                    <li>"Brutalist with monospace and raw technical feel"</li>
+                    <li>"Luxury refined with sophisticated serif pairings"</li>
+                  </ul>
+                </div>
               </div>
 
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-t-2 border-t-studio-pink/40">
                 <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaPalette className="text-studio-pink" /> 2) Color &amp; Theme</h3>
                 
-                <div className="bg-red-950/30 border border-red-900/30 rounded-lg p-3 mb-3">
+                <div className="border border-gray-700 rounded-lg p-3 mb-3">
                   <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaBan className="text-red-500" /> Avoid</p>
                   <ul className="space-y-1 text-gray-300 text-sm">
                     <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Purple gradient cliché</li>
@@ -4668,7 +5464,7 @@ import logo from './assets/logo.svg';
                   </ul>
                 </div>
                 
-                <div className="bg-green-950/30 border border-green-900/30 rounded-lg p-3 mb-3">
+                <div className="border border-gray-700 rounded-lg p-3 mb-3">
                   <p className="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaHeart className="text-green-500" /> Embrace</p>
                   <ul className="space-y-1 text-gray-300 text-sm">
                     <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Dominant base + sharp accent</li>
@@ -4677,7 +5473,7 @@ import logo from './assets/logo.svg';
                   </ul>
                 </div>
                 
-                <div className="bg-studio-purple/10 border border-studio-purple/30 rounded-lg p-3">
+                <div className="border border-gray-700 rounded-lg p-3">
                   <p className="text-studio-purple text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaMagic className="text-studio-purple" /> Prompt Ideas</p>
                   <ul className="space-y-1 text-gray-400 text-sm italic">
                     <li>"Deep blue base with electric cyan accents (dark theme)"</li>
@@ -4690,7 +5486,7 @@ import logo from './assets/logo.svg';
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-t-2 border-t-studio-purple/40">
                 <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaRocket className="text-studio-purple" /> 3) Motion</h3>
                 
-                <div className="bg-red-950/30 border border-red-900/30 rounded-lg p-3 mb-3">
+                <div className="border border-gray-700 rounded-lg p-3 mb-3">
                   <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaBan className="text-red-500" /> Avoid</p>
                   <ul className="space-y-1 text-gray-300 text-sm">
                     <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Fade-in on everything</li>
@@ -4699,7 +5495,7 @@ import logo from './assets/logo.svg';
                   </ul>
                 </div>
                 
-                <div className="bg-green-950/30 border border-green-900/30 rounded-lg p-3 mb-3">
+                <div className="border border-gray-700 rounded-lg p-3 mb-3">
                   <p className="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaHeart className="text-green-500" /> Embrace</p>
                   <ul className="space-y-1 text-gray-300 text-sm">
                     <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> One orchestrated entrance sequence</li>
@@ -4708,7 +5504,7 @@ import logo from './assets/logo.svg';
                   </ul>
                 </div>
                 
-                <div className="bg-studio-purple/10 border border-studio-purple/30 rounded-lg p-3">
+                <div className="border border-gray-700 rounded-lg p-3">
                   <p className="text-studio-purple text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaMagic className="text-studio-purple" /> Prompt Ideas</p>
                   <ul className="space-y-1 text-gray-400 text-sm italic">
                     <li>"Snappy: under 150–200ms"</li>
@@ -4721,7 +5517,7 @@ import logo from './assets/logo.svg';
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-t-2 border-t-studio-coral/40">
                 <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaRulerCombined className="text-studio-coral" /> 4) Space &amp; Composition</h3>
                 
-                <div className="bg-red-950/30 border border-red-900/30 rounded-lg p-3 mb-3">
+                <div className="border border-gray-700 rounded-lg p-3 mb-3">
                   <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaBan className="text-red-500" /> Avoid</p>
                   <ul className="space-y-1 text-gray-300 text-sm">
                     <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Perfect symmetry</li>
@@ -4730,7 +5526,7 @@ import logo from './assets/logo.svg';
                   </ul>
                 </div>
                 
-                <div className="bg-green-950/30 border border-green-900/30 rounded-lg p-3 mb-3">
+                <div className="border border-gray-700 rounded-lg p-3 mb-3">
                   <p className="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaHeart className="text-green-500" /> Embrace</p>
                   <ul className="space-y-1 text-gray-300 text-sm">
                     <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Asymmetry and intentional overlap</li>
@@ -4739,7 +5535,7 @@ import logo from './assets/logo.svg';
                   </ul>
                 </div>
                 
-                <div className="bg-studio-purple/10 border border-studio-purple/30 rounded-lg p-3">
+                <div className="border border-gray-700 rounded-lg p-3">
                   <p className="text-studio-purple text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaMagic className="text-studio-purple" /> Prompt Ideas</p>
                   <ul className="space-y-1 text-gray-400 text-sm italic">
                     <li>"Editorial: dramatic whitespace and asymmetry"</li>
@@ -5328,6 +6124,373 @@ Any of the following is an automatic redesign trigger:
           </div>
         );
 
+      case 'anti-patterns-constitution':
+        return (
+          <div className="prose prose-invert max-w-none">
+            <h1 className="text-5xl font-bold text-white mb-6">Design Anti-Patterns</h1>
+            <p className="text-xl text-gray-300 mb-8">
+              Spot generic AI defaults and replace them with deliberate choices—download the rules for your AI assistant
+            </p>
+
+            {/* Intro Section */}
+            <div id="anti-patterns-intro" className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-xl bg-studio-purple/10 border border-studio-purple/20">
+                  <FaBug className="text-studio-purple text-xl" />
+                </div>
+                <div>
+                  <p className="text-white font-semibold mb-1">Spot the defaults fast</p>
+                  <p className="text-gray-300 m-0">Replace generic AI patterns with deliberate choices that reinforce the direction.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Typography Anti-Patterns */}
+            <div id="typography-patterns" className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden mb-6">
+              <div className="p-6 border-b border-gray-800">
+                <p className="text-white font-semibold">Typography</p>
+              </div>
+              <table className="w-full text-left text-sm">
+                <thead className="bg-gray-950 border-b border-gray-800">
+                  <tr>
+                    <th className="p-4 text-gray-400">
+                      <span className="inline-flex items-center gap-2">
+                        <FaTimesCircle className="text-studio-pink" /> Generic Default
+                      </span>
+                    </th>
+                    <th className="p-4 text-gray-400">
+                      <span className="inline-flex items-center gap-2">
+                        <FaCheckCircle className="text-green-400" /> Distinctive Alternative
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-300">
+                  <tr className="border-b border-gray-800">
+                    <td className="p-4">Inter/Roboto (statistically safe)</td>
+                    <td className="p-4">Fonts matched to the aesthetic (e.g., Space Mono for brutalist)</td>
+                  </tr>
+                  <tr className="border-b border-gray-800">
+                    <td className="p-4">Single font family</td>
+                    <td className="p-4">Display + body pairing with contrast</td>
+                  </tr>
+                  <tr className="border-b border-gray-800">
+                    <td className="p-4">Predictable scale</td>
+                    <td className="p-4">Dramatic jumps or intentional compression</td>
+                  </tr>
+                  <tr>
+                    <td className="p-4">Equal weight everywhere</td>
+                    <td className="p-4">Strategic weight changes for hierarchy</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Color Anti-Patterns */}
+            <div id="color-patterns" className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden mb-6">
+              <div className="p-6 border-b border-gray-800">
+                <p className="text-white font-semibold">Color</p>
+              </div>
+              <table className="w-full text-left text-sm">
+                <thead className="bg-gray-950 border-b border-gray-800">
+                  <tr>
+                    <th className="p-4 text-gray-400">
+                      <span className="inline-flex items-center gap-2">
+                        <FaTimesCircle className="text-studio-pink" /> Generic Default
+                      </span>
+                    </th>
+                    <th className="p-4 text-gray-400">
+                      <span className="inline-flex items-center gap-2">
+                        <FaCheckCircle className="text-green-400" /> Distinctive Alternative
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-300">
+                  <tr className="border-b border-gray-800">
+                    <td className="p-4">Purple gradient on white</td>
+                    <td className="p-4">Committed color story with dominant base + sharp accent</td>
+                  </tr>
+                  <tr className="border-b border-gray-800">
+                    <td className="p-4">Many colors evenly distributed</td>
+                    <td className="p-4">Base + accent + highlight (e.g., 80/15/5)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-4">Light mode by default</td>
+                    <td className="p-4">Intentional light OR dark choice based on user context</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Layout Anti-Patterns */}
+            <div id="layout-patterns" className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden mb-6">
+              <div className="p-6 border-b border-gray-800">
+                <p className="text-white font-semibold">Layout</p>
+              </div>
+              <table className="w-full text-left text-sm">
+                <thead className="bg-gray-950 border-b border-gray-800">
+                  <tr>
+                    <th className="p-4 text-gray-400">
+                      <span className="inline-flex items-center gap-2">
+                        <FaTimesCircle className="text-studio-pink" /> Generic Default
+                      </span>
+                    </th>
+                    <th className="p-4 text-gray-400">
+                      <span className="inline-flex items-center gap-2">
+                        <FaCheckCircle className="text-green-400" /> Distinctive Alternative
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-300">
+                  <tr className="border-b border-gray-800">
+                    <td className="p-4">Centered hero + three-column features</td>
+                    <td className="p-4">Asymmetry, overlap, intentional composition</td>
+                  </tr>
+                  <tr className="border-b border-gray-800">
+                    <td className="p-4">Perfect grid of equal cards</td>
+                    <td className="p-4">Varied sizing + rhythm breaks</td>
+                  </tr>
+                  <tr>
+                    <td className="p-4">Predictable header-sidebar-content</td>
+                    <td className="p-4">Layout that serves the content, not convention</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Motion Anti-Patterns */}
+            <div id="motion-patterns" className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden mb-8">
+              <div className="p-6 border-b border-gray-800">
+                <p className="text-white font-semibold">Motion</p>
+              </div>
+              <table className="w-full text-left text-sm">
+                <thead className="bg-gray-950 border-b border-gray-800">
+                  <tr>
+                    <th className="p-4 text-gray-400">
+                      <span className="inline-flex items-center gap-2">
+                        <FaTimesCircle className="text-studio-pink" /> Generic Default
+                      </span>
+                    </th>
+                    <th className="p-4 text-gray-400">
+                      <span className="inline-flex items-center gap-2">
+                        <FaCheckCircle className="text-green-400" /> Distinctive Alternative
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-300">
+                  <tr className="border-b border-gray-800">
+                    <td className="p-4">Fade-in on everything</td>
+                    <td className="p-4">One orchestrated entrance sequence</td>
+                  </tr>
+                  <tr className="border-b border-gray-800">
+                    <td className="p-4">Same easing everywhere</td>
+                    <td className="p-4">Timing matched to aesthetic (snappy vs luxurious)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-4">Scattered micro-interactions</td>
+                    <td className="p-4">Focused moments where motion adds meaning</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* UI Constitution Section */}
+            <div id="ui-constitution" className="mb-8">
+              <h2 className="text-3xl font-bold text-white mb-2">Anti-Default UI Constitution</h2>
+              <p className="text-gray-400 mb-6">Studio SaaS Interface Law · v1.0</p>
+              
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-xl bg-studio-coral/10 border border-studio-coral/20">
+                    <FaExclamationTriangle className="text-studio-coral text-xl" />
+                  </div>
+                  <div>
+                    <p className="text-white font-semibold mb-1">Use this file as AI context</p>
+                    <p className="text-gray-300 m-0">Copy or download this constitution and include it in your AI prompts or project context to suppress generic defaults and maintain studio-quality interfaces.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Framed Constitution Content */}
+              <div className="relative bg-gradient-to-b from-studio-purple/5 to-studio-blue/5 border-2 border-studio-purple/30 rounded-2xl p-1">
+                {/* Header bar with actions */}
+                <div className="flex items-center justify-between bg-gray-900 rounded-t-xl px-4 py-3 border-b border-gray-800">
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-1.5">
+                      <span className="w-3 h-3 rounded-full bg-red-500/60"></span>
+                      <span className="w-3 h-3 rounded-full bg-yellow-500/60"></span>
+                      <span className="w-3 h-3 rounded-full bg-green-500/60"></span>
+                    </div>
+                    <span className="text-gray-400 text-sm font-mono">copilot-instructions.md</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        const content = document.getElementById('constitution-content-merged').innerText;
+                        navigator.clipboard.writeText(content);
+                        alert('Constitution copied to clipboard!');
+                      }}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors text-sm font-medium border border-gray-700"
+                    >
+                      <FaCopy className="text-xs" /> Copy
+                    </button>
+                    <button
+                      onClick={() => {
+                        const content = document.getElementById('constitution-content-merged').innerText;
+                        const blob = new Blob([content], { type: 'text/markdown' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'copilot-instructions.md';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                      }}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-studio-purple hover:bg-studio-pink text-white rounded-lg transition-colors text-sm font-medium"
+                    >
+                      <FaDownload className="text-xs" /> Download .md
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Content area */}
+                <div id="constitution-content-merged" className="bg-gray-950 rounded-b-xl p-6 font-mono text-sm overflow-x-auto max-h-[500px] overflow-y-auto">
+                  <pre className="text-gray-300 whitespace-pre-wrap m-0">{`# ANTI-DEFAULT UI CONSTITUTION
+Studio SaaS Interface Law · v1.0
+
+This file governs all SaaS / application interface generation.
+It suppresses latent AI design fingerprints and preserves studio identity.
+
+---
+
+## 1. Fingerprint Suppression — Hard Bans
+
+FORBIDDEN unless explicitly requested:
+- Purple, indigo, magenta, neon, or pink gradients
+- Synthetic gradients of any kind
+- Sparkle, magic, star, wand, or "AI metaphor" icons
+- Emoji usage in UI
+- Spaced ALL-CAPS navigation labels
+- Thin gray labels on dark surfaces
+- Centered SaaS card stacks
+- Fully rounded cards as default
+- Thick colored accent bars (no border-l-4)
+- Glassmorphism, glow, blur UI
+- "Hero card" dashboards
+- Shadcn / default Tailwind gray stacks
+- Pill-shaped buttons or badges as default
+
+---
+
+## 2. Color & Surface Law
+
+- Surfaces must feel architectural and structural
+- Decorative gradients are forbidden
+- Use flat chromatic or material tones
+- Primary actions use solid color, not glow
+- Accent colors must never become layout decoration
+- Never use hardcoded Hex codes; use CSS variables
+
+### Dark Mode Stability
+- Never use pure #000 or #fff
+- Must meet WCAG AA contrast
+- No component may invert to white backgrounds
+- Dark mode must be visually audited in isolation
+
+---
+
+## 3. Typographic Law
+
+- UI labels must not be ALL CAPS
+- No excessive letter-spacing in interface text
+- Editorial hierarchy is required
+- Default to 14px (text-sm) for primary data
+- Headers: 16px to 20px
+
+---
+
+## 4. Layout Philosophy
+
+- Avoid symmetrical centered card grids
+- Use structural, editorial, asymmetric layouts
+- Negative space must define hierarchy
+- Prioritize tables, grids, and side-navs
+- Default to "Dashboard" feel not "Website" feel
+
+---
+
+## 5. Shadow & Depth Law
+
+- Cosmetic deep shadows are forbidden
+- Maximum blur radius: 12px
+- Prefer planes, borders, and structural depth
+- Glow effects are forbidden
+- Use 1px borders for separation
+
+---
+
+## 6. Iconography Law
+
+- Use real UI icon systems (Lucide, Heroicons, Phosphor)
+- Emoji UI is forbidden
+- No sparkle / magic metaphors
+- Icons must represent system function
+
+---
+
+## 7. Accessibility Governor
+
+- All UI must meet WCAG AA contrast minimum
+- Gray-on-gray text is forbidden
+- Dark mode must be manually audited
+- Focus states must be visible without glow
+
+---
+
+## 8. Homogenization Fail Conditions
+
+Automatic redesign trigger:
+- Looks like Stripe, Linear, Vercel, Notion, Supabase
+- Contains gradients or sparkle metaphors
+- Uses centered SaaS hero cards
+- Contains emoji UI
+- Dark mode has inversion bugs
+- Looks like a template`}</pre>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-studio-purple/10 border border-studio-purple/30 rounded-xl p-6 mb-8">
+              <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2"><FaLightbulb className="text-studio-purple" /> How to Use</h3>
+              <ol className="space-y-2 text-gray-300 list-decimal list-inside">
+                <li>Download or copy the constitution using the buttons above</li>
+                <li>Add it to your project as <code className="text-studio-coral bg-gray-800 px-1.5 py-0.5 rounded text-sm">.github/copilot-instructions.md</code></li>
+                <li>Include it in your AI assistant&apos;s context or system prompt</li>
+                <li>Reference it when reviewing AI-generated interfaces</li>
+              </ol>
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                onClick={() => setActivePage('prompting-and-design')}
+                className="px-6 py-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white rounded-xl transition-colors font-medium"
+              >
+                ← Prompting &amp; Design
+              </button>
+              <button
+                onClick={() => setActivePage('starter-prompts')}
+                className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
+              >
+                Starter Prompts →
+              </button>
+            </div>
+          </div>
+        );
+
       case 'vscode-copilot':
         return (
           <div className="prose prose-invert max-w-none">
@@ -5795,254 +6958,6 @@ Any of the following is an automatic redesign trigger:
           </div>
         );
 
-      case 'extensions':
-        return (
-          <div className="prose prose-invert max-w-none">
-            <h1 className="text-5xl font-bold text-white mb-6">Recommended Extensions</h1>
-            <p className="text-xl text-gray-300 mb-8">
-              Supercharge your VS Code setup for optimal vibe coding
-            </p>
-
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">Why Extensions Matter</h2>
-              <p className="text-gray-300">
-                VS Code is powerful out of the box, but extensions transform it into a vibe coding powerhouse. 
-                The right extensions provide live previews, better IntelliSense, formatting, and quality-of-life improvements 
-                that make DRIVE sessions faster and more enjoyable.
-              </p>
-            </div>
-
-            <h2 className="text-3xl font-bold text-white mb-4">Essential Extensions</h2>
-            
-            <div className="space-y-4 mb-8">
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-6">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="text-xl font-bold text-studio-pink mb-1">Live Server</h3>
-                    <p className="text-gray-500 text-sm">ritwickdey.liveserver</p>
-                  </div>
-                  <span className="px-3 py-1 bg-studio-pink/20 text-studio-pink text-xs rounded-full">Must-Have</span>
-                </div>
-                <p className="text-gray-300 mb-3 text-sm">
-                  Launch a local development server with live reload. Every save instantly updates your browser—essential for rapid iteration.
-                </p>
-                <div className="bg-gray-900 border border-gray-700 rounded p-3">
-                  <p className="text-gray-400 text-xs mb-1">Usage:</p>
-                  <p className="text-white text-sm">Right-click HTML file → Open with Live Server</p>
-                </div>
-              </div>
-
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-6">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="text-xl font-bold text-studio-blue mb-1">Tailwind CSS IntelliSense</h3>
-                    <p className="text-gray-500 text-sm">bradlc.vscode-tailwindcss</p>
-                  </div>
-                  <span className="px-3 py-1 bg-studio-blue/20 text-studio-blue text-xs rounded-full">Must-Have</span>
-                </div>
-                <p className="text-gray-300 mb-3 text-sm">
-                  Autocomplete Tailwind classes, show color previews, and lint your utility classes. Makes Tailwind 10x easier.
-                </p>
-                <div className="bg-gray-900 border border-gray-700 rounded p-3">
-                  <p className="text-gray-400 text-xs mb-1">Features:</p>
-                  <ul className="text-white text-sm space-y-1">
-                    <li>• Class name suggestions</li>
-                    <li>• Color/size previews on hover</li>
-                    <li>• Warnings for invalid classes</li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-6">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="text-xl font-bold text-studio-purple mb-1">ES7+ React/Redux Snippets</h3>
-                    <p className="text-gray-500 text-sm">dsznajder.es7-react-js-snippets</p>
-                  </div>
-                  <span className="px-3 py-1 bg-studio-purple/20 text-studio-purple text-xs rounded-full">React</span>
-                </div>
-                <p className="text-gray-300 mb-3 text-sm">
-                  Lightning-fast React snippets. Type shortcuts to generate components, hooks, and more.
-                </p>
-                <div className="bg-gray-900 border border-gray-700 rounded p-3">
-                  <p className="text-gray-400 text-xs mb-1">Quick examples:</p>
-                  <div className="space-y-1 text-sm">
-                    <div><code className="text-studio-purple">rafce</code> → <span className="text-gray-400">React arrow function component</span></div>
-                    <div><code className="text-studio-purple">useState</code> → <span className="text-gray-400">useState hook</span></div>
-                    <div><code className="text-studio-purple">useEffect</code> → <span className="text-gray-400">useEffect hook</span></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-6">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="text-xl font-bold text-studio-coral mb-1">Prettier - Code Formatter</h3>
-                    <p className="text-gray-500 text-sm">esbenp.prettier-vscode</p>
-                  </div>
-                  <span className="px-3 py-1 bg-studio-coral/20 text-studio-coral text-xs rounded-full">Must-Have</span>
-                </div>
-                <p className="text-gray-300 mb-3 text-sm">
-                  Auto-format code on save. Never worry about indentation, spacing, or style consistency again.
-                </p>
-                <div className="bg-gray-900 border border-gray-700 rounded p-3">
-                  <p className="text-gray-400 text-xs mb-1">Enable format on save:</p>
-                  <p className="text-white text-sm">Settings → Editor: Format On Save ✓</p>
-                </div>
-              </div>
-            </div>
-
-            <h2 className="text-3xl font-bold text-white mb-4">Productivity Boosters</h2>
-            
-            <div className="grid md:grid-cols-2 gap-4 mb-8">
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                <h3 className="text-lg font-bold text-white mb-2">Auto Rename Tag</h3>
-                <p className="text-gray-500 text-xs mb-2">formulahendry.auto-rename-tag</p>
-                <p className="text-gray-400 text-sm">Rename paired HTML/JSX tags automatically</p>
-              </div>
-
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                <h3 className="text-lg font-bold text-white mb-2">Path Intellisense</h3>
-                <p className="text-gray-500 text-xs mb-2">christian-kohler.path-intellisense</p>
-                <p className="text-gray-400 text-sm">Autocomplete file paths in imports</p>
-              </div>
-
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                <h3 className="text-lg font-bold text-white mb-2">Color Highlight</h3>
-                <p className="text-gray-500 text-xs mb-2">naumovs.color-highlight</p>
-                <p className="text-gray-400 text-sm">Visualize color codes in your editor</p>
-              </div>
-
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                <h3 className="text-lg font-bold text-white mb-2">Bracket Pair Colorizer 2</h3>
-                <p className="text-gray-500 text-xs mb-2">built-in (enable in settings)</p>
-                <p className="text-gray-400 text-sm">Color-code matching brackets for clarity</p>
-              </div>
-
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                <h3 className="text-lg font-bold text-white mb-2">GitLens</h3>
-                <p className="text-gray-500 text-xs mb-2">eamodio.gitlens</p>
-                <p className="text-gray-400 text-sm">Supercharge Git with blame, history, and more</p>
-              </div>
-
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                <h3 className="text-lg font-bold text-white mb-2">Error Lens</h3>
-                <p className="text-gray-500 text-xs mb-2">usernamehw.errorlens</p>
-                <p className="text-gray-400 text-sm">Highlight errors inline, not just in sidebar</p>
-              </div>
-            </div>
-
-            <h2 className="text-3xl font-bold text-white mb-4">Framework-Specific</h2>
-            
-            <div className="space-y-4 mb-8">
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-bold text-white">Vite</h3>
-                  <span className="px-2 py-1 bg-gray-800 text-gray-400 text-xs rounded">antfu.vite</span>
-                </div>
-                <p className="text-gray-400 text-sm">Syntax highlighting and IntelliSense for Vite config files</p>
-              </div>
-
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-bold text-white">Vue Language Features (Volar)</h3>
-                  <span className="px-2 py-1 bg-gray-800 text-gray-400 text-xs rounded">vue.volar</span>
-                </div>
-                <p className="text-gray-400 text-sm">Essential for Vue 3 development</p>
-              </div>
-
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-bold text-white">Svelte for VS Code</h3>
-                  <span className="px-2 py-1 bg-gray-800 text-gray-400 text-xs rounded">svelte.svelte-vscode</span>
-                </div>
-                <p className="text-gray-400 text-sm">Svelte syntax highlighting and IntelliSense</p>
-              </div>
-            </div>
-
-            <h2 className="text-3xl font-bold text-white mb-4">Themes for Focus</h2>
-            
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <p className="text-gray-300 mb-4">
-                A good theme reduces eye strain and helps you code longer. Popular choices for DRIVE:
-              </p>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
-                  <p className="text-white font-semibold mb-1">One Dark Pro</p>
-                  <p className="text-gray-500 text-xs mb-2">zhuangtongfa.material-theme</p>
-                  <p className="text-gray-400 text-sm">Clean, popular, easy on eyes</p>
-                </div>
-                
-                <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
-                  <p className="text-white font-semibold mb-1">Night Owl</p>
-                  <p className="text-gray-500 text-xs mb-2">sdras.night-owl</p>
-                  <p className="text-gray-400 text-sm">Optimized for night coding</p>
-                </div>
-                
-                <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
-                  <p className="text-white font-semibold mb-1">Dracula Official</p>
-                  <p className="text-gray-500 text-xs mb-2">dracula-theme.theme-dracula</p>
-                  <p className="text-gray-400 text-sm">High contrast, vibrant</p>
-                </div>
-              </div>
-            </div>
-
-            <h2 className="text-3xl font-bold text-white mb-4">Quick Setup Guide</h2>
-            
-            <div className="bg-gray-950 border border-gray-800 rounded-xl p-6 mb-8">
-              <ol className="space-y-3 text-gray-300">
-                <li className="flex items-start gap-3">
-                  <span className="text-studio-pink font-bold">1.</span>
-                  <span>Open Extensions panel: <kbd className="bg-gray-900 px-2 py-1 rounded text-sm">⌘+Shift+X</kbd> (Mac) or <kbd className="bg-gray-900 px-2 py-1 rounded text-sm">Ctrl+Shift+X</kbd> (Windows/Linux)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-studio-blue font-bold">2.</span>
-                  <span>Search for extension name</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-studio-purple font-bold">3.</span>
-                  <span>Click "Install"</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-studio-coral font-bold">4.</span>
-                  <span>Reload VS Code if prompted</span>
-                </li>
-              </ol>
-            </div>
-
-            <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-6 rounded-r mb-8">
-              <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                <FaRocket className="text-studio-coral" />
-                Starter Pack
-              </h3>
-              <p className="text-gray-300 mb-3">New to vibe coding? Install these first:</p>
-              <ol className="space-y-1 text-gray-300 text-sm">
-                <li>1. GitHub Copilot + Copilot Chat</li>
-                <li>2. Live Server</li>
-                <li>3. Tailwind CSS IntelliSense</li>
-                <li>4. Prettier</li>
-                <li>5. Auto Rename Tag</li>
-              </ol>
-              <p className="text-gray-400 text-xs mt-3">This covers 90% of DRIVE workflows</p>
-            </div>
-
-            <div className="flex gap-4">
-              <button
-                onClick={() => setActivePage('figma-mcp')}
-                className="px-6 py-3 bg-studio-coral hover:bg-studio-pink text-white rounded-xl transition-colors font-medium"
-              >
-                Figma MCP Setup →
-              </button>
-              <button
-                onClick={() => setActivePage('github-spark')}
-                className="px-6 py-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white rounded-xl transition-colors font-medium"
-              >
-                ← GitHub Spark
-              </button>
-            </div>
-          </div>
-        );
-
       default:
         return (
           <div className="prose prose-invert max-w-none">
@@ -6079,7 +6994,7 @@ Any of the following is an automatic redesign trigger:
             </p>
 
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">The Core Challenge</h2>
+              <h2 id="core-challenge" className="text-2xl font-bold text-white mb-4">The Core Challenge</h2>
               <p className="text-gray-300 mb-4">
                 AI models have learned from millions of websites and tend to default to common patterns. 
                 Without specific guidance, you'll get <span className="text-studio-coral font-semibold">"generic AI aesthetics"</span> 
@@ -6091,7 +7006,7 @@ Any of the following is an automatic redesign trigger:
               </p>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Method 1: Figma MCP Server (Best)</h2>
+            <h2 id="figma-mcp-method" className="text-3xl font-bold text-white mb-4">Method 1: Figma MCP Server (Best)</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <p className="text-gray-300 mb-4">
                 The Figma Model Context Protocol (MCP) server enables your AI coding assistant to directly access your 
@@ -6123,7 +7038,7 @@ Any of the following is an automatic redesign trigger:
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Method 2: Screenshot + Specs (Good Alternative)</h2>
+            <h2 id="screenshot-specs" className="text-3xl font-bold text-white mb-4">Method 2: Screenshot + Specs (Good Alternative)</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <p className="text-gray-300 mb-4">Works without MCP server using AI vision capabilities:</p>
               
@@ -6151,7 +7066,7 @@ Any of the following is an automatic redesign trigger:
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Method 3: Detailed Text Specs</h2>
+            <h2 id="text-specs" className="text-3xl font-bold text-white mb-4">Method 3: Detailed Text Specs</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <p className="text-gray-300 mb-4">
                 For complex designs, create a detailed spec document:
@@ -6184,7 +7099,7 @@ Interactions:
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Extract Design Tokens First</h2>
+            <h2 id="design-tokens" className="text-3xl font-bold text-white mb-4">Extract Design Tokens First</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <p className="text-gray-300 mb-4">Before building, establish your design language:</p>
               
@@ -6207,7 +7122,7 @@ Create a CSS variables file I can reference.`}</code>
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Common Gotchas When Importing Designs</h2>
+            <h2 id="common-gotchas" className="text-3xl font-bold text-white mb-4">Common Gotchas When Importing Designs</h2>
             <div className="bg-red-900/20 border border-red-700/30 rounded-xl p-6 mb-8">
               <ul className="space-y-3 text-gray-300">
                 <li className="flex items-start gap-3">
@@ -6229,7 +7144,7 @@ Create a CSS variables file I can reference.`}</code>
               </ul>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Compare Side-by-Side & Iterate</h2>
+            <h2 id="compare-iterate" className="text-3xl font-bold text-white mb-4">Compare Side-by-Side & Iterate</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <p className="text-gray-300 mb-4">After each iteration, compare and call out specific differences:</p>
               
@@ -6308,19 +7223,19 @@ Fix these specific issues.`}</code>
               <h2 className="text-2xl font-bold text-white mb-4">Quick Checklist</h2>
               <ul className="space-y-3 text-gray-300">
                 <li className="flex items-center gap-3">
-                  <span className="text-studio-coral">□</span>
+                  <span className="text-white">□</span>
                   <span>Did I provide visual reference (Figma URL, screenshot)?</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="text-studio-pink">□</span>
+                  <span className="text-white">□</span>
                   <span>Did I specify exact values (colors, spacing, typography)?</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="text-studio-purple">□</span>
+                  <span className="text-white">□</span>
                   <span>Did I mention what NOT to do (avoid gradients, no shadows, etc.)?</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="text-blue-400">□</span>
+                  <span className="text-white">□</span>
                   <span>Am I comparing output to design after each iteration?</span>
                 </li>
               </ul>
@@ -6810,19 +7725,19 @@ When unsure, ask before inventing styles.`}</pre>
               </h2>
               <ul className="space-y-3 text-gray-300">
                 <li className="flex items-start gap-3">
-                  <span className="text-studio-coral">1.</span>
+                  <span className="text-white">1.</span>
                   <span>Save your design context as a file in your project and reference it</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-studio-pink">2.</span>
+                  <span className="text-white">2.</span>
                   <span>Create snippets in VS Code for quick access to your prompt templates</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-studio-purple">3.</span>
+                  <span className="text-white">3.</span>
                   <span>Update your design context as your system evolves</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-blue-400">4.</span>
+                  <span className="text-white">4.</span>
                   <span>Share with your team for consistent AI output across the project</span>
                 </li>
               </ul>
@@ -7737,7 +8652,6 @@ When unsure, ask before inventing styles.`}</pre>
       id: 'getting-started',
       title: 'Getting Started',
       items: [
-        { id: 'welcome', title: 'Welcome to DRIVE', path: '/docs/welcome' },
         { id: 'what-is-vibe', title: 'What is Vibe Coding?', path: '/docs/what-is-vibe-coding' },
       ],
     },
@@ -7748,7 +8662,6 @@ When unsure, ask before inventing styles.`}</pre>
         { id: 'setup', title: 'Setting Up Your Environment', path: '/docs/setup' },
         { id: 'first-session', title: 'Your First DRIVE Session', path: '/docs/first-session' },
         { id: 'best-practices', title: 'Best Practices & Common Mistakes', path: '/docs/best-practices' },
-        { id: 'extensions', title: 'Recommended Extensions', path: '/docs/extensions' },
       ],
     },
     {
@@ -7757,8 +8670,7 @@ When unsure, ask before inventing styles.`}</pre>
       items: [
         { id: 'matching-your-vision', title: 'Achieving Design Fidelity', path: '/docs/matching-your-vision' },
         { id: 'design-system-prompts', title: 'Design System Prompts', path: '/docs/design-system-prompts' },
-        { id: 'figma-mcp', title: 'Figma MCP Setup', path: '/docs/figma-mcp' },
-        { id: 'importing-designs', title: 'Importing Figma Designs', path: '/docs/importing-designs' },
+        { id: 'figma-mcp', title: 'Figma MCP Integration', path: '/docs/figma-mcp' },
         { id: 'custom-assets', title: 'Adding Custom Assets', path: '/docs/custom-assets' },
       ],
     },
@@ -7766,23 +8678,11 @@ When unsure, ask before inventing styles.`}</pre>
       id: 'core-concepts',
       title: 'Core Concepts',
       items: [
-        { id: 'ai-assistants', title: 'Working with AI Assistants', path: '/docs/ai-assistants' },
-        { id: 'prompting-strategies', title: 'Effective Prompting Strategies', path: '/docs/prompting-strategies' },
+        { id: 'prompting-and-design', title: 'Prompting & Design Pillars', path: '/docs/prompting-and-design' },
         { id: 'iterative-design', title: 'Iterative Design Process', path: '/docs/iterative-design' },
         { id: 'context-management', title: 'Managing Project Context', path: '/docs/context-management' },
-        { id: 'figma-to-code', title: 'Figma to Code Workflow', path: '/docs/figma-to-code' },
         { id: 'starter-prompts', title: 'Starter Prompts for Non-Designers', path: '/docs/starter-prompts' },
-      ],
-    },
-    {
-      id: 'ai-assisted-design',
-      title: 'Advanced AI Design',
-      items: [
-        { id: 'advanced-polish', title: 'AI Design Guide: Overview', path: '/docs/advanced-polish' },
-        { id: 'ai-design-pillars', title: 'Four Pillars', path: '/docs/ai-design-pillars' },
-        { id: 'ai-design-workflow', title: 'Workflow & Prompts', path: '/docs/ai-design-workflow' },
-        { id: 'ai-design-anti-patterns', title: 'Anti-Patterns', path: '/docs/ai-design-anti-patterns' },
-        { id: 'ui-constitution', title: 'UI Constitution', path: '/docs/ui-constitution' },
+        { id: 'anti-patterns-constitution', title: 'Design Anti-Patterns', path: '/docs/design-anti-patterns' },
       ],
     },
   ];
@@ -7805,6 +8705,86 @@ When unsure, ask before inventing styles.`}</pre>
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
+      {/* Search Modal */}
+      {searchOpen && (
+        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh]">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => {
+              setSearchOpen(false);
+              setSearchQuery('');
+              setSearchResults([]);
+            }}
+          />
+          
+          {/* Modal */}
+          <div className="relative w-full max-w-2xl mx-4 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl overflow-hidden">
+            {/* Search Input */}
+            <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-700">
+              <FaSearch className="text-gray-400 text-lg shrink-0" />
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search..."
+                className="flex-1 bg-transparent text-white text-lg placeholder-gray-500 outline-none"
+              />
+              <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs text-gray-400 bg-gray-800 rounded border border-gray-700">
+                ESC
+              </kbd>
+            </div>
+
+            {/* Search Results */}
+            {searchQuery && (
+              <div className="max-h-[60vh] overflow-y-auto">
+                {searchResults.length > 0 ? (
+                  <div className="py-2">
+                    {searchResults.map((result, index) => (
+                      <button
+                        key={result.id}
+                        onClick={() => handleResultClick(result.id)}
+                        className="w-full px-4 py-3 flex items-start gap-3 hover:bg-gray-800/50 transition-colors text-left"
+                      >
+                        <FaHashtag className="text-gray-500 mt-1 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm text-gray-400 mb-0.5">
+                            {result.section}
+                          </div>
+                          <div 
+                            className="text-white font-medium"
+                            dangerouslySetInnerHTML={{ __html: highlightMatch(result.title, searchQuery) }}
+                          />
+                          <div 
+                            className="text-sm text-gray-400 mt-0.5 truncate"
+                            dangerouslySetInnerHTML={{ __html: highlightMatch(result.description, searchQuery) }}
+                          />
+                        </div>
+                        <svg className="w-4 h-4 text-gray-500 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="px-4 py-8 text-center text-gray-400">
+                    No results found for "<span className="text-white">{searchQuery}</span>"
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!searchQuery && (
+              <div className="px-4 py-8 text-center text-gray-500">
+                Start typing to search the documentation...
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Top Header */}
       <header className="border-b border-gray-800 bg-black/95 backdrop-blur sticky top-0 z-50">
         <div className="w-full px-6 py-4 flex items-center justify-between">
@@ -7817,6 +8797,18 @@ When unsure, ask before inventing styles.`}</pre>
               <img src={`${import.meta.env.BASE_URL}logo-s42.svg`} alt="Studio42" className="h-6 w-auto" />
             </div>
           </Link>
+
+          {/* Search Button */}
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="flex items-center gap-3 px-4 py-2 w-80 bg-gray-900 border border-gray-700 rounded-lg hover:border-gray-600 transition-colors group"
+          >
+            <FaSearch className="text-gray-400 group-hover:text-gray-300" />
+            <span className="text-gray-400 group-hover:text-gray-300 text-sm flex-1 text-left">Search...</span>
+            <kbd className="hidden md:inline-flex items-center gap-1 px-1.5 py-0.5 text-xs text-gray-500 bg-gray-800 rounded border border-gray-700">
+              <span className="text-xs">⌘</span>K
+            </kbd>
+          </button>
 
           <nav className="flex items-center gap-8 text-sm">
             <Link to="/docs" className="text-gray-400 hover:text-white transition-colors">Docs</Link>
@@ -7831,42 +8823,52 @@ When unsure, ask before inventing styles.`}</pre>
       <div className="flex flex-1">
           {/* Sidebar */}
           <aside className="w-64 border-r border-gray-800 bg-black overflow-y-auto fixed left-0 top-[73px] h-[calc(100vh-73px)] z-30">
-            <div className="p-6">
-              {/* Navigation */}
+            <div className="py-6 px-4">
+              {/* Overview Link - standalone at top */}
+              <button
+                onClick={() => setActivePage('welcome')}
+                className={`block w-full text-left text-sm transition-colors py-2 px-3 rounded-lg mb-4 ${
+                  activePage === 'welcome' 
+                    ? 'bg-studio-pink/20 text-studio-pink font-medium' 
+                    : 'text-gray-300 hover:text-white hover:bg-gray-900/50'
+                }`}
+              >
+                Overview
+              </button>
+
+              {/* Divider */}
+              <div className="border-t border-gray-800 mb-6"></div>
+
+              {/* Navigation Sections */}
               <nav className="space-y-6">
-                {sidebarSections.map((section) => (
+                {sidebarSections.map((section, sectionIndex) => (
                   <div key={section.id}>
-                    <button
-                      onClick={() => toggleSection(section.id)}
-                      className="w-full flex items-center justify-between text-sm font-medium text-white mb-3 hover:text-studio-pink transition-colors"
-                    >
-                      <span>{section.title}</span>
-                      <svg
-                        className={`w-4 h-4 transition-transform ${
-                          expandedSections.includes(section.id) ? 'rotate-180' : ''
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    {expandedSections.includes(section.id) && (
-                      <ul className="space-y-1 mb-3">
-                        {section.items.map((item) => (
-                          <li key={item.id}>
-                            <button
-                              onClick={() => setActivePage(item.id)}
-                              className={`block w-full text-left text-sm transition-colors py-1.5 pl-3 hover:bg-gray-900/50 rounded ${
-                                activePage === item.id ? 'text-studio-pink font-medium' : 'text-gray-400 hover:text-white'
-                              }`}
-                            >
-                              {item.title}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
+                    {/* Section Header - not clickable */}
+                    <h3 className="text-sm font-medium text-white mb-3 px-3">
+                      {section.title}
+                    </h3>
+                    
+                    {/* Section Items */}
+                    <ul className="space-y-0.5">
+                      {section.items.filter(item => item.id !== 'welcome').map((item) => (
+                        <li key={item.id}>
+                          <button
+                            onClick={() => setActivePage(item.id)}
+                            className={`block w-full text-left text-sm transition-colors py-2 px-3 rounded-lg ${
+                              activePage === item.id 
+                                ? 'bg-studio-pink/20 text-studio-pink font-medium' 
+                                : 'text-gray-400 hover:text-white hover:bg-gray-900/50'
+                            }`}
+                          >
+                            {item.title}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Divider between sections (not after the last one) */}
+                    {sectionIndex < sidebarSections.length - 1 && (
+                      <div className="border-t border-gray-800 mt-6"></div>
                     )}
                   </div>
                 ))}
@@ -7875,9 +8877,43 @@ When unsure, ask before inventing styles.`}</pre>
           </aside>
 
           {/* Main Content */}
-          <main className="flex-1 overflow-y-auto bg-black ml-64">
-            <div className="max-w-5xl mx-auto px-8 py-12">
-              {renderContent()}
+          <main className="flex-1 bg-black ml-64">
+            <div className="flex">
+              {/* Content Area */}
+              <div className={`flex-1 px-8 py-12 min-h-screen ${pageHeadings[activePage]?.length > 0 ? 'max-w-4xl' : 'max-w-5xl mx-auto'}`}>
+                {renderContent()}
+              </div>
+
+              {/* On This Page Sidebar */}
+              {pageHeadings[activePage]?.length > 0 && (
+                <aside className="hidden xl:block w-56 shrink-0">
+                  <div className="sticky top-[73px] py-12 pr-6 max-h-[calc(100vh-73px)] overflow-y-auto">
+                    <div className="border-l border-gray-800 pl-4">
+                      <h4 className="text-xs font-semibold text-gray-400 tracking-tight mb-4 flex items-center gap-2">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+                        </svg>
+                        On this page
+                      </h4>
+                      <nav className="space-y-1">
+                        {pageHeadings[activePage]?.map((heading) => (
+                          <button
+                            key={heading.id}
+                            onClick={() => scrollToSection(heading.id)}
+                            className={`block w-full text-left text-[13px] transition-colors py-1.5 border-l-2 -ml-[17px] pl-[15px] ${
+                              activeSection === heading.id 
+                                ? 'text-studio-coral border-studio-coral font-medium' 
+                                : 'text-gray-500 border-transparent hover:text-gray-300 hover:border-gray-600'
+                            }`}
+                          >
+                            {heading.title}
+                          </button>
+                        ))}
+                      </nav>
+                    </div>
+                  </div>
+                </aside>
+              )}
             </div>
           </main>
         </div>
