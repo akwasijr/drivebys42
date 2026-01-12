@@ -67,21 +67,21 @@ const GetStarted = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch sm:items-center">
             <Link
               to="/docs/designer"
-              className="cta-btn inline-flex items-center justify-center px-8 py-4 bg-studio-pink/20 hover:bg-studio-pink/30 border border-studio-pink/40 hover:border-studio-pink/60 rounded-xl text-studio-pink font-semibold transition-all"
+              className="cta-btn inline-flex items-center justify-center px-8 py-4 bg-studio-pink/20 hover:bg-studio-pink/30 rounded-xl text-studio-pink font-semibold transition-colors"
             >
               I'm a Designer
             </Link>
 
             <button
               disabled
-              className="cta-btn inline-flex items-center justify-center px-8 py-4 bg-gray-900/50 border border-white/10 rounded-xl text-gray-500 font-semibold cursor-not-allowed"
+              className="cta-btn inline-flex items-center justify-center px-8 py-4 bg-gray-900/50 rounded-xl text-gray-500 font-semibold cursor-not-allowed"
             >
               I'm an Engineer (Soon)
             </button>
 
             <Link
               to="/labs"
-              className="cta-btn inline-flex items-center justify-center px-8 py-4 bg-gray-900/50 hover:bg-gray-900/60 border border-white/10 hover:border-white/20 rounded-xl text-white font-semibold transition-all"
+              className="cta-btn inline-flex items-center justify-center px-8 py-4 bg-gray-900/50 hover:bg-gray-900/60 rounded-xl text-white font-semibold transition-colors"
             >
               Explore Labs
             </Link>

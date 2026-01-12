@@ -1,8 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Design System CSS Variables */
+:root {
+  --primary: #7E80EE;
+  --primary-light: #A5A6F3;
+  --accent: #F45A9B;
+  --accent-glow: rgba(244, 90, 155, 0.3);
+  --coral: #F2A573;
+  --coral-light: #F7C5A0;
+  --purple: #7E80EE;
+  --purple-light: #A5A6F3;
+  --dark: #030712;
+  --white: #ffffff;
+  --gray-100: #f3f4f6;
+  --gray-800: #1f2937;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-800);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-light);
+}
+
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection Styling */
+::selection {
+  background-color: var(--accent);
+  color: var(--dark);
+}
 
 /* Locomotive Scroll Overrides */
 html.has-scroll-smooth {
@@ -78,6 +123,25 @@ html.has-scroll-dragging {
     @apply font-sans antialiased;
     background-color: #fafafa;
   }
+
+  /* Remove outlines from card-like boxes (keep input/select/textarea borders) */
+  div.border.rounded-lg,
+  div.border.rounded-xl,
+  div.border.rounded-2xl,
+  div.border.rounded-3xl,
+  div.border.rounded-full,
+  a.border.rounded-lg,
+  a.border.rounded-xl,
+  a.border.rounded-2xl,
+  a.border.rounded-3xl,
+  a.border.rounded-full,
+  details.border.rounded-lg,
+  details.border.rounded-xl,
+  details.border.rounded-2xl,
+  details.border.rounded-3xl,
+  details.border.rounded-full {
+    border-width: 0 !important;
+  }
   
   html {
     scroll-behavior: smooth;
@@ -120,11 +184,11 @@ html.has-scroll-dragging {
   }
   
   .glass {
-    @apply bg-white/60 backdrop-blur-xl border border-white/40;
+    @apply bg-white/60 backdrop-blur-xl;
   }
   
   .glass-dark {
-    @apply bg-black/20 backdrop-blur-xl border border-white/10;
+    @apply bg-black/20 backdrop-blur-xl;
   }
 
   /* Hero gradient text - FIXED for visibility */
@@ -210,5 +274,38 @@ html.has-scroll-dragging {
 
   .animate-fadeIn {
     animation: fadeIn 0.3s ease-out forwards;
+  }
+
+  .progress-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    transform: translateX(-120%);
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.28) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: progressShimmer 2.2s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes progressShimmer {
+    0% {
+      transform: translateX(-120%);
+    }
+    55% {
+      transform: translateX(260%);
+    }
+    100% {
+      transform: translateX(260%);
+    }
   }
 }

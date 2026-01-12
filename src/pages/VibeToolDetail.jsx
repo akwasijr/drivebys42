@@ -4,7 +4,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { 
   FiArrowLeft, FiExternalLink, FiStar, FiCheck, 
-  FiCode, FiLink, FiBookOpen, FiTag, FiZap
+  FiCode, FiLink, FiBookOpen, FiTag, FiZap, FiAlertTriangle, FiHeart
 } from 'react-icons/fi';
 import { getVibeToolById } from '../data/vibeToolsDatabase';
 
@@ -108,7 +108,7 @@ const VibeToolDetail = () => {
                     {tool.categoryLabel || tool.category}
                   </span>
                   {tool.pricing === 'free' && (
-                    <span className="text-xs px-3 py-1 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-full text-green-400 uppercase tracking-wider flex items-center gap-1">
+                    <span className="text-xs px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 uppercase tracking-wider flex items-center gap-1">
                       <FiZap className="text-xs" />
                       Free
                     </span>
@@ -139,7 +139,7 @@ const VibeToolDetail = () => {
                   )}
                   {tool.likes && (
                     <div className="flex items-center gap-2">
-                      <span>❤️</span>
+                      <FiHeart className="text-studio-coral" />
                       <span>{tool.likes.toLocaleString()} likes</span>
                     </div>
                   )}
@@ -221,7 +221,7 @@ const VibeToolDetail = () => {
 
               {/* Starter Prompts - VIBE CODING */}
               {tool.starterPrompts && tool.starterPrompts.length > 0 && (
-                <div className="detail-section bg-gradient-to-br from-studio-coral/10 via-studio-pink/10 to-studio-purple/10 border border-studio-coral/30 rounded-xl p-6">
+                <div className="detail-section bg-white/5 border border-white/10 rounded-xl p-6">
                   <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
                     <FiCode className="text-studio-coral" />
                     Starter Prompts
@@ -389,7 +389,7 @@ const VibeToolDetail = () => {
               {tool.limitations && tool.limitations.length > 0 && (
                 <div className="detail-section bg-white/5 border border-white/10 rounded-xl p-6">
                   <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                    <span className="text-yellow-500">⚠️</span>
+                    <FiAlertTriangle className="text-yellow-500" />
                     Considerations
                   </h2>
                   <ul className="space-y-3">

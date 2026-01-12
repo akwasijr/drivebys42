@@ -303,9 +303,9 @@ const Labs = () => {
 
           <nav className="flex items-center gap-8 text-sm">
             <Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link>
-            <Link to="/tools" className="text-gray-400 hover:text-white transition-colors">Vibe Coding Tools</Link>
+            <Link to="/docs" className="text-gray-400 hover:text-white transition-colors">Docs</Link>
             <Link to="/labs" className="text-white font-medium">Labs</Link>
-            <Link to="/ai-tools" className="text-gray-400 hover:text-white transition-colors">AI Tools</Link>
+            <Link to="/ai-evals" className="text-gray-400 hover:text-white transition-colors">AI Evals</Link>
           </nav>
         </div>
       </header>
@@ -540,7 +540,7 @@ const Labs = () => {
                 <div className="projects-grid grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {projects.map(project => (
                     <div key={project.id} className="project-card group cursor-pointer">
-                      <div className="bg-gray-950 border border-gray-800 rounded-xl overflow-hidden hover:border-studio-purple transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-studio-purple/10">
+                      <div className="bg-gray-950 rounded-xl overflow-hidden transition-transform duration-300 hover:-translate-y-1">
                         <div className="relative aspect-video bg-gray-900 overflow-hidden">
                           <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           {project.isNew && (
@@ -597,7 +597,7 @@ const Labs = () => {
                 <div className="space-y-4">
                   {projects.map(project => (
                     <div key={project.id} className="project-card group cursor-pointer">
-                      <div className="bg-gray-950 border border-gray-800 rounded-xl overflow-hidden hover:border-studio-pink transition-all duration-300 hover:shadow-xl hover:shadow-studio-pink/10">
+                      <div className="bg-gray-950 rounded-xl overflow-hidden transition-colors duration-300">
                         <div className="flex gap-6 p-6">
                           <div className="relative w-64 h-48 flex-shrink-0 bg-gray-900 rounded-lg overflow-hidden">
                             <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -657,7 +657,7 @@ const Labs = () => {
 
               {/* Load More Button */}
               <div className="mt-12 text-center">
-                <button className="px-8 py-3 bg-gray-950 hover:bg-gray-900 border border-gray-800 hover:border-studio-purple text-white rounded-xl transition-all font-medium">
+                <button className="px-8 py-3 bg-gray-950 hover:bg-gray-900 text-white rounded-xl transition-colors font-medium">
                   Load More Projects
                 </button>
               </div>

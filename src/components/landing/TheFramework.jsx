@@ -121,7 +121,7 @@ const TheFramework = () => {
                 onMouseEnter={() => setHoveredStage(index)}
                 onMouseLeave={() => setHoveredStage(null)}
               >
-                <div className="bg-gray-900 rounded-2xl p-8 border-2 border-studio-pink/30 hover:border-studio-pink transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-studio-pink/20 h-full">
+                <div className="bg-gray-900 rounded-2xl p-8 h-full">
                   {/* Icon */}
                   <div className="mb-6">
                     <stage.icon className={`text-5xl text-studio-pink`} />
@@ -142,7 +142,7 @@ const TheFramework = () => {
           </div>
 
           {/* AI Amplification Message */}
-          <div className="center-label text-center bg-gradient-to-br from-studio-pink/20 to-studio-purple/20 border-2 border-studio-pink/50 rounded-2xl p-8 backdrop-blur-sm">
+          <div className="center-label text-center bg-gray-900 rounded-2xl p-8 backdrop-blur-sm">
             <HiSparkles className="text-5xl text-studio-pink mb-4 mx-auto" />
             <p className="text-xl md:text-2xl font-bold text-white">AI amplifies every stage</p>
             <p className="text-gray-300 mt-3">

@@ -1577,10 +1577,8 @@ const ToolsResources = () => {
           </Link>
 
           <nav className="flex items-center gap-8 text-sm">
-            <Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link>
-            <Link to="/tools" className="text-white font-medium">Vibe Coding Tools</Link>
-            <Link to="/labs" className="text-gray-400 hover:text-white transition-colors">Labs</Link>
-            <Link to="/ai-tools" className="text-gray-400 hover:text-white transition-colors">AI Tools</Link>
+            <Link to="/docs" className="text-gray-400 hover:text-white transition-colors">Docs</Link>
+            <Link to="/ai-evals" className="text-gray-400 hover:text-white transition-colors">AI Evals</Link>
           </nav>
         </div>
       </header>
@@ -1633,7 +1631,7 @@ const ToolsResources = () => {
           <div className="flex gap-8">
             {/* Filter Sidebar */}
             <aside className="w-64 flex-shrink-0">
-              <div className="bg-gray-950 border border-gray-800 rounded-2xl p-6 sticky top-24">
+              <div className="bg-gray-950 rounded-2xl p-6 sticky top-24">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold text-white">Filters</h3>
                   {hasActiveFilters && (
@@ -1790,7 +1788,7 @@ const ToolsResources = () => {
                       const accentColor = index % 3 === 0 ? 'pink' : index % 3 === 1 ? 'blue' : 'purple';
                       return (
                         <Link key={tool.id} to={`/tools/${tool.id}`} className="tool-card group cursor-pointer">
-                          <div className={`bg-gray-950 border border-gray-800 rounded-xl overflow-hidden hover:border-studio-${accentColor} transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-studio-${accentColor}/10 h-full flex flex-col`}>
+                          <div className={`bg-gray-950 rounded-xl overflow-hidden transition-transform duration-300 hover:-translate-y-1 h-full flex flex-col`}>
                             <div className="p-6 flex-1 flex flex-col">
                           <div className="flex items-start justify-between mb-4">
                             <div className={`w-14 h-14 rounded-xl bg-studio-${accentColor}/10 flex items-center justify-center`}>
@@ -1881,7 +1879,7 @@ const ToolsResources = () => {
                     filteredTools.map(tool => {
                       const IconComponent = tool.icon;
                       return (
-                        <Link key={tool.id} to={`/tools/${tool.id}`} className="tool-card bg-gray-950 border border-gray-800 rounded-xl p-6 hover:border-studio-coral transition-all cursor-pointer block">
+                        <Link key={tool.id} to={`/tools/${tool.id}`} className="tool-card bg-gray-950 rounded-xl p-6 cursor-pointer block">
                           <div className="flex gap-6">
                             <div className="w-20 h-20 rounded-xl bg-studio-coral/10 flex items-center justify-center flex-shrink-0">
                               {IconComponent && <IconComponent className="w-12 h-12 text-studio-coral" />}
@@ -1936,7 +1934,7 @@ const ToolsResources = () => {
 
               {/* Load More */}
               <div className="mt-12 text-center">
-                <button className="px-8 py-3 bg-gray-950 hover:bg-gray-900 border border-gray-800 hover:border-studio-coral text-white rounded-xl transition-all font-medium">
+                <button className="px-8 py-3 bg-gray-950 hover:bg-gray-900 text-white rounded-xl transition-colors font-medium">
                   Load More Tools
                 </button>
               </div>

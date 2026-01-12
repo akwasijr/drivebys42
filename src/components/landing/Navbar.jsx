@@ -24,13 +24,17 @@ const Navbar = () => {
           : 'top-[1.5rem] left-[2rem] right-[2rem]'
       }`}
     >
-      <div className={`navbar-gradient backdrop-blur-xl border border-white/10 rounded-3xl transition-all duration-700 ${
+      <div className={`navbar-gradient backdrop-blur-xl rounded-3xl transition-all duration-700 ${
         scrolled ? 'py-2 px-4' : 'py-4 px-8'
       }`}>
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className={`flex items-center gap-3 hover:opacity-80 transition-all duration-500 ${scrolled ? 'scale-90' : 'scale-100'}`}>
-            <img src="/logo-s42.svg" alt="Studio42" className={`w-auto transition-all duration-500 ${scrolled ? 'h-7' : 'h-9'}`} />
+            <div className={`font-display font-bold transition-all duration-500 ${scrolled ? 'text-xl' : 'text-2xl'}`}>
+              <span className="bg-gradient-to-r from-studio-coral via-studio-pink to-studio-purple bg-clip-text text-transparent">DRIVE</span>
+              <span className="ml-2 text-sm font-semibold text-gray-300">by</span>
+            </div>
+            <img src={`${import.meta.env.BASE_URL}logo-s42.svg`} alt="Studio42" className={`w-auto transition-all duration-500 ${scrolled ? 'h-7' : 'h-9'}`} />
           </Link>
 
           {/* Desktop Navigation */}
@@ -47,14 +51,11 @@ const Navbar = () => {
             <Link to="/docs" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">
               Docs
             </Link>
-            <Link to="/tools" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">
-              Vibe Coding Tools
-            </Link>
             <Link to="/labs" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">
               Labs
             </Link>
-            <Link to="/ai-tools" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">
-              AI Tools
+            <Link to="/ai-evals" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">
+              AI Evals
             </Link>
           </div>
 
@@ -131,13 +132,6 @@ const Navbar = () => {
               Docs
             </Link>
             <Link
-              to="/tools"
-              className="block text-base-content hover:text-primary transition-colors font-medium"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Vibe Coding Tools
-            </Link>
-            <Link
               to="/labs"
               className="block text-base-content hover:text-primary transition-colors font-medium"
               onClick={() => setMobileMenuOpen(false)}
@@ -145,15 +139,15 @@ const Navbar = () => {
               Labs
             </Link>
             <Link
-              to="/ai-tools"
+              to="/ai-evals"
               className="block text-base-content hover:text-primary transition-colors font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
-              AI Tools
+              AI Evals
             </Link>
             <Link
               to="/docs"
-              className="btn btn-primary bg-gradient-to-r from-studio-coral via-studio-pink to-studio-purple border-none text-white font-semibold w-full"
+              className="btn btn-primary bg-studio-pink hover:bg-studio-pink/80 border-none text-white font-semibold w-full"
               onClick={() => setMobileMenuOpen(false)}
             >
               Get Started

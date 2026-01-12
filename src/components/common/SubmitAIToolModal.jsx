@@ -118,11 +118,11 @@ const SubmitAIToolModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="bg-gray-950 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden border border-gray-800">
+      <div className="bg-gray-950 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-800 bg-gradient-to-r from-[#FF6B6B]/10 to-[#4ECDC4]/10">
+        <div className="flex items-center justify-between p-6 bg-gray-950">
           <div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-[#FF6B6B] via-[#4ECDC4] to-[#45B7D1] bg-clip-text text-transparent">
+            <h2 className="text-2xl font-bold text-white">
               Submit AI Tool
             </h2>
             <p className="text-gray-400 text-sm mt-1">
@@ -139,7 +139,7 @@ const SubmitAIToolModal = ({ isOpen, onClose }) => {
 
         {/* Disclaimer */}
         <div className="px-6 pt-6">
-          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 flex gap-3">
+          <div className="bg-yellow-500/10 rounded-lg p-4 flex gap-3">
             <FiAlertTriangle className="text-yellow-500 flex-shrink-0 mt-0.5" />
             <div className="text-sm text-gray-300">
               <p className="font-semibold text-yellow-500 mb-1">Review Process</p>
@@ -422,18 +422,18 @@ const SubmitAIToolModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* Footer */}
-          <div className="flex gap-4 mt-8 pt-6 border-t border-gray-800">
+          <div className="flex gap-4 mt-8 pt-6">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-all font-medium border border-gray-800"
+              className="flex-1 px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-[#FF6B6B] to-[#4ECDC4] hover:opacity-90 text-white rounded-lg transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-6 py-3 bg-studio-pink hover:bg-studio-pink/80 text-white rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Submitting...' : 'Submit Tool'}
             </button>

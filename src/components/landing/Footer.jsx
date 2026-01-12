@@ -2,12 +2,12 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 border-t border-white/10">
+    <footer className="bg-gray-900">
       <div className="container mx-auto px-6 py-12">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Brand Column */}
           <div className="md:col-span-1">
-            <img src="/logo-s42.svg" alt="Studio42" className="h-10 w-auto mb-4" />
+            <img src={`${import.meta.env.BASE_URL}logo-s42.svg`} alt="Studio42" className="h-10 w-auto mb-4" />
             <p className="text-gray-400 text-sm mb-4">
               Accelerating UX development through vibe coding and the DRIVE methodology.
             </p>
@@ -87,7 +87,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-400 text-sm">
             © {new Date().getFullYear()} Studio42. All rights reserved.
           </p>

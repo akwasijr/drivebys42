@@ -7444,7 +7444,7 @@ export const vibeToolsDatabase = [
       },
       {
         title: 'Product Feature Highlights',
-        prompt: 'Create feature showcase with typing: multiple strings highlighting different features, new Typed("#features", { strings: ["Lightning Fast ⚡", "Secure & Private 🔒", "Easy to Use ✨", "Built for Teams 🤝"], typeSpeed: 60, backSpeed: 40, startDelay: 500, backDelay: 1500, loop: true }), emoji support, color-coded text with HTML, smart backspace for similar strings, and pause to let users read.',
+        prompt: 'Create feature showcase with typing: multiple strings highlighting different features, new Typed("#features", { strings: ["Lightning Fast", "Secure & Private", "Easy to Use", "Built for Teams"], typeSpeed: 60, backSpeed: 40, startDelay: 500, backDelay: 1500, loop: true }), color-coded text with HTML, smart backspace for similar strings, and pause to let users read.',
         example: 'Rotating product feature highlights'
       },
       {

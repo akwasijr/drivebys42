@@ -58,7 +58,7 @@ const AIToolDetail = () => {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF6B6B] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-studio-coral mx-auto mb-4"></div>
           <p className="text-gray-400">Loading tool details...</p>
         </div>
       </div>
@@ -97,7 +97,7 @@ const AIToolDetail = () => {
       <section className="detail-hero relative pt-12 pb-8 px-6 border-b border-gray-800">
         <div className="max-w-5xl mx-auto">
           {/* Warning Banner */}
-          <div className="mb-8 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-xl p-6">
+          <div className="mb-8 bg-gray-900 border border-gray-800 rounded-xl p-6">
             <div className="flex items-start gap-4">
               <FiAlertTriangle className="text-yellow-500 text-2xl flex-shrink-0 mt-1" />
               <div>
@@ -131,7 +131,7 @@ const AIToolDetail = () => {
                     {tool.categoryLabel}
                   </span>
                   {tool.isNew && (
-                    <span className="text-xs px-3 py-1 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-full text-green-400 uppercase tracking-wider flex items-center gap-1">
+                    <span className="text-xs px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 uppercase tracking-wider flex items-center gap-1">
                       <FiTrendingUp className="text-xs" />
                       New
                     </span>
@@ -182,7 +182,7 @@ const AIToolDetail = () => {
 
           {/* Compliance Notice - Only show for non-compliant tools */}
           {tool.complianceNote.startsWith('⚠️') && (
-            <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-lg p-4 backdrop-blur-sm">
+            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
               <div className="flex items-start gap-3">
                 <FiAlertTriangle className="text-yellow-500 text-xl flex-shrink-0 mt-0.5" />
                 <div>
@@ -207,7 +207,7 @@ const AIToolDetail = () => {
               {/* Description */}
               <div className="detail-section bg-white/5 border border-white/10 rounded-xl p-6">
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                  <FiBookOpen className="text-[#FF6B6B]" />
+                  <FiBookOpen className="text-studio-coral" />
                   Overview
                 </h2>
                 <p className="text-gray-300 leading-relaxed">
@@ -219,13 +219,13 @@ const AIToolDetail = () => {
               {tool.features && tool.features.length > 0 && (
                 <div className="detail-section bg-white/5 border border-white/10 rounded-xl p-6">
                   <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                    <FiCheck className="text-[#4ECDC4]" />
+                    <FiCheck className="text-studio-pink" />
                     Key Features
                   </h2>
                   <ul className="space-y-3">
                     {tool.features.map((feature, index) => (
                       <li key={index} className="flex items-start gap-3 text-gray-300">
-                        <FiCheck className="text-[#4ECDC4] flex-shrink-0 mt-1" />
+                        <FiCheck className="text-studio-pink flex-shrink-0 mt-1" />
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -235,15 +235,15 @@ const AIToolDetail = () => {
 
               {/* Starter Prompts - VIBE CODING */}
               {tool.starterPrompts && tool.starterPrompts.length > 0 && (
-                <div className="detail-section bg-gradient-to-br from-[#FF6B6B]/10 via-[#4ECDC4]/10 to-[#45B7D1]/10 border border-[#FF6B6B]/30 rounded-xl p-6">
+                <div className="detail-section bg-white/5 border border-white/10 rounded-xl p-6">
                   <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                    <FiCode className="text-[#FF6B6B]" />
+                    <FiCode className="text-studio-coral" />
                     Starter Prompts
                   </h2>
                   <p className="text-gray-400 text-sm mb-6">Ready-to-use prompts to get started quickly</p>
                   <div className="space-y-4">
                     {tool.starterPrompts.map((promptItem, index) => (
-                      <div key={index} className="bg-black/40 rounded-lg p-5 border border-white/10 hover:border-[#FF6B6B]/50 transition-colors">
+                      <div key={index} className="bg-black/40 rounded-lg p-5 border border-white/10 hover:border-studio-coral/50 transition-colors">
                         <div className="flex items-start justify-between gap-4 mb-3">
                           <h3 className="text-white font-semibold text-lg">{promptItem.title}</h3>
                           <button
@@ -251,7 +251,7 @@ const AIToolDetail = () => {
                               navigator.clipboard.writeText(promptItem.prompt);
                               // Could add a toast notification here
                             }}
-                            className="px-3 py-1 bg-[#FF6B6B]/20 hover:bg-[#FF6B6B]/30 border border-[#FF6B6B]/50 rounded-lg text-xs text-white transition-colors flex items-center gap-1"
+                            className="px-3 py-1 bg-studio-coral/20 hover:bg-studio-coral/30 border border-studio-coral/50 rounded-lg text-xs text-white transition-colors flex items-center gap-1"
                             title="Copy prompt"
                           >
                             <FiCode className="text-xs" />
@@ -265,7 +265,7 @@ const AIToolDetail = () => {
                         </div>
                         {promptItem.example && (
                           <div className="flex items-start gap-2">
-                            <span className="text-[#4ECDC4] text-xs flex-shrink-0 mt-0.5">✓</span>
+                            <FiCheck className="text-studio-blue text-sm flex-shrink-0 mt-0.5" />
                             <p className="text-gray-400 text-xs italic">{promptItem.example}</p>
                           </div>
                         )}
@@ -279,7 +279,7 @@ const AIToolDetail = () => {
               {tool.detailedUseCases && tool.detailedUseCases.length > 0 && (
                 <div className="detail-section bg-white/5 border border-white/10 rounded-xl p-6">
                   <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                    <FiBookOpen className="text-[#4ECDC4]" />
+                    <FiBookOpen className="text-studio-blue" />
                     Detailed Use Cases
                   </h2>
                   <p className="text-gray-400 text-sm mb-6">Step-by-step scenarios for real-world applications</p>
@@ -295,7 +295,7 @@ const AIToolDetail = () => {
                             <ol className="space-y-2">
                               {useCase.steps.map((step, stepIndex) => (
                                 <li key={stepIndex} className="flex items-start gap-3 text-gray-300 text-sm">
-                                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#4ECDC4]/20 flex items-center justify-center text-[#4ECDC4] text-xs font-bold">
+                                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-studio-blue/20 flex items-center justify-center text-studio-blue text-xs font-bold">
                                     {stepIndex + 1}
                                   </span>
                                   <span className="pt-0.5">{step}</span>
@@ -330,14 +330,14 @@ const AIToolDetail = () => {
               {tool.bestPractices && tool.bestPractices.length > 0 && (
                 <div className="detail-section bg-white/5 border border-white/10 rounded-xl p-6">
                   <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                    <FiCheck className="text-[#45B7D1]" />
+                    <FiCheck className="text-studio-blue" />
                     Best Practices
                   </h2>
                   <p className="text-gray-400 text-sm mb-6">Tips for getting the most out of this tool</p>
                   <ul className="space-y-3">
                     {tool.bestPractices.map((practice, index) => (
                       <li key={index} className="flex items-start gap-3 text-gray-300">
-                        <span className="flex-shrink-0 w-2 h-2 rounded-full bg-[#45B7D1] mt-2"></span>
+                        <span className="flex-shrink-0 w-2 h-2 rounded-full bg-studio-blue mt-2"></span>
                         <span className="text-sm leading-relaxed">{practice}</span>
                       </li>
                     ))}
@@ -347,7 +347,7 @@ const AIToolDetail = () => {
 
               {/* Project Examples - VIBE CODING */}
               {tool.projectExamples && tool.projectExamples.length > 0 && (
-                <div className="detail-section bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-xl p-6">
+                <div className="detail-section bg-white/5 border border-white/10 rounded-xl p-6">
                   <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
                     <FiCode className="text-purple-400" />
                     Project Examples
@@ -404,7 +404,7 @@ const AIToolDetail = () => {
               {tool.useCases && tool.useCases.length > 0 && (
                 <div className="detail-section bg-white/5 border border-white/10 rounded-xl p-6">
                   <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                    <FiCode className="text-[#45B7D1]" />
+                    <FiCode className="text-studio-blue" />
                     Use Cases
                   </h2>
                   <div className="space-y-4">
@@ -435,7 +435,7 @@ const AIToolDetail = () => {
                     {tool.bestFor.map((item, index) => (
                       <span 
                         key={index}
-                        className="px-4 py-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm"
+                        className="px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm"
                       >
                         {item}
                       </span>
@@ -468,7 +468,7 @@ const AIToolDetail = () => {
               {/* Pricing Details */}
               <div className="detail-section bg-white/5 border border-white/10 rounded-xl p-6">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                  <FiDollarSign className="text-[#FF6B6B]" />
+                  <FiDollarSign className="text-studio-coral" />
                   Pricing
                 </h3>
                 <div className="space-y-3 text-sm">
@@ -520,7 +520,7 @@ const AIToolDetail = () => {
               {tool.integrations && tool.integrations.length > 0 && (
                 <div className="detail-section bg-white/5 border border-white/10 rounded-xl p-6">
                   <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <FiLink className="text-[#4ECDC4]" />
+                    <FiLink className="text-studio-blue" />
                     Integrations
                   </h3>
                   <div className="space-y-2 text-sm">
@@ -537,14 +537,14 @@ const AIToolDetail = () => {
               {tool.tags && tool.tags.length > 0 && (
                 <div className="detail-section bg-white/5 border border-white/10 rounded-xl p-6">
                   <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <FiTag className="text-[#45B7D1]" />
+                    <FiTag className="text-studio-blue" />
                     Tags
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {tool.tags.map((tag, index) => (
                       <span 
                         key={index}
-                        className="px-3 py-1 bg-gradient-to-r from-[#FF6B6B]/10 to-[#4ECDC4]/10 border border-[#FF6B6B]/30 rounded-full text-gray-300 text-xs"
+                        className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-gray-300 text-xs"
                       >
                         #{tag}
                       </span>
@@ -578,7 +578,7 @@ const AIToolDetail = () => {
                         href={tutorial.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block text-sm text-[#4ECDC4] hover:text-[#45B7D1] transition-colors"
+                        className="block text-sm text-studio-blue hover:text-studio-purple transition-colors"
                       >
                         {tutorial.title} →
                       </a>

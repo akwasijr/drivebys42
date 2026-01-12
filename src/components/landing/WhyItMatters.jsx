@@ -208,7 +208,7 @@ const WhyItMatters = () => {
         {/* Comparison Grid */}
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 mb-20">
           {/* Current State - Problems */}
-          <div className="comparison-box bg-gray-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10">
+          <div className="comparison-box bg-gray-900/50 backdrop-blur-xl rounded-3xl p-8">
             <h3 className="section-header text-3xl font-bold mb-8 text-white">
               The Challenge
             </h3>
@@ -265,7 +265,7 @@ const WhyItMatters = () => {
 
           {/* DRIVE Solution */}
           <div 
-            className="comparison-box rounded-3xl p-8 border border-white/10 bg-gray-900/50 backdrop-blur-xl"
+            className="comparison-box rounded-3xl p-8 bg-gray-900/50 backdrop-blur-xl"
           >
             <h3 className="section-header text-3xl font-bold mb-8 text-white">
               DRIVE Solution
@@ -331,7 +331,7 @@ const WhyItMatters = () => {
             {impactHighlights.map(({ stage, problem, solution, description, icon: Icon }) => (
               <div
                 key={stage}
-                className="impact-card group relative p-6 bg-gradient-to-br from-gray-900 to-gray-800 border border-studio-pink/20 hover:border-studio-pink/50 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-studio-pink/10"
+                className="impact-card group relative p-6 bg-gray-900 rounded-xl transition-colors duration-300"
               >
                 <div className="flex h-full flex-col">
                   <Icon className="text-4xl text-studio-pink mb-4" />
@@ -354,7 +354,7 @@ const WhyItMatters = () => {
                     </div>
                   </div>
 
-                  <div className="mt-auto pt-4 border-t border-studio-pink/10">
+                  <div className="mt-auto pt-4">
                     <p className="text-xs text-gray-400 leading-relaxed">
                       <span className="text-studio-pink font-semibold">How DRIVE helps:</span> {description}
                     </p>

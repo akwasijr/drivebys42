@@ -88,7 +88,7 @@ const TheImpact = () => {
           
           {/* Traditional Approach */}
           <div className="comparison-column">
-            <div className="bg-gray-900 rounded-2xl p-8 md:p-10 border-l-4 border-red-500/50 h-full">
+            <div className="bg-gray-900 rounded-2xl p-8 md:p-10 h-full">
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-8 flex items-center gap-3">
                 <span className="text-red-500">Traditional Approach</span>
               </h3>
@@ -113,7 +113,7 @@ const TheImpact = () => {
 
           {/* With DRIVE */}
           <div className="comparison-column">
-            <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 md:p-10 border-l-4 border-studio-pink h-full">
+            <div className="bg-gray-900 rounded-2xl p-8 md:p-10 h-full">
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-8 flex items-center gap-3">
                 <span className="text-studio-pink">With DRIVE</span>
               </h3>
