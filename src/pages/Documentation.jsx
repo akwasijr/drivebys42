@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { VscCode } from 'react-icons/vsc';
 import { TbSparkles } from 'react-icons/tb';
-import { FaClock, FaBook, FaCheckCircle, FaRocket, FaBullseye, FaBug, FaSearch, FaChevronDown, FaExclamationTriangle, FaLightbulb, FaRobot, FaTimesCircle, FaUser, FaCamera, FaPalette, FaRulerCombined, FaSyncAlt, FaCopy, FaCheck, FaServer, FaCodeBranch, FaWrench, FaFolderOpen, FaComment, FaImage, FaCode } from 'react-icons/fa';
+import { FaClock, FaBook, FaCheckCircle, FaRocket, FaBullseye, FaBug, FaSearch, FaChevronDown, FaExclamationTriangle, FaLightbulb, FaRobot, FaTimesCircle, FaUser, FaCamera, FaPalette, FaRulerCombined, FaSyncAlt, FaCopy, FaCheck, FaServer, FaCodeBranch, FaWrench, FaFolderOpen, FaComment, FaImage, FaCode, FaBan, FaHeart, FaMagic } from 'react-icons/fa';
 import { MdArchitecture } from 'react-icons/md';
 
 const Documentation = () => {
@@ -4657,69 +4657,96 @@ import logo from './assets/logo.svg';
               </div>
 
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-t-2 border-t-studio-pink/40">
-                <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2"><FaPalette className="text-studio-pink" /> 2) Color &amp; Theme</h3>
-                <p className="text-gray-400 text-sm font-semibold mb-2">Avoid</p>
-                <ul className="space-y-1 text-gray-300 text-sm mb-4">
-                  <li>• Purple gradient cliché</li>
-                  <li>• Timid palette with no dominant base</li>
-                  <li>• Generic blue primary buttons</li>
-                </ul>
-                <p className="text-gray-400 text-sm font-semibold mb-2">Embrace</p>
-                <ul className="space-y-1 text-gray-300 text-sm mb-4">
-                  <li>• Dominant base + sharp accent</li>
-                  <li>• CSS variables for consistency</li>
-                  <li>• Full commitment to light OR dark</li>
-                </ul>
-                <p className="text-gray-400 text-sm font-semibold mb-2">Prompt ideas</p>
-                <ul className="space-y-1 text-gray-300 text-sm">
-                  <li>• “Deep blue base with electric cyan accents (dark theme)”</li>
-                  <li>• “Warm terracotta base with sage highlights”</li>
-                  <li>• “High contrast black/white with a single red accent”</li>
-                </ul>
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaPalette className="text-studio-pink" /> 2) Color &amp; Theme</h3>
+                
+                <div className="bg-red-950/30 border border-red-900/30 rounded-lg p-3 mb-3">
+                  <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaBan className="text-red-500" /> Avoid</p>
+                  <ul className="space-y-1 text-gray-300 text-sm">
+                    <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Purple gradient cliché</li>
+                    <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Timid palette with no dominant base</li>
+                    <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Generic blue primary buttons</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-green-950/30 border border-green-900/30 rounded-lg p-3 mb-3">
+                  <p className="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaHeart className="text-green-500" /> Embrace</p>
+                  <ul className="space-y-1 text-gray-300 text-sm">
+                    <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Dominant base + sharp accent</li>
+                    <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> CSS variables for consistency</li>
+                    <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Full commitment to light OR dark</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-studio-purple/10 border border-studio-purple/30 rounded-lg p-3">
+                  <p className="text-studio-purple text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaMagic className="text-studio-purple" /> Prompt Ideas</p>
+                  <ul className="space-y-1 text-gray-400 text-sm italic">
+                    <li>"Deep blue base with electric cyan accents (dark theme)"</li>
+                    <li>"Warm terracotta base with sage highlights"</li>
+                    <li>"High contrast black/white with a single red accent"</li>
+                  </ul>
+                </div>
               </div>
 
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-t-2 border-t-studio-purple/40">
-                <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2"><FaRocket className="text-studio-purple" /> 3) Motion</h3>
-                <p className="text-gray-400 text-sm font-semibold mb-2">Avoid</p>
-                <ul className="space-y-1 text-gray-300 text-sm mb-4">
-                  <li>• Fade-in on everything</li>
-                  <li>• Random micro-interactions</li>
-                  <li>• 300ms ease-in-out everywhere</li>
-                </ul>
-                <p className="text-gray-400 text-sm font-semibold mb-2">Embrace</p>
-                <ul className="space-y-1 text-gray-300 text-sm mb-4">
-                  <li>• One orchestrated entrance sequence</li>
-                  <li>• Motion that guides attention / confirms actions</li>
-                  <li>• Timing matched to the aesthetic</li>
-                </ul>
-                <p className="text-gray-400 text-sm font-semibold mb-2">Prompt ideas</p>
-                <ul className="space-y-1 text-gray-300 text-sm">
-                  <li>• “Snappy: under 150–200ms”</li>
-                  <li>• “Luxurious: weighted 800ms easing”</li>
-                  <li>• “Subtle and professional: barely noticeable”</li>
-                </ul>
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaRocket className="text-studio-purple" /> 3) Motion</h3>
+                
+                <div className="bg-red-950/30 border border-red-900/30 rounded-lg p-3 mb-3">
+                  <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaBan className="text-red-500" /> Avoid</p>
+                  <ul className="space-y-1 text-gray-300 text-sm">
+                    <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Fade-in on everything</li>
+                    <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Random micro-interactions</li>
+                    <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> 300ms ease-in-out everywhere</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-green-950/30 border border-green-900/30 rounded-lg p-3 mb-3">
+                  <p className="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaHeart className="text-green-500" /> Embrace</p>
+                  <ul className="space-y-1 text-gray-300 text-sm">
+                    <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> One orchestrated entrance sequence</li>
+                    <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Motion that guides attention / confirms actions</li>
+                    <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Timing matched to the aesthetic</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-studio-purple/10 border border-studio-purple/30 rounded-lg p-3">
+                  <p className="text-studio-purple text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaMagic className="text-studio-purple" /> Prompt Ideas</p>
+                  <ul className="space-y-1 text-gray-400 text-sm italic">
+                    <li>"Snappy: under 150–200ms"</li>
+                    <li>"Luxurious: weighted 800ms easing"</li>
+                    <li>"Subtle and professional: barely noticeable"</li>
+                  </ul>
+                </div>
               </div>
 
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-t-2 border-t-studio-coral/40">
-                <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2"><FaRulerCombined className="text-studio-coral" /> 4) Space &amp; Composition</h3>
-                <p className="text-gray-400 text-sm font-semibold mb-2">Avoid</p>
-                <ul className="space-y-1 text-gray-300 text-sm mb-4">
-                  <li>• Perfect symmetry</li>
-                  <li>• Predictable centered layout</li>
-                  <li>• Flat hierarchy (no rhythm)</li>
-                </ul>
-                <p className="text-gray-400 text-sm font-semibold mb-2">Embrace</p>
-                <ul className="space-y-1 text-gray-300 text-sm mb-4">
-                  <li>• Asymmetry and intentional overlap</li>
-                  <li>• Layering and depth (purposeful)</li>
-                  <li>• Rhythm in spacing (compression vs expansion)</li>
-                </ul>
-                <p className="text-gray-400 text-sm font-semibold mb-2">Prompt ideas</p>
-                <ul className="space-y-1 text-gray-300 text-sm">
-                  <li>• “Editorial: dramatic whitespace and asymmetry”</li>
-                  <li>• “Brutalist: dense, overlapping sections”</li>
-                  <li>• “Geometric: repeating motifs as structure”</li>
-                </ul>
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaRulerCombined className="text-studio-coral" /> 4) Space &amp; Composition</h3>
+                
+                <div className="bg-red-950/30 border border-red-900/30 rounded-lg p-3 mb-3">
+                  <p className="text-red-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaBan className="text-red-500" /> Avoid</p>
+                  <ul className="space-y-1 text-gray-300 text-sm">
+                    <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Perfect symmetry</li>
+                    <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Predictable centered layout</li>
+                    <li className="flex items-start gap-2"><span className="text-red-500/60">×</span> Flat hierarchy (no rhythm)</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-green-950/30 border border-green-900/30 rounded-lg p-3 mb-3">
+                  <p className="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaHeart className="text-green-500" /> Embrace</p>
+                  <ul className="space-y-1 text-gray-300 text-sm">
+                    <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Asymmetry and intentional overlap</li>
+                    <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Layering and depth (purposeful)</li>
+                    <li className="flex items-start gap-2"><span className="text-green-500/60">✓</span> Rhythm in spacing (compression vs expansion)</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-studio-purple/10 border border-studio-purple/30 rounded-lg p-3">
+                  <p className="text-studio-purple text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><FaMagic className="text-studio-purple" /> Prompt Ideas</p>
+                  <ul className="space-y-1 text-gray-400 text-sm italic">
+                    <li>"Editorial: dramatic whitespace and asymmetry"</li>
+                    <li>"Brutalist: dense, overlapping sections"</li>
+                    <li>"Geometric: repeating motifs as structure"</li>
+                  </ul>
+                </div>
               </div>
             </div>
 
