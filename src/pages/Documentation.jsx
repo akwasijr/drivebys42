@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { VscCode } from 'react-icons/vsc';
 import { TbSparkles } from 'react-icons/tb';
-import { FaClock, FaBook, FaCheckCircle, FaRocket, FaBullseye, FaBug, FaSearch, FaChevronDown, FaExclamationTriangle, FaLightbulb, FaRobot, FaTimesCircle, FaUser, FaCamera, FaPalette, FaRulerCombined, FaSyncAlt, FaCopy, FaCheck, FaServer, FaCodeBranch, FaWrench, FaFolderOpen } from 'react-icons/fa';
+import { FaClock, FaBook, FaCheckCircle, FaRocket, FaBullseye, FaBug, FaSearch, FaChevronDown, FaExclamationTriangle, FaLightbulb, FaRobot, FaTimesCircle, FaUser, FaCamera, FaPalette, FaRulerCombined, FaSyncAlt, FaCopy, FaCheck, FaServer, FaCodeBranch, FaWrench, FaFolderOpen, FaComment } from 'react-icons/fa';
 import { MdArchitecture } from 'react-icons/md';
 
 const Documentation = () => {
@@ -328,7 +328,7 @@ const Documentation = () => {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="bg-gray-900/50 rounded-lg p-4">
                       <h4 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-                        <span className="w-6 h-6 rounded bg-studio-pink/20 flex items-center justify-center text-studio-pink text-sm">💬</span>
+                        <span className="w-6 h-6 rounded bg-studio-pink/20 flex items-center justify-center text-studio-pink text-sm"><FaComment /></span>
                         Chat Mode
                       </h4>
                       <p className="text-gray-300 text-sm mb-2">Best for starting out, asking questions, and planning.</p>
@@ -341,7 +341,7 @@ const Documentation = () => {
                     </div>
                     <div className="bg-gray-900/50 rounded-lg p-4">
                       <h4 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-                        <span className="w-6 h-6 rounded bg-studio-purple/20 flex items-center justify-center text-studio-purple text-sm">🤖</span>
+                        <span className="w-6 h-6 rounded bg-studio-purple/20 flex items-center justify-center text-studio-purple text-sm"><FaRobot /></span>
                         Agent Mode
                       </h4>
                       <p className="text-gray-300 text-sm mb-2">Best for building, editing files, and executing tasks.</p>
@@ -503,7 +503,7 @@ Can you help me plan the component structure first?`}</code>
                   </ol>
                   <div className="bg-studio-purple/10 border border-studio-purple/30 rounded-lg p-4">
                     <p className="text-gray-300 text-sm">
-                      <strong>💡 Tip:</strong> To stop the server later, click in the terminal and press <kbd className="bg-gray-800 px-1.5 py-0.5 rounded">Ctrl+C</kbd>. 
+                      <strong>Tip:</strong> To stop the server later, click in the terminal and press <kbd className="bg-gray-800 px-1.5 py-0.5 rounded">Ctrl+C</kbd>. 
                       To restart it, just ask the agent again or run <code className="text-studio-coral bg-gray-800 px-1 py-0.5 rounded text-xs">npm run dev</code>.
                     </p>
                   </div>
@@ -1240,7 +1240,7 @@ Can you help me plan the component structure first?`}</code>
                 the mistake to avoid and the better approach to take.
               </p>
               <p className="text-gray-400 text-sm">
-                💡 <span className="text-white font-semibold">Pro tip:</span> Open the sections relevant to where you are in your journey.
+                <span className="text-white font-semibold">Pro tip:</span> Open the sections relevant to where you are in your journey.
               </p>
             </div>
 
@@ -4029,7 +4029,7 @@ function Button({ children, variant = 'primary' }) {
             </div>
 
             {/* THE EASY WAY - Natural Language */}
-            <h2 className="text-3xl font-bold text-white mb-4">🚀 The Easy Way (No Code Required)</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">The Easy Way (No Code Required)</h2>
             <div className="bg-gradient-to-r from-studio-purple/20 to-studio-blue/20 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <p className="text-gray-300 mb-4">
                 You don't need to understand code to add your own assets. Just talk to the AI naturally and 
@@ -4038,7 +4038,7 @@ function Button({ children, variant = 'primary' }) {
             </div>
 
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h3 className="text-xl font-bold text-white mb-4">📁 For Images & Videos: Drag and Drop</h3>
+              <h3 className="text-xl font-bold text-white mb-4">For Images & Videos: Drag and Drop</h3>
               <p className="text-gray-300 mb-4">
                 The simplest way to add images or videos to your project:
               </p>
@@ -4065,7 +4065,7 @@ function Button({ children, variant = 'primary' }) {
             </div>
 
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h3 className="text-xl font-bold text-white mb-4">✨ For SVG Icons: Get the Code and Paste It</h3>
+              <h3 className="text-xl font-bold text-white mb-4">For SVG Icons: Get the Code and Paste It</h3>
               <p className="text-gray-300 mb-4">
                 SVGs are special—they're actually code, not image files. Here's how to get that code:
               </p>
@@ -4111,13 +4111,13 @@ function Button({ children, variant = 'primary' }) {
 
             <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-4 mb-8">
               <p className="text-yellow-200 text-sm">
-                <strong>💡 Pro Tip:</strong> You can mix both methods! Drag-drop a folder of images, then paste 
+                <strong>Pro Tip:</strong> You can mix both methods! Drag-drop a folder of images, then paste 
                 SVG code for icons in the same conversation. The AI will keep track of everything.
               </p>
             </div>
 
             {/* TECHNICAL METHODS */}
-            <h2 className="text-3xl font-bold text-white mb-4 mt-12">🔧 Technical Methods (For More Control)</h2>
+            <h2 className="text-3xl font-bold text-white mb-4 mt-12">Technical Methods (For More Control)</h2>
             <p className="text-gray-400 mb-6">
               If you want to understand how assets work in code, or need more control over how they're used, 
               here are the technical approaches:
