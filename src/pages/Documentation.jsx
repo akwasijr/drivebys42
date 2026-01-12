@@ -5092,6 +5092,200 @@ Then refine to eliminate defaults and strengthen direction.</pre>
                 ← Workflow &amp; Prompts
               </button>
               <button
+                onClick={() => setActivePage('ui-constitution')}
+                className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
+              >
+                UI Constitution →
+              </button>
+            </div>
+          </div>
+        );
+
+      case 'ui-constitution':
+        return (
+          <div className="prose prose-invert max-w-none">
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-5xl font-bold text-white m-0">Anti-Default UI Constitution</h1>
+              <button
+                onClick={() => {
+                  const content = document.getElementById('constitution-content').innerText;
+                  navigator.clipboard.writeText(content);
+                  alert('Constitution copied to clipboard!');
+                }}
+                className="flex items-center gap-2 px-4 py-2 bg-studio-purple hover:bg-studio-pink text-white rounded-lg transition-colors text-sm font-medium"
+              >
+                <FaCopy /> Copy All
+              </button>
+            </div>
+            <p className="text-gray-400 mb-6">Studio SaaS Interface Law · v1.0</p>
+            
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-xl bg-studio-coral/10 border border-studio-coral/20">
+                  <FaExclamationTriangle className="text-studio-coral text-xl" />
+                </div>
+                <div>
+                  <p className="text-white font-semibold mb-1">Use this file as AI context</p>
+                  <p className="text-gray-300 m-0">Copy this constitution and include it in your AI prompts or project context to suppress generic defaults and maintain studio-quality interfaces.</p>
+                </div>
+              </div>
+            </div>
+
+            <div id="constitution-content" className="bg-gray-950 border border-gray-800 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+              <pre className="text-gray-300 whitespace-pre-wrap m-0">{`# ANTI-DEFAULT UI CONSTITUTION
+Studio SaaS Interface Law · v1.0
+
+This file governs all SaaS / application interface generation within the studio.
+It exists to suppress latent AI design fingerprints and preserve studio interface identity.
+
+APPLIES TO: dashboards, admin panels, internal tools, SaaS platforms, data applications
+PRIORITY: Overrides all generic AI UI defaults
+
+---
+
+## 1. Fingerprint Suppression — Hard Bans
+
+The following patterns are strictly forbidden unless explicitly requested by a human designer:
+
+- Purple, indigo, magenta, neon, or pink gradients
+- Synthetic gradients of any kind
+- Sparkle, magic, star, wand, or "AI metaphor" icons
+- Emoji usage in UI
+- Spaced ALL-CAPS navigation labels
+- Thin gray labels on dark surfaces
+- Centered SaaS card stacks
+- Fully rounded cards as default
+- Thick colored accent bars on the side of panels (no border-l-4)
+- Glassmorphism, glow, blur UI
+- "Hero card" dashboards
+- Shadcn / default Tailwind gray stacks
+- Pill-shaped buttons or badges as default
+
+---
+
+## 2. Color & Surface Law
+
+- Surfaces must feel architectural and structural
+- Decorative gradients are forbidden
+- Use flat chromatic or material tones (ink, clay, coal, stone, sand)
+- Primary actions use solid color, not glow or gradient
+- Accent colors must never become layout decoration
+- Never use hardcoded Hex codes; always use CSS variables or theme tokens
+
+### Dark Mode Stability
+
+- Never use pure #000 or #fff
+- Must meet WCAG AA contrast
+- No component may invert to white backgrounds
+- Dark mode must be visually audited in isolation
+
+---
+
+## 3. Typographic Law
+
+- UI labels must not be ALL CAPS
+- No excessive letter-spacing in interface text
+- Editorial hierarchy is required
+- Utility font stacks are forbidden unless explicitly requested
+- Default to 14px (text-sm) for primary data
+- Headers should stay between 16px and 20px
+
+---
+
+## 4. Layout Philosophy
+
+- Avoid symmetrical centered card grids
+- Use structural, editorial, asymmetric layouts
+- Negative space must define hierarchy, not decoration
+- Layout must communicate system logic
+- Prioritize tables, grids, and side-navs over centered single-column layouts
+- Avoid large "hero" whitespace; default to high-density layouts
+- Default to "Dashboard" or "Control Panel" feel rather than "Website" feel
+
+---
+
+## 5. Shadow & Depth Law
+
+- Cosmetic deep shadows are forbidden
+- Maximum blur radius: 12px
+- Prefer planes, borders, and structural depth
+- Glow effects are forbidden
+- Avoid soft, blurry drop shadows; use 1px borders for separation
+
+---
+
+## 6. Iconography Law
+
+- Use real UI icon systems (Lucide, Heroicons, Phosphor, etc.)
+- Emoji UI is forbidden
+- No sparkle / magic metaphors
+- Icons must represent system function
+- If no library is specified, use a standard <svg> placeholder and ask which library to use
+
+---
+
+## 7. Accessibility Governor
+
+- All UI must meet WCAG AA contrast minimum
+- Gray-on-gray text is forbidden
+- Dark mode must be manually audited
+- Focus states must be visible without glow
+
+---
+
+## 8. Anti-Default AI Behavior
+
+- Never apply SaaS default styling
+- Never introduce sparkle, gradients, glass, glow
+- Never add decorative accent bars or thick side stripes
+- If uncertain about styling, ask the designer instead of defaulting
+- When unsure about visual style, ask for intended "Density" or "Visual Hierarchy"
+
+---
+
+## 9. Homogenization Fail Conditions
+
+Any of the following is an automatic redesign trigger:
+
+- Looks like Stripe, Linear, Vercel, Notion, Supabase, Clerk
+- Contains gradients or sparkle metaphors
+- Uses centered SaaS hero cards
+- Contains emoji UI
+- Dark mode has inversion bugs
+- Looks like a template
+- Uses thick side-borders (border-l-4 patterns)
+- Uses extreme "pill" rounding
+- Uses generic soft shadows
+- Uses marketing-style hero whitespace
+
+---
+
+## 10. State & Interaction Standards
+
+- Always include visual indicators for 'Loading' and 'Empty' states
+- Focus states must be clearly visible
+- Interactive elements must have hover states
+- Disabled states must be distinguishable but not invisible`}</pre>
+            </div>
+
+            <div className="bg-studio-purple/10 border border-studio-purple/30 rounded-xl p-6 mb-8">
+              <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2"><FaLightbulb className="text-studio-purple" /> How to Use</h3>
+              <ol className="space-y-2 text-gray-300 list-decimal list-inside">
+                <li>Copy the constitution above using the "Copy All" button</li>
+                <li>Add it to your project's root as <code className="text-studio-coral bg-gray-800 px-1.5 py-0.5 rounded text-sm">.ai-rules</code> or <code className="text-studio-coral bg-gray-800 px-1.5 py-0.5 rounded text-sm">CLAUDE.md</code></li>
+                <li>Include it in your AI assistant's context or system prompt</li>
+                <li>Reference it when reviewing AI-generated interfaces</li>
+              </ol>
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                onClick={() => setActivePage('ai-design-anti-patterns')}
+                className="px-6 py-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white rounded-xl transition-colors font-medium"
+              >
+                ← Anti-Patterns
+              </button>
+              <button
                 onClick={() => setActivePage('starter-prompts')}
                 className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
               >
@@ -7555,6 +7749,7 @@ When unsure, ask before inventing styles.`}</pre>
         { id: 'ai-design-pillars', title: 'Four Pillars', path: '/docs/ai-design-pillars' },
         { id: 'ai-design-workflow', title: 'Workflow & Prompts', path: '/docs/ai-design-workflow' },
         { id: 'ai-design-anti-patterns', title: 'Anti-Patterns', path: '/docs/ai-design-anti-patterns' },
+        { id: 'ui-constitution', title: 'UI Constitution', path: '/docs/ui-constitution' },
       ],
     },
   ];
