@@ -145,14 +145,19 @@ const Documentation = () => {
       { id: 'github-spark', title: 'GitHub Spark' },
     ],
     'first-session': [
-      { id: 'before-you-start', title: 'Before You Start' },
-      { id: 'create-project', title: 'Create Your Project' },
-      { id: 'first-component', title: 'Build Your First Component' },
-      { id: 'iterate-refine', title: 'Iterate & Refine' },
+      { id: 'choose-your-path', title: 'Choose Your Path' },
+      { id: 'part-1-setup', title: 'Part 1: Setup' },
+      { id: 'part-2-plan', title: 'Part 2: Plan with Chat' },
+      { id: 'part-3-build', title: 'Part 3: Build with Agent' },
+      { id: 'part-4-preview', title: 'Part 4: Preview' },
+      { id: 'part-5-iterate', title: 'Part 5: Iterate & Polish' },
     ],
     'best-practices': [
-      { id: 'top-practices', title: 'Top 5 Best Practices' },
-      { id: 'common-mistakes', title: 'Common Mistakes' },
+      { id: 'practice-1', title: '1. Document Your Context' },
+      { id: 'practice-2', title: '2. Master Prompting' },
+      { id: 'practice-3', title: '3. Conversation Mode' },
+      { id: 'practice-4', title: '4. Version Control' },
+      { id: 'practice-5', title: '5. Visual Edit Tool' },
     ],
     'matching-your-vision': [
       { id: 'core-challenge', title: 'The Core Challenge' },
@@ -168,7 +173,12 @@ const Documentation = () => {
       { id: 'setup-instructions', title: 'Setup Instructions' },
       { id: 'using-figma-mcp', title: 'Using Figma MCP' },
     ],
-    'custom-assets': [],
+    'custom-assets': [
+      { id: 'why-custom-assets', title: 'Why Custom Assets Matter' },
+      { id: 'easy-way', title: 'The Easy Way' },
+      { id: 'images-videos', title: 'Images & Videos' },
+      { id: 'svg-icons', title: 'SVG Icons' },
+    ],
     'ai-assistants': [
       { id: 'choosing-assistant', title: 'Choosing an Assistant' },
       { id: 'communication-tips', title: 'Communication Tips' },
@@ -259,18 +269,35 @@ const Documentation = () => {
     return () => observer.disconnect();
   }, [activePage]);
 
-  // Scroll to section handler with offset for sticky header
+  // Scroll to section handler with offset for sticky header and smooth easing
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
       const headerOffset = 100; // Account for sticky header
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      const startPosition = window.pageYOffset;
+      const distance = offsetPosition - startPosition;
+      const duration = 800; // Duration in ms
+      let startTime = null;
+
+      // Ease-out cubic function for gentle deceleration
+      const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+      const animateScroll = (currentTime) => {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        const easedProgress = easeOutCubic(progress);
+        
+        window.scrollTo(0, startPosition + distance * easedProgress);
+        
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animateScroll);
+        }
+      };
+
+      requestAnimationFrame(animateScroll);
       setActiveSection(sectionId);
     }
   };
@@ -336,7 +363,7 @@ const Documentation = () => {
 
             {/* Getting Started Section */}
             <h2 className="text-2xl font-bold text-white mb-6">Getting Started</h2>
-            <div className="grid md:grid-cols-3 gap-4 mb-12">
+            <div className="grid md:grid-cols-1 gap-4 mb-12">
               <div 
                 onClick={() => setActivePage('what-is-vibe')}
                 className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-coral/50 transition-all cursor-pointer group"
@@ -350,39 +377,11 @@ const Documentation = () => {
                 </p>
                 <span className="text-studio-coral text-sm font-medium group-hover:underline">Learn more →</span>
               </div>
-
-              <div 
-                onClick={() => setActivePage('first-session')}
-                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-pink/50 transition-all cursor-pointer group"
-              >
-                <div className="w-10 h-10 rounded-lg bg-studio-pink/10 flex items-center justify-center mb-4">
-                  <FaClock className="text-studio-pink text-lg" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">Your First Session</h3>
-                <p className="text-gray-400 text-sm mb-4">
-                  Build your first working prototype in under an hour with step-by-step guidance.
-                </p>
-                <span className="text-studio-pink text-sm font-medium group-hover:underline">Learn more →</span>
-              </div>
-
-              <div 
-                onClick={() => setActivePage('best-practices')}
-                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-purple/50 transition-all cursor-pointer group"
-              >
-                <div className="w-10 h-10 rounded-lg bg-studio-purple/10 flex items-center justify-center mb-4">
-                  <FaCheckCircle className="text-studio-purple text-lg" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">Best Practices</h3>
-                <p className="text-gray-400 text-sm mb-4">
-                  Proven strategies and common mistakes to help you succeed faster with AI tools.
-                </p>
-                <span className="text-studio-purple text-sm font-medium group-hover:underline">Learn more →</span>
-              </div>
             </div>
 
             {/* Tools & Setup Section */}
             <h2 className="text-2xl font-bold text-white mb-6">Tools & Setup</h2>
-            <div className="grid md:grid-cols-2 gap-4 mb-12">
+            <div className="grid md:grid-cols-3 gap-4 mb-12">
               <div 
                 onClick={() => setActivePage('setup')}
                 className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-blue/50 transition-all cursor-pointer group"
@@ -398,23 +397,37 @@ const Documentation = () => {
               </div>
 
               <div 
-                onClick={() => setActivePage('extensions')}
-                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-green-500/50 transition-all cursor-pointer group"
+                onClick={() => setActivePage('first-session')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-pink/50 transition-all cursor-pointer group"
               >
-                <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center mb-4">
-                  <FaCodeBranch className="text-green-400 text-lg" />
+                <div className="w-10 h-10 rounded-lg bg-studio-pink/10 flex items-center justify-center mb-4">
+                  <FaClock className="text-studio-pink text-lg" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Recommended Extensions</h3>
+                <h3 className="text-lg font-bold text-white mb-2">Your First DRIVE Session</h3>
                 <p className="text-gray-400 text-sm mb-4">
-                  Essential VS Code extensions that enhance your DRIVE workflow.
+                  Build your first working prototype in under an hour with step-by-step guidance.
                 </p>
-                <span className="text-green-400 text-sm font-medium group-hover:underline">Learn more →</span>
+                <span className="text-studio-pink text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
+                onClick={() => setActivePage('best-practices')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-purple/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-studio-purple/10 flex items-center justify-center mb-4">
+                  <FaCheckCircle className="text-studio-purple text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Best Practices & Common Mistakes</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Proven strategies and pitfalls to avoid for faster success with AI tools.
+                </p>
+                <span className="text-studio-purple text-sm font-medium group-hover:underline">Learn more →</span>
               </div>
             </div>
 
             {/* Design Fidelity Section */}
             <h2 className="text-2xl font-bold text-white mb-6">Design Fidelity</h2>
-            <div className="grid md:grid-cols-3 gap-4 mb-12">
+            <div className="grid md:grid-cols-2 gap-4 mb-12">
               <div 
                 onClick={() => setActivePage('matching-your-vision')}
                 className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-coral/50 transition-all cursor-pointer group"
@@ -430,13 +443,27 @@ const Documentation = () => {
               </div>
 
               <div 
+                onClick={() => setActivePage('design-system-prompts')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-yellow-500/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center mb-4">
+                  <FaLightbulb className="text-yellow-400 text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Design System Prompts</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Establish your design language for consistent AI output.
+                </p>
+                <span className="text-yellow-400 text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
                 onClick={() => setActivePage('figma-mcp')}
                 className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-pink/50 transition-all cursor-pointer group"
               >
                 <div className="w-10 h-10 rounded-lg bg-studio-pink/10 flex items-center justify-center mb-4">
                   <FaImage className="text-studio-pink text-lg" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Figma MCP Setup</h3>
+                <h3 className="text-lg font-bold text-white mb-2">Figma MCP Integration</h3>
                 <p className="text-gray-400 text-sm mb-4">
                   Connect Figma directly to your AI assistant for seamless design-to-code.
                 </p>
@@ -462,31 +489,17 @@ const Documentation = () => {
             <h2 className="text-2xl font-bold text-white mb-6">Core Concepts</h2>
             <div className="grid md:grid-cols-2 gap-4 mb-12">
               <div 
-                onClick={() => setActivePage('ai-assistants')}
+                onClick={() => setActivePage('prompting-and-design')}
                 className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-blue/50 transition-all cursor-pointer group"
               >
                 <div className="w-10 h-10 rounded-lg bg-studio-blue/10 flex items-center justify-center mb-4">
-                  <FaRobot className="text-studio-blue text-lg" />
+                  <FaLightbulb className="text-studio-blue text-lg" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Working with AI Assistants</h3>
+                <h3 className="text-lg font-bold text-white mb-2">Prompting & Design Pillars</h3>
                 <p className="text-gray-400 text-sm mb-4">
-                  Learn to communicate effectively with AI tools for better results.
+                  Master prompting techniques and the four pillars of distinctive design.
                 </p>
                 <span className="text-studio-blue text-sm font-medium group-hover:underline">Learn more →</span>
-              </div>
-
-              <div 
-                onClick={() => setActivePage('prompting-strategies')}
-                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-yellow-500/50 transition-all cursor-pointer group"
-              >
-                <div className="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center mb-4">
-                  <FaLightbulb className="text-yellow-400 text-lg" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">Effective Prompting</h3>
-                <p className="text-gray-400 text-sm mb-4">
-                  Master the art of writing prompts that get you exactly what you need.
-                </p>
-                <span className="text-yellow-400 text-sm font-medium group-hover:underline">Learn more →</span>
               </div>
 
               <div 
@@ -504,63 +517,45 @@ const Documentation = () => {
               </div>
 
               <div 
+                onClick={() => setActivePage('context-management')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-green-500/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center mb-4">
+                  <FaFolderOpen className="text-green-400 text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Managing Project Context</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Keep AI informed with project context for consistent results.
+                </p>
+                <span className="text-green-400 text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
                 onClick={() => setActivePage('starter-prompts')}
                 className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-pink/50 transition-all cursor-pointer group"
               >
                 <div className="w-10 h-10 rounded-lg bg-studio-pink/10 flex items-center justify-center mb-4">
                   <FaBook className="text-studio-pink text-lg" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Starter Prompts</h3>
+                <h3 className="text-lg font-bold text-white mb-2">Starter Prompts for Non-Designers</h3>
                 <p className="text-gray-400 text-sm mb-4">
-                  Ready-to-use prompt templates for common design scenarios.
+                  Essential prompts for Git, servers, and common development tasks.
                 </p>
                 <span className="text-studio-pink text-sm font-medium group-hover:underline">Learn more →</span>
               </div>
-            </div>
-
-            {/* Advanced AI Design Section */}
-            <h2 className="text-2xl font-bold text-white mb-6">Advanced AI Design</h2>
-            <div className="grid md:grid-cols-3 gap-4 mb-8">
-              <div 
-                onClick={() => setActivePage('advanced-polish')}
-                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-purple/50 transition-all cursor-pointer group"
-              >
-                <div className="w-10 h-10 rounded-lg bg-studio-purple/10 flex items-center justify-center mb-4">
-                  <MdArchitecture className="text-studio-purple text-lg" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">AI Design Guide</h3>
-                <p className="text-gray-400 text-sm mb-4">
-                  Comprehensive guide to achieving distinctive, non-generic AI designs.
-                </p>
-                <span className="text-studio-purple text-sm font-medium group-hover:underline">Learn more →</span>
-              </div>
 
               <div 
-                onClick={() => setActivePage('ai-design-anti-patterns')}
-                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-red-500/50 transition-all cursor-pointer group"
+                onClick={() => setActivePage('anti-patterns-constitution')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-red-500/50 transition-all cursor-pointer group md:col-span-2"
               >
                 <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center mb-4">
                   <FaBan className="text-red-400 text-lg" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Anti-Patterns</h3>
+                <h3 className="text-lg font-bold text-white mb-2">Design Anti-Patterns</h3>
                 <p className="text-gray-400 text-sm mb-4">
-                  Identify and avoid common AI-generated design defaults.
+                  Identify and avoid common AI-generated design defaults. Includes downloadable rules to suppress generic styling.
                 </p>
                 <span className="text-red-400 text-sm font-medium group-hover:underline">Learn more →</span>
-              </div>
-
-              <div 
-                onClick={() => setActivePage('ui-constitution')}
-                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-coral/50 transition-all cursor-pointer group"
-              >
-                <div className="w-10 h-10 rounded-lg bg-studio-coral/10 flex items-center justify-center mb-4">
-                  <FaDownload className="text-studio-coral text-lg" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">UI Constitution</h3>
-                <p className="text-gray-400 text-sm mb-4">
-                  Downloadable rules file to suppress AI default styling patterns.
-                </p>
-                <span className="text-studio-coral text-sm font-medium group-hover:underline">Learn more →</span>
               </div>
             </div>
           </div>
@@ -575,7 +570,7 @@ const Documentation = () => {
               into working code through AI-assisted development.</span>
             </p>
 
-            <div id="the-mindset-shift" className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-xl p-8 mb-8 scroll-mt-24">
+            <div id="the-mindset-shift" className="bg-gray-900 border border-gray-800 rounded-xl p-8 mb-8 scroll-mt-24">
               <h2 className="text-2xl font-bold text-white mb-4">The Mindset Shift</h2>
               <p className="text-gray-300 mb-4">From perfect specifications to iterative conversation:</p>
               <ul className="space-y-3 text-gray-300">
@@ -686,7 +681,7 @@ const Documentation = () => {
             </div>
 
             <h2 id="github-spark" className="text-3xl font-bold text-white mb-4 scroll-mt-24">Option 2: GitHub Spark</h2>
-            <div className="bg-gradient-to-br from-studio-purple/20 to-studio-pink/20 border border-studio-purple/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-purple/15 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <p className="text-gray-300 mb-4">
                 <span className="text-white font-semibold">Best for:</span> Quick prototypes without any installation
               </p>
@@ -723,7 +718,7 @@ const Documentation = () => {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-xl p-6 mb-8">
+            <div id="choose-your-path" className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <h3 className="text-xl font-bold text-white mb-4">Choose Your Path</h3>
               
               {/* Tool Selection Tabs */}
@@ -762,7 +757,7 @@ const Documentation = () => {
             {selectedTool === 'vscode' && (
               <>
                 <h2 className="text-3xl font-bold text-white mb-4">Understanding Copilot Modes</h2>
-                <div className="bg-gradient-to-r from-studio-blue/20 to-studio-purple/20 border border-studio-blue/30 rounded-xl p-6 mb-8">
+                <div className="bg-studio-blue/15 border border-studio-blue/30 rounded-xl p-6 mb-8">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="bg-gray-900/50 rounded-lg p-4">
                       <h4 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
@@ -825,7 +820,7 @@ const Documentation = () => {
               </>
             )}
 
-            <h2 className="text-3xl font-bold text-white mb-4">Part 1: Setup (5 min)</h2>
+            <h2 id="part-1-setup" className="text-3xl font-bold text-white mb-4">Part 1: Setup (5 min)</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
               {selectedTool === 'vscode' ? (
                 <>
@@ -855,7 +850,7 @@ const Documentation = () => {
               )}
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Part 2: Plan with Chat (5 min)</h2>
+            <h2 id="part-2-plan" className="text-3xl font-bold text-white mb-4">Part 2: Plan with Chat (5 min)</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
               <p className="text-gray-300 mb-3">{selectedTool === 'vscode' ? 'In Chat mode, start by describing your vision:' : 'Start by describing your vision:'}</p>
               <pre className="bg-gray-950 border border-gray-700 rounded-lg p-4 overflow-x-auto">
@@ -876,7 +871,7 @@ Can you help me plan the component structure first?`}</code>
               </p>
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Part 3: Build with Agent Mode (15 min)</h2>
+            <h2 id="part-3-build" className="text-3xl font-bold text-white mb-4">Part 3: Build with Agent Mode (15 min)</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
               {selectedTool === 'vscode' ? (
                 <>
@@ -921,7 +916,7 @@ Can you help me plan the component structure first?`}</code>
               )}
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Part 4: Preview in Your Browser (2 min)</h2>
+            <h2 id="part-4-preview" className="text-3xl font-bold text-white mb-4">Part 4: Preview in Your Browser (2 min)</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
               {selectedTool === 'vscode' ? (
                 <>
@@ -961,7 +956,7 @@ Can you help me plan the component structure first?`}</code>
               )}
             </div>
 
-            <h2 className="text-3xl font-bold text-white mb-4">Part 5: Iterate & Polish (5 min)</h2>
+            <h2 id="part-5-iterate" className="text-3xl font-bold text-white mb-4">Part 5: Iterate & Polish (5 min)</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
               <p className="text-gray-300 mb-4">Refine your dashboard with follow-up prompts:</p>
               <ul className="space-y-2 text-gray-300">
@@ -1010,27 +1005,27 @@ Can you help me plan the component structure first?`}</code>
             <p className="text-xl text-gray-300 mb-8">Design. Rapid. Iterate. Validate. Execute.</p>
 
             <div className="grid md:grid-cols-5 gap-4 mb-12">
-              <div className="bg-gradient-to-br from-studio-coral/20 to-studio-coral/10 border border-studio-coral/30 rounded-xl p-6">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 rounded-xl p-6">
                 <div className="text-4xl font-bold text-studio-coral mb-2">D</div>
                 <h3 className="text-xl font-bold text-white mb-2">Design</h3>
                 <p className="text-gray-400 text-sm">Start with intent, not specifications</p>
               </div>
-              <div className="bg-gradient-to-br from-studio-pink/20 to-studio-pink/10 border border-studio-pink/30 rounded-xl p-6">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 rounded-xl p-6">
                 <div className="text-4xl font-bold text-studio-pink mb-2">R</div>
                 <h3 className="text-xl font-bold text-white mb-2">Rapid</h3>
                 <p className="text-gray-400 text-sm">Speed is a feature, not a bug</p>
               </div>
-              <div className="bg-gradient-to-br from-studio-purple/20 to-studio-purple/10 border border-studio-purple/30 rounded-xl p-6">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 rounded-xl p-6">
                 <div className="text-4xl font-bold text-studio-purple mb-2">I</div>
                 <h3 className="text-xl font-bold text-white mb-2">Iterate</h3>
                 <p className="text-gray-400 text-sm">Embrace the feedback loop</p>
               </div>
-              <div className="bg-gradient-to-br from-blue-500/20 to-blue-500/10 border border-blue-500/30 rounded-xl p-6">
+              <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-6">
                 <div className="text-4xl font-bold text-blue-400 mb-2">V</div>
                 <h3 className="text-xl font-bold text-white mb-2">Validate</h3>
                 <p className="text-gray-400 text-sm">Test assumptions early</p>
               </div>
-              <div className="bg-gradient-to-br from-green-500/20 to-green-500/10 border border-green-500/30 rounded-xl p-6">
+              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6">
                 <div className="text-4xl font-bold text-green-400 mb-2">E</div>
                 <h3 className="text-xl font-bold text-white mb-2">Execute</h3>
                 <p className="text-gray-400 text-sm">Ship with confidence</p>
@@ -1078,7 +1073,7 @@ Can you help me plan the component structure first?`}</code>
               </ul>
             </div>
 
-            <div className="bg-gradient-to-r from-studio-coral/10 to-studio-purple/10 border border-studio-pink/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-purple/10 border border-studio-pink/30 rounded-xl p-6 mb-8">
               <h3 className="text-2xl font-bold text-white mb-4">The DRIVE Mindset</h3>
               <p className="text-gray-300 text-lg">
                 "Done is better than perfect. Shipping beats planning. Learning trumps knowing."
@@ -1100,7 +1095,7 @@ Can you help me plan the component structure first?`}</code>
             <h1 className="text-5xl font-bold text-white mb-6">Running a DRIVE Session</h1>
             <p className="text-xl text-gray-300 mb-8">Time-boxed design sprints that deliver results</p>
 
-            <div className="bg-gradient-to-r from-studio-coral/10 to-studio-pink/10 border border-studio-coral/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-pink/10 border border-studio-coral/30 rounded-xl p-6 mb-8">
               <h3 className="text-xl font-bold text-white mb-3">What is a DRIVE Session?</h3>
               <p className="text-gray-300">
                 A <span className="text-white font-semibold">focused, time-boxed design sprint</span> (1-4 hours) 
@@ -1130,7 +1125,7 @@ Can you help me plan the component structure first?`}</code>
             <h2 className="text-3xl font-bold text-white mb-4">Session Structure</h2>
             
             <div className="space-y-6 mb-8">
-              <div className="bg-gray-900 border-l-4 border-studio-coral rounded-r-xl p-6">
+              <div className="bg-gray-900 border border-studio-coral/30 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-white mb-3">1. Preparation (15 min)</h3>
                 <ul className="space-y-2 text-gray-300">
                   <li>✓ Define the goal: What are we building?</li>
@@ -1140,7 +1135,7 @@ Can you help me plan the component structure first?`}</code>
                 </ul>
               </div>
 
-              <div className="bg-gray-900 border-l-4 border-studio-pink rounded-r-xl p-6">
+              <div className="bg-gray-900 border border-studio-pink/30 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-white mb-3">2. Design Phase (30-60 min)</h3>
                 <ul className="space-y-2 text-gray-300">
                   <li>• Rapid sketching in code</li>
@@ -1150,7 +1145,7 @@ Can you help me plan the component structure first?`}</code>
                 </ul>
               </div>
 
-              <div className="bg-gray-900 border-l-4 border-studio-purple rounded-r-xl p-6">
+              <div className="bg-gray-900 border border-studio-purple/30 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-white mb-3">3. Iterate Phase (30-60 min)</h3>
                 <ul className="space-y-2 text-gray-300">
                   <li>• Review what you built</li>
@@ -1160,7 +1155,7 @@ Can you help me plan the component structure first?`}</code>
                 </ul>
               </div>
 
-              <div className="bg-gray-900 border-l-4 border-blue-500 rounded-r-xl p-6">
+              <div className="bg-gray-900 border border-blue-500/30 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-white mb-3">4. Validate Phase (15-30 min)</h3>
                 <ul className="space-y-2 text-gray-300">
                   <li>• Test on different devices</li>
@@ -1170,7 +1165,7 @@ Can you help me plan the component structure first?`}</code>
                 </ul>
               </div>
 
-              <div className="bg-gray-900 border-l-4 border-green-500 rounded-r-xl p-6">
+              <div className="bg-gray-900 border border-green-500/30 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-white mb-3">5. Execute Phase (15-30 min)</h3>
                 <ul className="space-y-2 text-gray-300">
                   <li>• Final polish</li>
@@ -1647,7 +1642,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* Still have questions */}
-            <div className="bg-gradient-to-r from-studio-coral/10 to-studio-purple/10 border border-studio-pink/30 rounded-xl p-8 text-center">
+            <div className="bg-studio-purple/10 border border-studio-pink/30 rounded-xl p-8 text-center">
               <h2 className="text-2xl font-bold text-white mb-4">Still have questions?</h2>
               <p className="text-gray-300 mb-6">
                 Can't find what you're looking for? We're here to help!
@@ -1685,7 +1680,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* 1. Set Your Foundation */}
-            <div className="bg-gray-900 border border-gray-800 rounded-xl mb-4 overflow-hidden">
+            <div id="practice-1" className="bg-gray-900 border border-gray-800 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleBestPractice(1)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -1714,7 +1709,7 @@ Can you help me plan the component structure first?`}</code>
                 </ul>
               </div>
               
-              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r mb-6">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl mb-6">
                 <p className="text-white font-semibold mb-2">✓ Best Practice:</p>
                 <p className="text-gray-300">Spend 15-30 minutes documenting your project context before your first prompt. This foundation makes every subsequent interaction faster and more accurate.</p>
               </div>
@@ -1728,7 +1723,7 @@ Can you help me plan the component structure first?`}</code>
                 <li>• <span className="text-white font-medium">Brand Guidelines:</span> Tone, voice, visual style</li>
               </ul>
 
-              <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r mb-6">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl mb-6">
                 <p className="text-white font-semibold mb-2">Example Context Document:</p>
                 <div className="text-sm text-gray-300 space-y-2 mt-3">
                   <p><span className="text-studio-pink font-mono">Project:</span> Task Management Dashboard</p>
@@ -1760,7 +1755,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* 2. Prompting Best Practices */}
-            <div className="bg-gray-900 border border-gray-800 rounded-xl mb-4 overflow-hidden">
+            <div id="practice-2" className="bg-gray-900 border border-gray-800 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleBestPractice(2)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -1900,7 +1895,7 @@ Can you help me plan the component structure first?`}</code>
                 </div>
               </div>
 
-              <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r mb-6">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl mb-6">
                 <p className="text-white font-semibold mb-2">The Incremental Approach:</p>
                 <p className="text-gray-300 mb-3">Break complex features into small, testable steps. Validate each step before moving forward.</p>
                 <div className="bg-gray-950 border border-gray-700 rounded-lg p-4 mt-3">
@@ -1917,7 +1912,7 @@ Can you help me plan the component structure first?`}</code>
                 </div>
               </div>
 
-              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">Pro Tip - The "Explain First" Pattern:</p>
                 <p className="text-gray-300">Before asking for implementation, ask the AI to explain its approach. This helps catch issues early.</p>
                 <div className="bg-gray-950 border border-gray-700 rounded-lg p-4 mt-3 relative group">
@@ -1940,7 +1935,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* 3. Leverage Conversation Mode */}
-            <div className="bg-gray-900 border border-gray-800 rounded-xl mb-4 overflow-hidden">
+            <div id="practice-3" className="bg-gray-900 border border-gray-800 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleBestPractice(3)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -1957,7 +1952,7 @@ Can you help me plan the component structure first?`}</code>
                 Conversation mode is your design thinking space. Use it to explore ideas, debug issues, and plan architecture before making changes. Think of it as sketching before committing to final designs.
               </p>
 
-              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r mb-6">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl mb-6">
                 <p className="text-white font-semibold mb-2">The 70/30 Rule:</p>
                 <p className="text-gray-300">Spend 70% of your time in conversation mode planning and validating, 30% implementing. This ratio dramatically reduces errors and rework.</p>
               </div>
@@ -2060,7 +2055,7 @@ Can you help me plan the component structure first?`}</code>
                 </div>
               </div>
 
-              <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r mb-6">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl mb-6">
                 <p className="text-white font-semibold mb-2">Conversation → Plan → Validate → Implement:</p>
                 <p className="text-gray-300 mb-3">The safest workflow for complex features</p>
                 <ol className="space-y-2 text-gray-300 text-sm">
@@ -2071,7 +2066,7 @@ Can you help me plan the component structure first?`}</code>
                 </ol>
               </div>
 
-              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">Prevent Unwanted Changes:</p>
                 <p className="text-gray-300 mb-3">Keep control over what gets modified</p>
                 <div className="space-y-2">
@@ -2124,7 +2119,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* 4. Master Version Control */}
-            <div className="bg-gray-900 border border-gray-800 rounded-xl mb-4 overflow-hidden">
+            <div id="practice-4" className="bg-gray-900 border border-gray-800 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleBestPractice(4)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2141,7 +2136,7 @@ Can you help me plan the component structure first?`}</code>
                 Version control is your safety net. In AI-assisted development, changes happen fast—having clear checkpoints prevents hours of backtracking.
               </p>
 
-              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r mb-6">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl mb-6">
                 <p className="text-white font-semibold mb-2">The Golden Rule:</p>
                 <p className="text-gray-300">Always commit working states. Never leave a session without a stable checkpoint.</p>
               </div>
@@ -2239,7 +2234,7 @@ Can you help me plan the component structure first?`}</code>
                 </div>
               </div>
 
-              <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r mb-6">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl mb-6">
                 <p className="text-white font-semibold mb-2">Testing Before Committing:</p>
                 <ul className="space-y-2 text-gray-300 text-sm mt-3">
                   <li>• Check all interactive elements (buttons, forms, links)</li>
@@ -2250,7 +2245,7 @@ Can you help me plan the component structure first?`}</code>
                 </ul>
               </div>
 
-              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">Pro Tip - Tag Your Milestones:</p>
                 <p className="text-gray-300 mb-2">Use tags for major versions you might want to reference later:</p>
                 <ul className="space-y-1 text-gray-400 text-sm mt-3">
@@ -2264,7 +2259,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* 5. Visual Edit Tool */}
-            <div className="bg-gray-900 border border-gray-800 rounded-xl mb-4 overflow-hidden">
+            <div id="practice-5" className="bg-gray-900 border border-gray-800 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleBestPractice(5)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2348,7 +2343,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* 8. Bonus Tips */}
-            <div className="bg-gradient-to-r from-studio-purple/10 to-studio-pink/10 border border-studio-pink/30 rounded-xl mb-4 overflow-hidden">
+            <div className="bg-studio-pink/10 border border-studio-pink/30 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleBestPractice(8)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2400,7 +2395,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* CTA */}
-            <div className="bg-gradient-to-r from-studio-coral/10 to-studio-purple/10 border border-studio-pink/30 rounded-xl p-8 text-center">
+            <div className="bg-studio-purple/10 border border-studio-pink/30 rounded-xl p-8 text-center">
               <h2 className="text-2xl font-bold text-white mb-4">Ready to Build?</h2>
               <p className="text-gray-300 mb-6">
                 Apply these best practices and start creating with DRIVE.
@@ -2431,7 +2426,7 @@ Can you help me plan the component structure first?`}</code>
             </p>
 
             {/* Mistake 1 */}
-            <div className="bg-gray-900 border-l-4 border-red-500 rounded-r-xl mb-4 overflow-hidden">
+            <div className="bg-gray-900 border border-red-500/30 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleMistake(1)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2470,7 +2465,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* Mistake 2 */}
-            <div className="bg-gray-900 border-l-4 border-red-500 rounded-r-xl mb-4 overflow-hidden">
+            <div className="bg-gray-900 border border-red-500/30 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleMistake(2)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2524,7 +2519,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* Mistake 3 */}
-            <div className="bg-gray-900 border-l-4 border-red-500 rounded-r-xl mb-4 overflow-hidden">
+            <div className="bg-gray-900 border border-red-500/30 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleMistake(3)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2573,7 +2568,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* Mistake 4 */}
-            <div className="bg-gray-900 border-l-4 border-red-500 rounded-r-xl mb-4 overflow-hidden">
+            <div className="bg-gray-900 border border-red-500/30 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleMistake(4)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2611,7 +2606,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* Mistake 5 */}
-            <div className="bg-gray-900 border-l-4 border-red-500 rounded-r-xl mb-4 overflow-hidden">
+            <div className="bg-gray-900 border border-red-500/30 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleMistake(5)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2650,7 +2645,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* Mistake 6 */}
-            <div className="bg-gray-900 border-l-4 border-red-500 rounded-r-xl mb-4 overflow-hidden">
+            <div className="bg-gray-900 border border-red-500/30 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleMistake(6)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2703,7 +2698,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* Mistake 7 */}
-            <div className="bg-gray-900 border-l-4 border-red-500 rounded-r-xl mb-4 overflow-hidden">
+            <div className="bg-gray-900 border border-red-500/30 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleMistake(7)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2755,7 +2750,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* Mistake 8 */}
-            <div className="bg-gray-900 border-l-4 border-red-500 rounded-r-xl mb-4 overflow-hidden">
+            <div className="bg-gray-900 border border-red-500/30 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleMistake(8)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2798,7 +2793,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* Mistake 9 */}
-            <div className="bg-gray-900 border-l-4 border-red-500 rounded-r-xl mb-4 overflow-hidden">
+            <div className="bg-gray-900 border border-red-500/30 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleMistake(9)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2837,7 +2832,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* Mistake 10 */}
-            <div className="bg-gray-900 border-l-4 border-red-500 rounded-r-xl mb-4 overflow-hidden">
+            <div className="bg-gray-900 border border-red-500/30 rounded-xl mb-4 overflow-hidden">
               <button
                 onClick={() => toggleMistake(10)}
                 className="w-full p-6 flex items-center justify-between hover:bg-gray-800/50 transition-colors text-left"
@@ -2879,7 +2874,7 @@ Can you help me plan the component structure first?`}</code>
             </div>
 
             {/* Summary */}
-            <div className="bg-gradient-to-r from-studio-coral/10 to-studio-purple/10 border border-studio-pink/30 rounded-xl p-8 text-center">
+            <div className="bg-studio-purple/10 border border-studio-pink/30 rounded-xl p-8 text-center">
               <h2 className="text-2xl font-bold text-white mb-4">Remember</h2>
               <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
                 Most mistakes come from rushing, being vague, or not testing. Slow down, be specific, test often, and commit frequently. These habits transform AI assistance from frustrating to magical.
@@ -2954,7 +2949,7 @@ Can you help me plan the component structure first?`}</code>
 
             <h2 id="setup-instructions" className="text-3xl font-bold text-white mb-4 scroll-mt-24">Setup Instructions</h2>
             
-            <div className="bg-gradient-to-br from-studio-purple/20 to-studio-pink/20 border border-studio-purple/30 rounded-xl p-6 mb-6">
+            <div className="bg-studio-purple/15 border border-studio-purple/30 rounded-xl p-6 mb-6">
               <h3 className="text-xl font-bold text-white mb-3">Prerequisites</h3>
               <ul className="space-y-2 text-gray-300">
                 <li className="flex items-center gap-3">
@@ -3099,21 +3094,21 @@ Can you help me plan the component structure first?`}</code>
 
             <h2 className="text-3xl font-bold text-white mb-4">Pro Tips</h2>
             <div className="space-y-4 mb-8">
-              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">Select Specific Frames</p>
                 <p className="text-gray-300 text-sm">
                   Right-click a frame in Figma and "Copy link to selection" to get a URL that points to exactly what you want to build.
                 </p>
               </div>
               
-              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">Reference Your Design System</p>
                 <p className="text-gray-300 text-sm">
                   Tell Copilot about your existing Tailwind config, component library, or design tokens so it generates consistent code.
                 </p>
               </div>
               
-              <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">Iterate Incrementally</p>
                 <p className="text-gray-300 text-sm">
                   Get the basic structure first, then refine. Ask for responsive behavior, animations, and edge cases in follow-up prompts.
@@ -3280,21 +3275,21 @@ Interactions:
 
             <h2 className="text-3xl font-bold text-white mb-4">Best Practices</h2>
             <div className="space-y-4 mb-8">
-              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">✓ Start with Structure</p>
                 <p className="text-gray-300 text-sm">
                   First get the layout and components right. Worry about pixel-perfect styling later.
                 </p>
               </div>
               
-              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">✓ Reference Your Design System</p>
                 <p className="text-gray-300 text-sm">
                   Tell the AI about your existing components, colors, and patterns. Consistency matters more than perfection.
                 </p>
               </div>
               
-              <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">✓ Iterate in Small Steps</p>
                 <p className="text-gray-300 text-sm">
                   Build the basic version first. Then refine spacing, colors, responsive behavior, and interactions one at a time.
@@ -3349,7 +3344,7 @@ Interactions:
               The complete process from design file to functional code
             </p>
 
-            <div className="bg-gradient-to-r from-studio-purple/20 to-studio-coral/20 border border-studio-purple/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-purple/15 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-4">The 4-Step Workflow</h2>
               <div className="grid md:grid-cols-4 gap-4">
                 <div className="text-center">
@@ -3443,7 +3438,7 @@ Please:
 4. Add proper TypeScript types`}</code>
               </div>
 
-              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">Pro Tip:</p>
                 <p className="text-gray-300 text-sm">
                   Start with structure, then styling, then interactivity. Don't try to get everything perfect in one prompt.
@@ -3481,7 +3476,7 @@ Please:
             <h2 className="text-3xl font-bold text-white mb-4">Example: Complete Session</h2>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <div className="space-y-4">
-                <div className="bg-gray-950 border-l-4 border-studio-coral rounded-r p-4">
+                <div className="bg-gray-950 border border-studio-coral/30 rounded-xl p-4">
                   <p className="text-gray-400 text-xs mb-2">PROMPT 1 (Structure)</p>
                   <p className="text-gray-300 text-sm">
                     Create a pricing card component with header, price, features list, and CTA button. Use the design from: 
@@ -3489,21 +3484,21 @@ Please:
                   </p>
                 </div>
 
-                <div className="bg-gray-950 border-l-4 border-studio-pink rounded-r p-4">
+                <div className="bg-gray-950 border border-studio-pink/30 rounded-xl p-4">
                   <p className="text-gray-400 text-xs mb-2">PROMPT 2 (Styling)</p>
                   <p className="text-gray-300 text-sm">
                     Add a gradient border, update colors to match our brand (purple/pink), and add shadow on hover
                   </p>
                 </div>
 
-                <div className="bg-gray-950 border-l-4 border-studio-purple rounded-r p-4">
+                <div className="bg-gray-950 border border-studio-purple/30 rounded-xl p-4">
                   <p className="text-gray-400 text-xs mb-2">PROMPT 3 (Responsive)</p>
                   <p className="text-gray-300 text-sm">
                     Make it responsive: full width on mobile, max 400px on desktop, adjust text sizes for mobile
                   </p>
                 </div>
 
-                <div className="bg-gray-950 border-l-4 border-green-400 rounded-r p-4">
+                <div className="bg-gray-950 border border-green-400/30 rounded-xl p-4">
                   <p className="text-gray-400 text-xs mb-2">PROMPT 4 (Polish)</p>
                   <p className="text-gray-300 text-sm">
                     Add smooth transitions, loading state for the button, and make feature checkmarks animated
@@ -3642,7 +3637,7 @@ Please:
 
             <h2 className="text-3xl font-bold text-white mb-4">AI Interaction Modes</h2>
             <div className="space-y-4 mb-8">
-              <div className="bg-gradient-to-r from-studio-blue/10 to-studio-blue/5 border-l-4 border-studio-blue p-6 rounded-r-xl">
+              <div className="bg-studio-blue/10 border border-studio-blue/30 p-6 rounded-xl">
                 <h3 className="text-xl font-bold text-white mb-2">1. Inline Completion Mode</h3>
                 <p className="text-gray-300 mb-3">
                   <span className="text-white font-semibold">When:</span> Writing code directly in your editor
@@ -3655,7 +3650,7 @@ Please:
                 </p>
               </div>
 
-              <div className="bg-gradient-to-r from-studio-pink/10 to-studio-pink/5 border-l-4 border-studio-pink p-6 rounded-r-xl">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-6 rounded-xl">
                 <h3 className="text-xl font-bold text-white mb-2">2. Chat/Conversation Mode</h3>
                 <p className="text-gray-300 mb-3">
                   <span className="text-white font-semibold">When:</span> You need to explain complex requirements or debug
@@ -3668,7 +3663,7 @@ Please:
                 </p>
               </div>
 
-              <div className="bg-gradient-to-r from-studio-purple/10 to-studio-purple/5 border-l-4 border-studio-purple p-6 rounded-r-xl">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 p-6 rounded-xl">
                 <h3 className="text-xl font-bold text-white mb-2">3. Comment-Driven Development</h3>
                 <p className="text-gray-300 mb-3">
                   <span className="text-white font-semibold">When:</span> Starting a new feature or component
@@ -3684,7 +3679,7 @@ Please:
 
             <h2 className="text-3xl font-bold text-white mb-4">Best Practices</h2>
             <div className="space-y-4 mb-8">
-              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">✓ Start Conversations, Not Commands</p>
                 <p className="text-gray-300 text-sm">
                   Instead of: "Make a button"<br />
@@ -3692,21 +3687,21 @@ Please:
                 </p>
               </div>
               
-              <div className="bg-studio-blue/10 border-l-4 border-studio-blue p-4 rounded-r">
+              <div className="bg-studio-blue/10 border border-studio-blue/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">✓ Build Trust Through Testing</p>
                 <p className="text-gray-300 text-sm">
                   Don't blindly accept AI suggestions. Test every feature. Build confidence by verifying outputs.
                 </p>
               </div>
               
-              <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">✓ Iterate and Refine</p>
                 <p className="text-gray-300 text-sm">
                   First pass rarely perfect. Use follow-up prompts: "Make it more responsive" or "Add error handling"
                 </p>
               </div>
 
-              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">✓ Learn from AI Code</p>
                 <p className="text-gray-300 text-sm">
                   Don't just copy-paste. Read the generated code. Understand patterns. Ask AI to explain unfamiliar concepts.
@@ -3736,7 +3731,7 @@ Please:
               </ul>
             </div>
 
-            <div className="bg-gradient-to-r from-studio-purple/10 to-studio-pink/10 border border-studio-purple/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-pink/10 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <h3 className="text-xl font-bold text-white mb-3">Remember</h3>
               <p className="text-gray-300">
                 AI amplifies your abilities—it doesn't replace them. The best DRIVE sessions happen when you bring 
@@ -3769,7 +3764,7 @@ Please:
               Master the art of communicating with AI to get better, faster results
             </p>
 
-            <div className="bg-gradient-to-r from-studio-blue/20 to-studio-purple/20 border border-studio-blue/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-blue/15 border border-studio-blue/30 rounded-xl p-6 mb-8">
               <h2 id="why-prompting-matters" className="text-2xl font-bold text-white mb-4">Why Prompting Matters</h2>
               <p className="text-gray-300 mb-4">
                 The difference between frustration and flow in vibe coding often comes down to how you communicate with AI. 
@@ -3959,7 +3954,7 @@ Please:
             <h2 id="advanced-tips" className="text-3xl font-bold text-white mb-4">Advanced Prompting Tips</h2>
             
             <div className="space-y-4 mb-8">
-              <div className="bg-studio-blue/10 border-l-4 border-studio-blue p-4 rounded-r">
+              <div className="bg-studio-blue/10 border border-studio-blue/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2 flex items-center gap-2">
                   <FaLightbulb className="text-studio-blue" />
                   Use Code Comments as Prompts
@@ -3976,7 +3971,7 @@ Please:
                 </div>
               </div>
 
-              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2 flex items-center gap-2">
                   <FaLightbulb className="text-studio-pink" />
                   Ask for Explanations
@@ -3986,7 +3981,7 @@ Please:
                 </p>
               </div>
 
-              <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2 flex items-center gap-2">
                   <FaLightbulb className="text-studio-purple" />
                   Request Multiple Options
@@ -3996,7 +3991,7 @@ Please:
                 </p>
               </div>
 
-              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2 flex items-center gap-2">
                   <FaLightbulb className="text-studio-coral" />
                   Include Success Criteria
@@ -4007,7 +4002,7 @@ Please:
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-studio-blue/10 to-studio-purple/10 border border-studio-blue/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-blue/10 border border-studio-blue/30 rounded-xl p-6 mb-8">
               <h3 className="text-xl font-bold text-white mb-3">The Golden Rule</h3>
               <p className="text-gray-300 mb-3">
                 <span className="text-studio-blue font-semibold">Prompt like you're explaining to a skilled developer who doesn't know your project.</span>
@@ -4043,7 +4038,7 @@ Please:
               Master the design-build-test loop that powers rapid DRIVE workflows
             </p>
 
-            <div className="bg-gradient-to-r from-studio-purple/20 to-studio-pink/20 border border-studio-purple/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-purple/15 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <h2 id="why-iteration" className="text-2xl font-bold text-white mb-4">Why Iteration Matters</h2>
               <p className="text-gray-300 mb-4">
                 Traditional design workflows move in waterfall: design → handoff → development → feedback → redesign. 
@@ -4256,7 +4251,7 @@ Please:
               </p>
             </div>
 
-            <div className="bg-gradient-to-r from-studio-purple/10 to-studio-pink/10 border border-studio-purple/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-pink/10 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <h3 className="text-xl font-bold text-white mb-3">The Iteration Mindset</h3>
               <p className="text-gray-300">
                 <span className="text-studio-purple font-semibold">Progress over perfection.</span> Each iteration teaches you something. 
@@ -4289,7 +4284,7 @@ Please:
               Keep AI informed so it generates better, more consistent code
             </p>
 
-            <div className="bg-gradient-to-r from-studio-coral/20 to-studio-purple/20 border border-studio-coral/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-coral/15 border border-studio-coral/30 rounded-xl p-6 mb-8">
               <h2 id="why-context" className="text-2xl font-bold text-white mb-4">Why Context Matters</h2>
               <p className="text-gray-300 mb-4">
                 AI doesn't remember your project unless you tell it. Every time you start a new chat or file, 
@@ -4530,7 +4525,7 @@ function Button({ children, variant = 'primary' }) {
 
             <h2 className="text-3xl font-bold text-white mb-4">Quick Context Checklist</h2>
             
-            <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-6 rounded-r mb-8">
+            <div className="bg-studio-coral/10 border border-studio-coral/30 p-6 rounded-xl mb-8">
               <p className="text-white font-semibold mb-3">Before starting a new DRIVE session, ensure AI knows:</p>
               <ul className="space-y-2 text-gray-300 text-sm">
                 <li>☐ What framework/libraries you're using</li>
@@ -4542,7 +4537,7 @@ function Button({ children, variant = 'primary' }) {
               </ul>
             </div>
 
-            <div className="bg-gradient-to-r from-studio-coral/10 to-studio-purple/10 border border-studio-coral/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-purple/10 border border-studio-coral/30 rounded-xl p-6 mb-8">
               <h3 className="text-xl font-bold text-white mb-3">The Context Rule</h3>
               <p className="text-gray-300">
                 <span className="text-studio-coral font-semibold">Spend 2 minutes setting context, save 20 minutes fixing inconsistencies.</span> Clear 
@@ -4575,7 +4570,7 @@ function Button({ children, variant = 'primary' }) {
               How to add your own SVG icons, images, and design assets to your project
             </p>
 
-            <div className="bg-gradient-to-r from-studio-coral/20 to-studio-pink/20 border border-studio-coral/30 rounded-xl p-6 mb-8">
+            <div id="why-custom-assets" className="bg-studio-coral/15 border border-studio-coral/30 rounded-xl p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-4">Why Custom Assets Matter</h2>
               <p className="text-gray-300 mb-4">
                 AI can generate placeholder icons and images, but your designs often need specific brand assets, 
@@ -4588,15 +4583,15 @@ function Button({ children, variant = 'primary' }) {
             </div>
 
             {/* THE EASY WAY - Natural Language */}
-            <h2 className="text-3xl font-bold text-white mb-4 flex items-center gap-3"><FaRocket className="text-studio-purple" /> The Easy Way (No Code Required)</h2>
-            <div className="bg-gradient-to-r from-studio-purple/20 to-studio-blue/20 border border-studio-purple/30 rounded-xl p-6 mb-8">
+            <h2 id="easy-way" className="text-3xl font-bold text-white mb-4 flex items-center gap-3"><FaRocket className="text-studio-purple" /> The Easy Way (No Code Required)</h2>
+            <div className="bg-studio-purple/15 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <p className="text-gray-300 mb-4">
                 You don't need to understand code to add your own assets. Just talk to the AI naturally and 
                 show it what you have. Here's how:
               </p>
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
+            <div id="images-videos" className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaImage className="text-studio-coral" /> For Images & Videos: Drag and Drop</h3>
               <p className="text-gray-300 mb-4">
                 The simplest way to add images or videos to your project:
@@ -4607,14 +4602,14 @@ function Button({ children, variant = 'primary' }) {
                 <li>Tell the AI what you want in plain English</li>
               </ol>
               <div className="space-y-3">
-                <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r">
+                <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl">
                   <p className="text-gray-400 text-xs mb-1">EXAMPLE PROMPT</p>
                   <p className="text-gray-300 text-sm">
                     "I've added my images folder. Use 'team-photo.jpg' as the background for the About section, 
                     and use 'product-demo.mp4' as the video in the hero section."
                   </p>
                 </div>
-                <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
+                <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl">
                   <p className="text-gray-400 text-xs mb-1">EXAMPLE PROMPT</p>
                   <p className="text-gray-300 text-sm">
                     "Here are my brand assets. Replace all the placeholder images with the matching ones from this folder."
@@ -4623,7 +4618,7 @@ function Button({ children, variant = 'primary' }) {
               </div>
             </div>
 
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
+            <div id="svg-icons" className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FaCode className="text-studio-pink" /> For SVG Icons: Get the Code and Paste It</h3>
               <p className="text-gray-300 mb-4">
                 SVGs are special—they're actually code, not image files. Here's how to get that code:
@@ -4651,14 +4646,14 @@ function Button({ children, variant = 'primary' }) {
               </div>
 
               <div className="space-y-3 mt-4">
-                <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r">
+                <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl">
                   <p className="text-gray-400 text-xs mb-1">EXAMPLE PROMPT (after pasting SVG code)</p>
                   <p className="text-gray-300 text-sm">
                     "Here's my company logo as SVG code. Use this for the logo in the navbar and footer. 
                     Make it white in the navbar and match the brand color in the footer."
                   </p>
                 </div>
-                <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r">
+                <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl">
                   <p className="text-gray-400 text-xs mb-1">EXAMPLE PROMPT (after pasting SVG code)</p>
                   <p className="text-gray-300 text-sm">
                     "I'm pasting my custom arrow icon SVG below. Use this instead of the default arrow icon 
@@ -4701,7 +4696,7 @@ function Button({ children, variant = 'primary' }) {
               Essential AI prompts for Git, local servers, and common development tasks
             </p>
 
-            <div className="bg-gradient-to-r from-studio-purple/20 to-studio-blue/20 border border-studio-purple/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-purple/15 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <h2 id="development-essentials" className="text-2xl font-bold text-white mb-4">Beyond Design: Development Essentials</h2>
               <p className="text-gray-300">
                 Vibe coding isn't just about building UIs—you'll also need to save your work, preview it locally, 
@@ -4885,7 +4880,7 @@ function Button({ children, variant = 'primary' }) {
               </div>
             </div>
 
-            <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-6 rounded-r mb-8">
+            <div className="bg-studio-coral/10 border border-studio-coral/30 p-6 rounded-xl mb-8">
               <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
                 <FaLightbulb className="text-studio-coral" />
                 Pro Tip: Just Ask!
@@ -5048,7 +5043,7 @@ function Button({ children, variant = 'primary' }) {
             </p>
 
             {/* Why Prompting Matters Section */}
-            <div id="why-prompting-matters" className="bg-gradient-to-r from-studio-blue/20 to-studio-purple/20 border border-studio-blue/30 rounded-xl p-6 mb-8">
+            <div id="why-prompting-matters" className="bg-studio-blue/15 border border-studio-blue/30 rounded-xl p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-4">Why Prompting Matters</h2>
               <p className="text-gray-300 mb-4">
                 The difference between frustration and flow in vibe coding often comes down to how you communicate with AI. 
@@ -5580,7 +5575,7 @@ function Button({ children, variant = 'primary' }) {
             </div>
 
             <div className="space-y-6 mb-8">
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-l-4 border-l-studio-blue/50">
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border border-blue/50">
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2"><FaBullseye className="text-studio-blue" /> Phase 1: Aesthetic Strategy Brief</h2>
                 <p className="text-gray-300 mb-4">Write a brief that forces commitment before generating any UI.</p>
                 <div className="bg-gray-950 border border-gray-700 rounded-lg p-4 overflow-x-auto">
@@ -5597,7 +5592,7 @@ SPATIAL APPROACH: [Layout philosophy and rhythm]</pre>
                 </div>
               </div>
 
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-l-4 border-l-studio-pink/50">
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border border-pink/50">
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2"><TbSparkles className="text-studio-pink" /> Phase 2: Craft Your AI Prompt</h2>
                 <div className="bg-gray-950 border border-gray-700 rounded-lg p-4 overflow-x-auto">
                   <pre className="m-0 text-gray-200 text-sm whitespace-pre">Build [PROJECT TYPE].
@@ -5624,7 +5619,7 @@ Avoid these generic patterns:
                 </div>
               </div>
 
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-l-4 border-l-studio-purple/50">
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border border-purple/50">
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2"><FaSyncAlt className="text-studio-purple" /> Phase 3: Iterative Refinement</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
@@ -5660,7 +5655,7 @@ Avoid these generic patterns:
                 </div>
               </div>
 
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border-l-4 border-l-studio-coral/50">
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 border border-coral/50">
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2"><FaBook className="text-studio-coral" /> Quick Reference: Prompting Patterns</h2>
                 <div className="space-y-4">
                   <div className="bg-gray-950 border border-gray-700 rounded-lg p-4 overflow-x-auto">
@@ -5916,7 +5911,7 @@ Then refine to eliminate defaults and strengthen direction.</pre>
             </div>
 
             {/* Framed Constitution Content */}
-            <div className="relative bg-gradient-to-b from-studio-purple/5 to-studio-blue/5 border-2 border-studio-purple/30 rounded-2xl p-1 mb-8">
+            <div className="relative bg-studio-purple/5 border-2 border-studio-purple/30 rounded-2xl p-1 mb-8">
               {/* Header bar with actions */}
               <div className="flex items-center justify-between bg-gray-900 rounded-t-xl px-4 py-3 border-b border-gray-800">
                 <div className="flex items-center gap-3">
@@ -6315,7 +6310,7 @@ Any of the following is an automatic redesign trigger:
               </div>
 
               {/* Framed Constitution Content */}
-              <div className="relative bg-gradient-to-b from-studio-purple/5 to-studio-blue/5 border-2 border-studio-purple/30 rounded-2xl p-1">
+              <div className="relative bg-studio-purple/5 border-2 border-studio-purple/30 rounded-2xl p-1">
                 {/* Header bar with actions */}
                 <div className="flex items-center justify-between bg-gray-900 rounded-t-xl px-4 py-3 border-b border-gray-800">
                   <div className="flex items-center gap-3">
@@ -6499,7 +6494,7 @@ Automatic redesign trigger:
               The powerhouse setup for professional vibe coding
             </p>
 
-            <div className="bg-gradient-to-r from-studio-blue/20 to-studio-purple/20 border border-studio-blue/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-blue/15 border border-studio-blue/30 rounded-xl p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-4">The Professional Choice</h2>
               <p className="text-gray-300 mb-4">
                 VS Code with GitHub Copilot is the go-to setup for serious DRIVE work. You get full IDE features, 
@@ -6644,7 +6639,7 @@ Automatic redesign trigger:
             <h2 className="text-3xl font-bold text-white mb-4">Pro Tips</h2>
             
             <div className="space-y-4 mb-8">
-              <div className="bg-studio-blue/10 border-l-4 border-studio-blue p-4 rounded-r">
+              <div className="bg-studio-blue/10 border border-studio-blue/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2 flex items-center gap-2">
                   <FaLightbulb className="text-studio-blue" />
                   Use Comments to Guide Copilot
@@ -6658,7 +6653,7 @@ Automatic redesign trigger:
                 </div>
               </div>
 
-              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2 flex items-center gap-2">
                   <FaLightbulb className="text-studio-pink" />
                   Name Files Descriptively
@@ -6668,7 +6663,7 @@ Automatic redesign trigger:
                 </p>
               </div>
 
-              <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2 flex items-center gap-2">
                   <FaLightbulb className="text-studio-purple" />
                   Accept Partials, Then Refine
@@ -6678,7 +6673,7 @@ Automatic redesign trigger:
                 </p>
               </div>
 
-              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2 flex items-center gap-2">
                   <FaLightbulb className="text-studio-coral" />
                   Use Chat for Complex Logic
@@ -6737,7 +6732,7 @@ Automatic redesign trigger:
               AI-powered app builder in your browser—no installation needed
             </p>
 
-            <div className="bg-gradient-to-r from-studio-purple/20 to-studio-pink/20 border border-studio-purple/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-purple/15 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-4">The Zero-Setup Option</h2>
               <p className="text-gray-300 mb-4">
                 GitHub Spark is a browser-based AI app builder from GitHub Next. Describe what you want to build in plain English, 
@@ -6825,7 +6820,7 @@ Automatic redesign trigger:
             <h2 className="text-3xl font-bold text-white mb-4">When to Use Spark</h2>
             
             <div className="space-y-4 mb-8">
-              <div className="bg-green-900/20 border-l-4 border-green-500 p-4 rounded-r">
+              <div className="bg-green-900/20 border border-green-500/30 p-4 rounded-xl">
                 <p className="text-green-400 font-semibold mb-2">✓ Perfect For</p>
                 <ul className="space-y-1 text-gray-300 text-sm">
                   <li>• Quick 5-minute prototypes for meetings</li>
@@ -6836,7 +6831,7 @@ Automatic redesign trigger:
                 </ul>
               </div>
 
-              <div className="bg-red-900/20 border-l-4 border-red-500 p-4 rounded-r">
+              <div className="bg-red-900/20 border border-red-500/30 p-4 rounded-xl">
                 <p className="text-red-400 font-semibold mb-2">✗ Not Ideal For</p>
                 <ul className="space-y-1 text-gray-300 text-sm">
                   <li>• Production applications</li>
@@ -6902,7 +6897,7 @@ Automatic redesign trigger:
             <h2 className="text-3xl font-bold text-white mb-4">Pro Tips for Spark</h2>
             
             <div className="space-y-4 mb-8">
-              <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2 flex items-center gap-2">
                   <FaLightbulb className="text-studio-purple" />
                   Iterate in Small Steps
@@ -6912,7 +6907,7 @@ Automatic redesign trigger:
                 </p>
               </div>
 
-              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2 flex items-center gap-2">
                   <FaLightbulb className="text-studio-pink" />
                   Reference Visual Examples
@@ -6922,7 +6917,7 @@ Automatic redesign trigger:
                 </p>
               </div>
 
-              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2 flex items-center gap-2">
                   <FaLightbulb className="text-studio-coral" />
                   Export to VS Code
@@ -6933,7 +6928,7 @@ Automatic redesign trigger:
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-studio-purple/10 to-studio-pink/10 border border-studio-purple/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-pink/10 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <h3 className="text-xl font-bold text-white mb-3">The Workflow</h3>
               <p className="text-gray-300">
                 <span className="text-studio-purple font-semibold">Use Spark for fast validation, VS Code for serious development.</span> Many designers 
@@ -7013,7 +7008,7 @@ Automatic redesign trigger:
                 Figma files, read design specs, extract styles, and understand your design system—all without leaving your code editor.
               </p>
               
-              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r mb-4">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl mb-4">
                 <p className="text-white font-semibold mb-2">Why This is Best</p>
                 <p className="text-gray-300 text-sm">
                   AI can read exact colors, spacing, typography directly from Figma. No manual spec copying. No guessing. 
@@ -7158,7 +7153,7 @@ Create a CSS variables file I can reference.`}</code>
 Fix these specific issues.`}</code>
               </div>
 
-              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">Pro Tip: Pixel-Level Comparison</p>
                 <p className="text-gray-300 text-sm">
                   Open Figma and your browser side by side. Use Figma's inspect panel (Dev Mode) to get exact values. 
@@ -7200,26 +7195,26 @@ Fix these specific issues.`}</code>
               <p className="text-gray-300 mb-4">Don't expect perfection in one prompt. Plan for refinement:</p>
               
               <div className="space-y-4">
-                <div className="bg-gray-950 border-l-4 border-studio-coral rounded-r p-4">
+                <div className="bg-gray-950 border border-studio-coral/30 rounded-xl p-4">
                   <p className="text-studio-coral font-semibold mb-2">Pass 1: Structure</p>
                   <p className="text-gray-300 text-sm">Get the HTML structure and component layout right</p>
                 </div>
-                <div className="bg-gray-950 border-l-4 border-studio-pink rounded-r p-4">
+                <div className="bg-gray-950 border border-studio-pink/30 rounded-xl p-4">
                   <p className="text-studio-pink font-semibold mb-2">Pass 2: Spacing & Layout</p>
                   <p className="text-gray-300 text-sm">Adjust padding, margins, flex/grid properties</p>
                 </div>
-                <div className="bg-gray-950 border-l-4 border-studio-purple rounded-r p-4">
+                <div className="bg-gray-950 border border-studio-purple/30 rounded-xl p-4">
                   <p className="text-studio-purple font-semibold mb-2">Pass 3: Colors & Typography</p>
                   <p className="text-gray-300 text-sm">Dial in exact colors, font sizes, weights</p>
                 </div>
-                <div className="bg-gray-950 border-l-4 border-blue-400 rounded-r p-4">
+                <div className="bg-gray-950 border border-blue-400/30 rounded-xl p-4">
                   <p className="text-blue-400 font-semibold mb-2">Pass 4: Polish</p>
                   <p className="text-gray-300 text-sm">Shadows, borders, hover states, transitions</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-studio-coral/10 to-studio-purple/10 border border-studio-pink/30 rounded-xl p-8">
+            <div className="bg-studio-purple/10 border border-studio-pink/30 rounded-xl p-8">
               <h2 className="text-2xl font-bold text-white mb-4">Quick Checklist</h2>
               <ul className="space-y-3 text-gray-300">
                 <li className="flex items-center gap-3">
@@ -7260,7 +7255,7 @@ Fix these specific issues.`}</code>
               Strategies to prevent generic "AI aesthetics" and maintain your unique design language
             </p>
 
-            <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/30 rounded-xl p-6 mb-8">
+            <div className="bg-red-500/15 border border-red-500/30 rounded-xl p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-4">Common AI Default Patterns to Avoid</h2>
               <p className="text-gray-300 mb-4">
                 Without explicit guidance, AI tends to produce these overused patterns:
@@ -7300,7 +7295,7 @@ Fix these specific issues.`}</code>
 - Keep it minimal and content-focused`}</code>
               </div>
 
-              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl">
                 <p className="text-white font-semibold mb-2">Why This Works</p>
                 <p className="text-gray-300 text-sm">
                   AI models assign high probability to common patterns. Explicit negatives override these defaults 
@@ -7490,7 +7485,7 @@ Now create: [your actual request]`}</code>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/30 rounded-xl p-8">
+            <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-8">
               <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                 <FaCheckCircle className="text-green-400" />
                 The Rule of Specificity
@@ -7768,7 +7763,7 @@ When unsure, ask before inventing styles.`}</pre>
               A comprehensive evaluation framework for AI-assisted design work
             </p>
 
-            <div className="bg-gradient-to-r from-studio-purple/20 to-studio-coral/20 border border-studio-purple/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-purple/15 border border-studio-purple/30 rounded-xl p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-4">Purpose</h2>
               <p className="text-gray-300 mb-4">
                 As we integrate Vibe coding and other AI tools into the way we make and deliver UX work, 
@@ -7894,7 +7889,7 @@ When unsure, ask before inventing styles.`}</pre>
             </div>
 
             <h2 className="text-3xl font-bold text-white mb-4">Expected Outcomes</h2>
-            <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/30 rounded-xl p-6 mb-8">
+            <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6 mb-8">
               <p className="text-gray-300 mb-4">When applied consistently, the AI Eval framework ensures that studio work is:</p>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3">
@@ -7948,7 +7943,7 @@ When unsure, ask before inventing styles.`}</pre>
                 <h2 className="text-2xl font-bold text-white">Navigation</h2>
               </div>
               
-              <div className="bg-studio-coral/10 border-l-4 border-studio-coral p-4 rounded-r mb-4">
+              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl mb-4">
                 <p className="text-white font-semibold mb-2">Principle</p>
                 <p className="text-gray-300">Users should always understand: Where they are, what they can do next, and how to recover or go back.</p>
               </div>
@@ -7988,7 +7983,7 @@ When unsure, ask before inventing styles.`}</pre>
                 <h2 className="text-2xl font-bold text-white">Consistency</h2>
               </div>
               
-              <div className="bg-studio-pink/10 border-l-4 border-studio-pink p-4 rounded-r mb-4">
+              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl mb-4">
                 <p className="text-white font-semibold mb-2">Principle</p>
                 <p className="text-gray-300">Similar interactions should behave the same way across the product.</p>
               </div>
@@ -8027,7 +8022,7 @@ When unsure, ask before inventing styles.`}</pre>
                 <h2 className="text-2xl font-bold text-white">Clarity</h2>
               </div>
               
-              <div className="bg-studio-purple/10 border-l-4 border-studio-purple p-4 rounded-r mb-4">
+              <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl mb-4">
                 <p className="text-white font-semibold mb-2">Principle</p>
                 <p className="text-gray-300">The interface communicates intent without confusion or jargon.</p>
               </div>
@@ -8092,7 +8087,7 @@ When unsure, ask before inventing styles.`}</pre>
                 <h2 className="text-2xl font-bold text-white">Accessibility</h2>
               </div>
               
-              <div className="bg-blue-500/10 border-l-4 border-blue-400 p-4 rounded-r mb-4">
+              <div className="bg-blue-500/10 border border-blue-400/30 p-4 rounded-xl mb-4">
                 <p className="text-white font-semibold mb-2">Principle</p>
                 <p className="text-gray-300">The product is usable by people with different abilities and technologies.</p>
               </div>
@@ -8132,7 +8127,7 @@ When unsure, ask before inventing styles.`}</pre>
                 <h2 className="text-2xl font-bold text-white">Performance</h2>
               </div>
               
-              <div className="bg-green-500/10 border-l-4 border-green-400 p-4 rounded-r mb-4">
+              <div className="bg-green-500/10 border border-green-400/30 p-4 rounded-xl mb-4">
                 <p className="text-white font-semibold mb-2">Principle</p>
                 <p className="text-gray-300">The experience should feel fast, stable, and responsive.</p>
               </div>
@@ -8172,7 +8167,7 @@ When unsure, ask before inventing styles.`}</pre>
                 <h2 className="text-2xl font-bold text-white">Security</h2>
               </div>
               
-              <div className="bg-yellow-500/10 border-l-4 border-yellow-400 p-4 rounded-r mb-4">
+              <div className="bg-yellow-500/10 border border-yellow-400/30 p-4 rounded-xl mb-4">
                 <p className="text-white font-semibold mb-2">Principle</p>
                 <p className="text-gray-300">User trust is protected through robust security practices.</p>
               </div>
@@ -8237,7 +8232,7 @@ When unsure, ask before inventing styles.`}</pre>
                 <h2 className="text-2xl font-bold text-white">Testing & Feedback</h2>
               </div>
               
-              <div className="bg-orange-500/10 border-l-4 border-orange-400 p-4 rounded-r mb-4">
+              <div className="bg-orange-500/10 border border-orange-400/30 p-4 rounded-xl mb-4">
                 <p className="text-white font-semibold mb-2">Principle</p>
                 <p className="text-gray-300">Real user feedback validates usability and intent.</p>
               </div>
@@ -8277,7 +8272,7 @@ When unsure, ask before inventing styles.`}</pre>
                 <h2 className="text-2xl font-bold text-white">Fairness</h2>
               </div>
               
-              <div className="bg-red-500/10 border-l-4 border-red-400 p-4 rounded-r mb-4">
+              <div className="bg-red-500/10 border border-red-400/30 p-4 rounded-xl mb-4">
                 <p className="text-white font-semibold mb-2">Principle</p>
                 <p className="text-gray-300">The product avoids bias and supports equitable outcomes for all users.</p>
               </div>
@@ -8310,7 +8305,7 @@ When unsure, ask before inventing styles.`}</pre>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-xl p-6 mb-8">
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6 mb-8">
               <h3 className="text-xl font-bold text-white mb-4">Why Fairness Matters</h3>
               <p className="text-gray-300 mb-4">
                 AI systems can inadvertently encode or amplify biases from training data. 
@@ -8368,7 +8363,7 @@ When unsure, ask before inventing styles.`}</pre>
                 <h2 className="text-2xl font-bold text-white">AI Application Check</h2>
               </div>
               
-              <div className="bg-cyan-500/10 border-l-4 border-cyan-400 p-4 rounded-r mb-4">
+              <div className="bg-cyan-500/10 border border-cyan-400/30 p-4 rounded-xl mb-4">
                 <p className="text-white font-semibold mb-2">Principle</p>
                 <p className="text-gray-300">AI should only be used where it clearly outperforms simpler solutions.</p>
               </div>
@@ -8401,7 +8396,7 @@ When unsure, ask before inventing styles.`}</pre>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 rounded-xl p-6 mb-6">
+            <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-6 mb-6">
               <h3 className="text-xl font-bold text-white mb-4">When to Use AI</h3>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
@@ -8434,7 +8429,7 @@ When unsure, ask before inventing styles.`}</pre>
                 <h2 className="text-2xl font-bold text-white">Strategic Alignment (OKRs & Metrics)</h2>
               </div>
               
-              <div className="bg-indigo-500/10 border-l-4 border-indigo-400 p-4 rounded-r mb-4">
+              <div className="bg-indigo-500/10 border border-indigo-400/30 p-4 rounded-xl mb-4">
                 <p className="text-white font-semibold mb-2">Principle</p>
                 <p className="text-gray-300">Every project should drive measurable business outcomes.</p>
               </div>
@@ -8492,7 +8487,7 @@ When unsure, ask before inventing styles.`}</pre>
               Final review gate before launch — ensure all criteria are met
             </p>
 
-            <div className="bg-gradient-to-r from-studio-coral/20 to-studio-purple/20 border border-studio-coral/30 rounded-xl p-6 mb-8">
+            <div className="bg-studio-coral/15 border border-studio-coral/30 rounded-xl p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-4">How to Use This Checklist</h2>
               <p className="text-gray-300">
                 Use this section as a final review gate before launch. All items should be checked 
@@ -8566,7 +8561,7 @@ When unsure, ask before inventing styles.`}</pre>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/30 rounded-xl p-6 mb-8">
+            <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                 <FaCheckCircle className="text-green-400" />
                 Ready for Launch
