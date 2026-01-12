@@ -5272,7 +5272,7 @@ Any of the following is an automatic redesign trigger:
               <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2"><FaLightbulb className="text-studio-purple" /> How to Use</h3>
               <ol className="space-y-2 text-gray-300 list-decimal list-inside">
                 <li>Copy the constitution above using the "Copy All" button</li>
-                <li>Add it to your project's root as <code className="text-studio-coral bg-gray-800 px-1.5 py-0.5 rounded text-sm">.ai-rules</code> or <code className="text-studio-coral bg-gray-800 px-1.5 py-0.5 rounded text-sm">CLAUDE.md</code></li>
+                <li>Add it to your project's root as <code className="text-studio-coral bg-gray-800 px-1.5 py-0.5 rounded text-sm">.github/copilot-instructions.md</code> or <code className="text-studio-coral bg-gray-800 px-1.5 py-0.5 rounded text-sm">.ai-rules</code></li>
                 <li>Include it in your AI assistant's context or system prompt</li>
                 <li>Reference it when reviewing AI-generated interfaces</li>
               </ol>
