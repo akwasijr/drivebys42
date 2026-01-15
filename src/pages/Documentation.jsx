@@ -31,9 +31,8 @@ const Documentation = () => {
     { id: 'best-practices', title: 'Best Practices & Common Mistakes', section: 'Tools & Setup', keywords: 'best practices mistakes tips tricks workflow efficiency prompts context', description: 'Proven strategies and common mistakes to help you succeed faster.' },
     
     // Design Fidelity
-    { id: 'matching-your-vision', title: 'Achieving Design Fidelity', section: 'Design Fidelity', keywords: 'design fidelity matching vision visual consistency pixel perfect', description: 'Techniques to ensure AI-generated code matches your design vision.' },
+    { id: 'matching-your-vision', title: 'Achieving Design Fidelity', section: 'Design Fidelity', keywords: 'design fidelity matching vision visual consistency pixel perfect figma mcp model context protocol design to code integration setup token api', description: 'Techniques to ensure AI-generated code matches your design vision, including Figma MCP integration.' },
     { id: 'design-system-prompts', title: 'Design System Prompts', section: 'Design Fidelity', keywords: 'design system tokens colors typography spacing components', description: 'Create consistent designs with design system prompts.' },
-    { id: 'figma-mcp', title: 'Figma MCP Integration', section: 'Design Fidelity', keywords: 'figma mcp model context protocol design to code integration setup token api', description: 'Connect Figma directly to your AI assistant for seamless design-to-code workflows.' },
     { id: 'custom-assets', title: 'Adding Custom Assets', section: 'Design Fidelity', keywords: 'custom assets images icons brand logos fonts', description: 'Import images, icons, and brand assets into your prototypes.' },
     
     // Core Concepts
@@ -42,6 +41,7 @@ const Documentation = () => {
     { id: 'context-management', title: 'Managing Project Context', section: 'Core Concepts', keywords: 'context management project files folders structure organization', description: 'Keep your AI assistant informed about your project.' },
     { id: 'starter-prompts', title: 'Starter Prompts', section: 'Core Concepts', keywords: 'starter prompts templates examples layout component styling', description: 'Ready-to-use prompt templates for common design scenarios.' },
     { id: 'anti-patterns-constitution', title: 'Design Anti-Patterns', section: 'Core Concepts', keywords: 'anti patterns defaults generic boring avoid mistakes rules instructions copilot claude download', description: 'Identify AI defaults and get downloadable rules to suppress them.' },
+    { id: 'fixing-errors', title: 'Fixing Errors', section: 'Core Concepts', keywords: 'fixing errors debugging error messages console screenshot inspect browser tools troubleshooting broken code fix issues', description: 'Strategies for diagnosing and fixing errors in your code.' },
   ];
 
   // Search function
@@ -162,16 +162,12 @@ const Documentation = () => {
     'matching-your-vision': [
       { id: 'core-challenge', title: 'The Core Challenge' },
       { id: 'figma-mcp-method', title: 'Figma MCP Server (Best)' },
+      { id: 'setup-instructions', title: 'Setup Instructions' },
       { id: 'screenshot-specs', title: 'Screenshot + Specs' },
       { id: 'text-specs', title: 'Detailed Text Specs' },
       { id: 'design-tokens', title: 'Extract Design Tokens' },
       { id: 'common-gotchas', title: 'Common Gotchas' },
       { id: 'compare-iterate', title: 'Compare & Iterate' },
-    ],
-    'figma-mcp': [
-      { id: 'what-is-mcp', title: 'What is MCP?' },
-      { id: 'setup-instructions', title: 'Setup Instructions' },
-      { id: 'using-figma-mcp', title: 'Using Figma MCP' },
     ],
     'custom-assets': [
       { id: 'why-custom-assets', title: 'Why Custom Assets Matter' },
@@ -236,6 +232,13 @@ const Documentation = () => {
       { id: 'layout-patterns', title: 'Layout' },
       { id: 'motion-patterns', title: 'Motion' },
       { id: 'ui-constitution', title: 'UI Constitution' },
+    ],
+    'fixing-errors': [
+      { id: 'quick-fix', title: '3-Step Quick Fix' },
+      { id: 'capture', title: 'What to Capture' },
+      { id: 'look', title: 'Where to Look' },
+      { id: 'common-fixes', title: 'Common Fixes' },
+      { id: 'message-ai', title: 'How to Ask AI' },
     ],
   };
 
@@ -457,20 +460,6 @@ const Documentation = () => {
               </div>
 
               <div 
-                onClick={() => setActivePage('figma-mcp')}
-                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-pink/50 transition-all cursor-pointer group"
-              >
-                <div className="w-10 h-10 rounded-lg bg-studio-pink/10 flex items-center justify-center mb-4">
-                  <FaImage className="text-studio-pink text-lg" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">Figma MCP Integration</h3>
-                <p className="text-gray-400 text-sm mb-4">
-                  Connect Figma directly to your AI assistant for seamless design-to-code.
-                </p>
-                <span className="text-studio-pink text-sm font-medium group-hover:underline">Learn more →</span>
-              </div>
-
-              <div 
                 onClick={() => setActivePage('custom-assets')}
                 className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-studio-purple/50 transition-all cursor-pointer group"
               >
@@ -546,7 +535,7 @@ const Documentation = () => {
 
               <div 
                 onClick={() => setActivePage('anti-patterns-constitution')}
-                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-red-500/50 transition-all cursor-pointer group md:col-span-2"
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-red-500/50 transition-all cursor-pointer group"
               >
                 <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center mb-4">
                   <FaBan className="text-red-400 text-lg" />
@@ -556,6 +545,20 @@ const Documentation = () => {
                   Identify and avoid common AI-generated design defaults. Includes downloadable rules to suppress generic styling.
                 </p>
                 <span className="text-red-400 text-sm font-medium group-hover:underline">Learn more →</span>
+              </div>
+
+              <div 
+                onClick={() => setActivePage('fixing-errors')}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-orange-500/50 transition-all cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center mb-4">
+                  <FaBug className="text-orange-400 text-lg" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Fixing Errors</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Master error diagnosis and fixing by taking screenshots, reading error messages, and communicating effectively with AI.
+                </p>
+                <span className="text-orange-400 text-sm font-medium group-hover:underline">Learn more →</span>
               </div>
             </div>
           </div>
@@ -2895,280 +2898,38 @@ Can you help me plan the component structure first?`}</code>
         );
 
       case 'figma-mcp':
+        // Redirect to matching-your-vision since Figma MCP is now consolidated there
         return (
           <div className="prose prose-invert max-w-none">
-            <h1 id="what-is-mcp" className="text-5xl font-bold text-white mb-6 scroll-mt-24">Figma MCP Integration</h1>
-            <p className="text-xl text-gray-300 mb-8">
-              Connect your AI assistant directly to Figma for seamless design-to-code workflows
-            </p>
-
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">What is Figma MCP?</h2>
-              <p className="text-gray-300 mb-4">
-                The <strong>Model Context Protocol (MCP)</strong> is an open standard that allows AI assistants to connect 
-                to external tools and data sources. The official Figma MCP server enables GitHub Copilot, Claude, and other 
-                AI assistants to directly read your Figma files, extract design specs, and understand your design system.
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
+              <h2 className="text-2xl font-bold text-white mb-4">Content Moved</h2>
+              <p className="text-gray-300 mb-6">
+                Figma MCP Integration has been consolidated into Achieving Design Fidelity.
               </p>
-              <p className="text-gray-300">
-                <span className="text-studio-coral font-semibold">No more context switching.</span> Your AI can see exactly 
-                what you see in Figma—colors, typography, spacing, components—all from within VS Code.
-              </p>
-            </div>
-
-            <h2 className="text-3xl font-bold text-white mb-4">Key Capabilities</h2>
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                  <FaPalette className="text-studio-pink" />
-                  Design Token Extraction
-                </h3>
-                <p className="text-gray-400">Automatically pulls colors, typography, spacing, and effects from your Figma variables and styles</p>
-              </div>
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                  <FaRulerCombined className="text-studio-coral" />
-                  Layout Understanding
-                </h3>
-                <p className="text-gray-400">Reads auto-layout settings, constraints, and frame hierarchy to generate proper CSS/Tailwind</p>
-              </div>
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                  <FaSyncAlt className="text-studio-blue" />
-                  Live Access
-                </h3>
-                <p className="text-gray-400">Changes in Figma are immediately available—no manual export or sync needed</p>
-              </div>
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                  <FaBullseye className="text-studio-purple" />
-                  Component Awareness
-                </h3>
-                <p className="text-gray-400">Understands your component library, variants, and design system structure</p>
-              </div>
-            </div>
-
-            <h2 id="setup-instructions" className="text-3xl font-bold text-white mb-4 scroll-mt-24">Setup Instructions</h2>
-            
-            <div className="bg-studio-purple/15 border border-studio-purple/30 rounded-xl p-6 mb-6">
-              <h3 className="text-xl font-bold text-white mb-3">Prerequisites</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li className="flex items-center gap-3">
-                  <FaCheckCircle className="text-green-400 shrink-0" />
-                  <span>VS Code with GitHub Copilot extension installed</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <FaCheckCircle className="text-green-400 shrink-0" />
-                  <span>Figma account (free or paid)</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <FaCheckCircle className="text-green-400 shrink-0" />
-                  <span>Node.js 18+ installed on your machine</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h3 className="text-xl font-bold text-white mb-4">Step 1: Get Your Figma Access Token</h3>
-              <ol className="space-y-3 text-gray-300 list-decimal list-inside mb-4">
-                <li>Open Figma and go to <strong>Settings → Account</strong></li>
-                <li>Scroll down to <strong>"Personal access tokens"</strong></li>
-                <li>Click <strong>"Generate new token"</strong></li>
-                <li>Give it a name like "VS Code MCP" and set expiration</li>
-                <li>Copy the token immediately (you won't see it again!)</li>
-              </ol>
-              <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-4">
-                <p className="text-yellow-200 text-sm">
-                  <strong>🔐 Security:</strong> Store your token securely. Never commit it to version control or share it publicly.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h3 className="text-xl font-bold text-white mb-4">Step 2: Configure MCP in VS Code</h3>
-              <p className="text-gray-300 mb-4">
-                Open your VS Code settings JSON (<code className="bg-gray-800 px-2 py-0.5 rounded text-studio-pink">Cmd+Shift+P</code> → "Preferences: Open User Settings (JSON)") 
-                and add the Figma MCP server:
-              </p>
-              <pre className="bg-gray-950 border border-gray-700 rounded-lg p-4 overflow-x-auto relative group">
-                <button
-                  onClick={() => copyToClipboard(`{
-  "mcp": {
-    "servers": {
-      "figma": {
-        "command": "npx",
-        "args": ["-y", "figma-developer-mcp", "--stdio"],
-        "env": {
-          "FIGMA_API_KEY": "your-figma-token-here"
-        }
-      }
-    }
-  }
-}`, 'figma-mcp-config')}
-                  className="absolute top-2 right-2 p-1.5 bg-gray-800 hover:bg-gray-700 rounded transition-colors opacity-0 group-hover:opacity-100"
-                  aria-label="Copy code"
-                >
-                  {copiedCode === 'figma-mcp-config' ? (
-                    <FaCheck className="text-green-400 text-xs" />
-                  ) : (
-                    <FaCopy className="text-gray-400 text-xs" />
-                  )}
-                </button>
-                <code className="text-studio-pink text-sm whitespace-pre">{`{
-  "mcp": {
-    "servers": {
-      "figma": {
-        "command": "npx",
-        "args": ["-y", "figma-developer-mcp", "--stdio"],
-        "env": {
-          "FIGMA_API_KEY": "your-figma-token-here"
-        }
-      }
-    }
-  }
-}`}</code>
-              </pre>
-            </div>
-
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h3 className="text-xl font-bold text-white mb-4">Step 3: Restart VS Code</h3>
-              <p className="text-gray-300 mb-4">
-                After saving your settings, restart VS Code completely. The MCP server will start automatically when you open Copilot Chat.
-              </p>
-              <p className="text-gray-300">
-                You can verify it's working by opening Copilot Chat and asking: <code className="bg-gray-800 px-2 py-0.5 rounded text-studio-pink">"What MCP tools do you have access to?"</code>
-              </p>
-            </div>
-
-            <h2 id="using-figma-mcp" className="text-3xl font-bold text-white mb-4 scroll-mt-24">Using Figma MCP</h2>
-            
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
-              <h3 className="text-xl font-bold text-white mb-4">Method 1: Direct Link (Recommended)</h3>
-              <p className="text-gray-300 mb-4">
-                Simply paste a Figma frame or component URL in your Copilot Chat:
-              </p>
-              <div className="bg-gray-950 border border-gray-700 rounded-lg p-4 relative group">
-                <button
-                  onClick={() => copyToClipboard('Implement this design as a React component with Tailwind CSS:\nhttps://www.figma.com/design/ABC123/MyProject?node-id=1-234\n\nMake it responsive and include hover states.', 'figma-prompt-1')}
-                  className="absolute top-2 right-2 p-1.5 bg-gray-800 hover:bg-gray-700 rounded transition-colors opacity-0 group-hover:opacity-100"
-                  aria-label="Copy code"
-                >
-                  {copiedCode === 'figma-prompt-1' ? (
-                    <FaCheck className="text-green-400 text-xs" />
-                  ) : (
-                    <FaCopy className="text-gray-400 text-xs" />
-                  )}
-                </button>
-                <p className="text-gray-400 text-sm mb-2">Example prompt:</p>
-                <code className="text-studio-pink text-sm">
-                  Implement this design as a React component with Tailwind CSS:
-                  <br />https://www.figma.com/design/ABC123/MyProject?node-id=1-234
-                  <br /><br />
-                  Make it responsive and include hover states.
-                </code>
-              </div>
-            </div>
-
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-              <h3 className="text-xl font-bold text-white mb-4">Method 2: Screenshot + Description (No MCP)</h3>
-              <p className="text-gray-300 mb-4">
-                If MCP isn't set up, you can still use screenshots with Copilot Vision:
-              </p>
-              <ol className="space-y-3 text-gray-300 list-decimal list-inside mb-4">
-                <li>Take a screenshot of your Figma frame</li>
-                <li>Drag it into Copilot Chat or use the attach button</li>
-                <li>Add specific details about colors, spacing, fonts</li>
-              </ol>
-              <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
-                <p className="text-gray-400 text-sm mb-2">Example prompt with screenshot:</p>
-                <code className="text-studio-pink text-sm">
-                  Build this card component from the attached screenshot.
-                  <br /><br />
-                  Specs: 
-                  <br />• Background: #1a1a1a with subtle border
-                  <br />• Padding: 24px, border-radius: 16px
-                  <br />• Title: 20px semibold, Body: 14px regular
-                  <br />• Button: pink gradient with white text
-                </code>
-              </div>
-            </div>
-
-            <h2 className="text-3xl font-bold text-white mb-4">Pro Tips</h2>
-            <div className="space-y-4 mb-8">
-              <div className="bg-studio-coral/10 border border-studio-coral/30 p-4 rounded-xl">
-                <p className="text-white font-semibold mb-2">Select Specific Frames</p>
-                <p className="text-gray-300 text-sm">
-                  Right-click a frame in Figma and "Copy link to selection" to get a URL that points to exactly what you want to build.
-                </p>
-              </div>
-              
-              <div className="bg-studio-pink/10 border border-studio-pink/30 p-4 rounded-xl">
-                <p className="text-white font-semibold mb-2">Reference Your Design System</p>
-                <p className="text-gray-300 text-sm">
-                  Tell Copilot about your existing Tailwind config, component library, or design tokens so it generates consistent code.
-                </p>
-              </div>
-              
-              <div className="bg-studio-purple/10 border border-studio-purple/30 p-4 rounded-xl">
-                <p className="text-white font-semibold mb-2">Iterate Incrementally</p>
-                <p className="text-gray-300 text-sm">
-                  Get the basic structure first, then refine. Ask for responsive behavior, animations, and edge cases in follow-up prompts.
-                </p>
-              </div>
-            </div>
-
-            <h2 className="text-3xl font-bold text-white mb-4">Troubleshooting</h2>
-            <div className="bg-red-900/20 border border-red-700/30 rounded-xl p-6 mb-8">
-              <ul className="space-y-3 text-gray-300">
-                <li className="flex items-start gap-3">
-                  <span className="text-red-400 font-bold">→</span>
-                  <span><strong>"Can't access Figma file"</strong> — Check that your token has access to the file. Team files may require additional permissions.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-red-400 font-bold">→</span>
-                  <span><strong>"MCP server not found"</strong> — Restart VS Code after adding the config. Check Node.js is installed and in your PATH.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-red-400 font-bold">→</span>
-                  <span><strong>"Token expired"</strong> — Generate a new token in Figma settings and update your VS Code config.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-red-400 font-bold">→</span>
-                  <span><strong>Styles not matching</strong> — AI interprets design intent, not exact properties. Provide specific values for critical measurements.</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="flex gap-4">
               <button
                 onClick={() => setActivePage('matching-your-vision')}
                 className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
               >
-                Achieving Design Fidelity →
-              </button>
-              <button
-                onClick={() => setActivePage('design-system-prompts')}
-                className="px-6 py-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white rounded-xl transition-colors font-medium"
-              >
-                Design System Prompts
+                Go to Achieving Design Fidelity →
               </button>
             </div>
           </div>
         );
 
       case 'importing-designs':
-        // Redirect to figma-mcp since content is consolidated
+        // Redirect to matching-your-vision since content is consolidated
         return (
           <div className="prose prose-invert max-w-none">
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
               <h2 className="text-2xl font-bold text-white mb-4">Content Moved</h2>
               <p className="text-gray-300 mb-6">
-                This content has been consolidated into the Figma MCP Integration guide.
+                This content has been consolidated into the Achieving Design Fidelity guide.
               </p>
               <button
-                onClick={() => setActivePage('figma-mcp')}
+                onClick={() => setActivePage('matching-your-vision')}
                 className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
               >
-                Go to Figma MCP Integration →
+                Go to Achieving Design Fidelity →
               </button>
             </div>
           </div>
@@ -4673,10 +4434,10 @@ function Button({ children, variant = 'primary' }) {
 
             <div className="flex gap-4">
               <button
-                onClick={() => setActivePage('figma-mcp')}
+                onClick={() => setActivePage('matching-your-vision')}
                 className="px-6 py-3 bg-studio-pink hover:bg-studio-coral text-white rounded-xl transition-colors font-medium"
               >
-                ← Figma MCP Integration
+                ← Achieving Design Fidelity
               </button>
               <button
                 onClick={() => setActivePage('design-system-prompts')}
@@ -6486,6 +6247,117 @@ Automatic redesign trigger:
           </div>
         );
 
+      case 'fixing-errors':
+        return (
+          <div className="prose prose-invert max-w-none">
+            <h1 className="text-5xl font-bold text-white mb-6">Fixing Errors</h1>
+            <p className="text-xl text-gray-300 mb-8">
+              Designers version: see it, capture it, share it clearly so AI can fix it fast.
+            </p>
+
+            <div id="quick-fix" className="bg-studio-coral/15 border border-studio-coral/30 rounded-xl p-6 mb-8">
+              <h2 className="text-2xl font-bold text-white mb-4">3-Step Quick Fix</h2>
+              <ol className="space-y-3 text-gray-200 text-sm list-decimal list-inside">
+                <li><span className="text-white font-semibold">Take a screenshot</span> of what looks wrong (desktop or mobile).</li>
+                <li><span className="text-white font-semibold">Say what should happen</span> instead (one clear sentence).</li>
+                <li><span className="text-white font-semibold">Paste it to AI</span> (include page/section name so it knows where to look).</li>
+              </ol>
+            </div>
+
+            <div id="capture" className="mb-8">
+              <h2 className="text-3xl font-bold text-white mb-4">What to Capture</h2>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
+                  <h3 className="text-lg font-bold text-studio-coral flex items-center gap-2">
+                    <FaCamera className="text-studio-coral" /> Visual bug
+                  </h3>
+                  <ul className="space-y-2 text-gray-300 text-sm">
+                    <li>• Screenshot the exact spot that looks off</li>
+                    <li>• Circle/arrow in your screenshot if you can</li>
+                    <li>• Add one line: "It should be aligned / same size / same color / not overlapping"</li>
+                  </ul>
+                </div>
+
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
+                  <h3 className="text-lg font-bold text-studio-pink flex items-center gap-2">
+                    <FaBug className="text-studio-pink" /> Blocking error
+                  </h3>
+                  <ul className="space-y-2 text-gray-300 text-sm">
+                    <li>• Open DevTools console (red text = real error)</li>
+                    <li>• Screenshot the red line or copy the red text</li>
+                    <li>• Add one line: what you were doing when it broke</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div id="look" className="mb-8">
+              <h2 className="text-3xl font-bold text-white mb-4">Where to Look</h2>
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                <ul className="space-y-2 text-gray-300 text-sm">
+                  <li>• Refresh first. If still broken, continue.</li>
+                  <li>• Open console: <span className="text-white font-semibold">Mac</span> Cmd+Option+J · <span className="text-white font-semibold">Windows</span> Ctrl+Shift+J</li>
+                  <li>• Or right-click → Inspect → Console tab, copy the red error text.</li>
+                  <li>• Red text? Screenshot/copy it. No red text? Just screenshot the visual bug.</li>
+                  <li>• Share which page/section you were on.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div id="common-fixes" className="mb-8">
+              <h2 className="text-3xl font-bold text-white mb-4">Common Fixes (Plain English)</h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                  <h3 className="text-lg font-bold text-white mb-2">Button not clickable</h3>
+                  <p className="text-gray-300 text-sm">Likely hidden behind something. Tell AI: "Bring the button to the front and add a little spacing around it."</p>
+                </div>
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                  <h3 className="text-lg font-bold text-white mb-2">Layout exploded</h3>
+                  <p className="text-gray-300 text-sm">Things stacked or stretched. Tell AI: "Reset widths/padding and keep cards in a simple two-column grid."</p>
+                </div>
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                  <h3 className="text-lg font-bold text-white mb-2">Text overflowing</h3>
+                  <p className="text-gray-300 text-sm">Tell AI: "Add breathing room, wrap the text, and make the label shorter on mobile."</p>
+                </div>
+                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                  <h3 className="text-lg font-bold text-white mb-2">Wrong colors / fonts</h3>
+                  <p className="text-gray-300 text-sm">Tell AI: "Use the main theme colors and the same font as the hero. Remove any leftover defaults."</p>
+                </div>
+              </div>
+            </div>
+
+            <div id="message-ai" className="mb-10">
+              <h2 className="text-3xl font-bold text-white mb-4">How to ask AI</h2>
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-3 text-sm text-gray-300">
+                <p className="text-white font-semibold">Copy/paste template</p>
+                <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
+                  <p className="text-gray-200">"On the landing page, the CTA button is pushed below the input on mobile.</p>
+                  <p className="text-gray-200">It should sit on the same row. Here’s a screenshot.</p>
+                  <p className="text-gray-200">I right-clicked → Inspect → Console and copied the red error text below.</p>
+                  <p className="text-gray-200">If you need code, check the hero section component."</p>
+                </div>
+                <p className="text-gray-400">Add: what you clicked, what you expected, and any console screenshot if there is red text.</p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                onClick={() => setActivePage('anti-patterns-constitution')}
+                className="px-6 py-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white rounded-xl transition-colors font-medium"
+              >
+                ← Design Anti-Patterns
+              </button>
+              <button
+                onClick={() => setActivePage('iterative-design')}
+                className="px-6 py-3 bg-studio-orange hover:bg-orange-600 text-white rounded-xl transition-colors font-medium"
+              >
+                Iterative Design →
+              </button>
+            </div>
+          </div>
+        );
+
       case 'vscode-copilot':
         return (
           <div className="prose prose-invert max-w-none">
@@ -7016,14 +6888,107 @@ Automatic redesign trigger:
                 </p>
               </div>
 
-              <p className="text-gray-300 mb-3 font-semibold">Quick Setup:</p>
-              <ol className="space-y-2 text-gray-300 list-decimal list-inside mb-4">
-                <li>Install: <code className="text-studio-pink text-sm">npm install -g @modelcontextprotocol/server-figma</code></li>
-                <li>Get your Figma API token from Figma → Settings → Personal Access Tokens</li>
-                <li>Configure in VS Code Copilot settings with your token</li>
-              </ol>
+              <div className="grid md:grid-cols-2 gap-4 mb-6">
+                <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
+                  <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
+                    <FaPalette className="text-studio-pink" />
+                    Design Token Extraction
+                  </h4>
+                  <p className="text-gray-400 text-sm">Pulls colors, typography, spacing from your Figma variables</p>
+                </div>
+                <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
+                  <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
+                    <FaSyncAlt className="text-studio-blue" />
+                    Live Access
+                  </h4>
+                  <p className="text-gray-400 text-sm">Changes in Figma are immediately available—no manual export</p>
+                </div>
+              </div>
+            </div>
 
-              <p className="text-gray-300 mb-3 font-semibold">Usage:</p>
+            <h3 id="setup-instructions" className="text-2xl font-bold text-white mb-4 scroll-mt-24">Figma MCP Setup</h3>
+            <div className="bg-studio-purple/15 border border-studio-purple/30 rounded-xl p-6 mb-6">
+              <h4 className="text-lg font-bold text-white mb-3">Prerequisites</h4>
+              <ul className="space-y-2 text-gray-300">
+                <li className="flex items-center gap-3">
+                  <FaCheckCircle className="text-green-400 shrink-0" />
+                  <span>VS Code with GitHub Copilot extension</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <FaCheckCircle className="text-green-400 shrink-0" />
+                  <span>Figma account (free or paid)</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <FaCheckCircle className="text-green-400 shrink-0" />
+                  <span>Node.js 18+ installed</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+              <h4 className="text-lg font-bold text-white mb-3">Step 1: Get Your Figma Access Token</h4>
+              <ol className="space-y-2 text-gray-300 list-decimal list-inside mb-4">
+                <li>Open Figma → <strong>Settings → Account</strong></li>
+                <li>Scroll to <strong>"Personal access tokens"</strong></li>
+                <li>Click <strong>"Generate new token"</strong> and copy it</li>
+              </ol>
+              <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-3">
+                <p className="text-yellow-200 text-sm">
+                  <strong>🔐</strong> Store your token securely. Never commit it to version control.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+              <h4 className="text-lg font-bold text-white mb-3">Step 2: Configure MCP in VS Code</h4>
+              <p className="text-gray-300 mb-4 text-sm">
+                Open VS Code settings JSON (<code className="bg-gray-800 px-2 py-0.5 rounded text-studio-pink">Cmd+Shift+P</code> → "Preferences: Open User Settings (JSON)"):
+              </p>
+              <pre className="bg-gray-950 border border-gray-700 rounded-lg p-4 overflow-x-auto relative group">
+                <button
+                  onClick={() => copyToClipboard(`{
+  "mcp": {
+    "servers": {
+      "figma": {
+        "command": "npx",
+        "args": ["-y", "figma-developer-mcp", "--stdio"],
+        "env": {
+          "FIGMA_API_KEY": "your-figma-token-here"
+        }
+      }
+    }
+  }
+}`, 'figma-mcp-config')}
+                  className="absolute top-2 right-2 p-1.5 bg-gray-800 hover:bg-gray-700 rounded transition-colors opacity-0 group-hover:opacity-100"
+                  aria-label="Copy code"
+                >
+                  {copiedCode === 'figma-mcp-config' ? (
+                    <FaCheck className="text-green-400 text-xs" />
+                  ) : (
+                    <FaCopy className="text-gray-400 text-xs" />
+                  )}
+                </button>
+                <code className="text-studio-pink text-sm whitespace-pre">{`{
+  "mcp": {
+    "servers": {
+      "figma": {
+        "command": "npx",
+        "args": ["-y", "figma-developer-mcp", "--stdio"],
+        "env": {
+          "FIGMA_API_KEY": "your-figma-token-here"
+        }
+      }
+    }
+  }
+}`}</code>
+              </pre>
+            </div>
+
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
+              <h4 className="text-lg font-bold text-white mb-3">Step 3: Usage</h4>
+              <p className="text-gray-300 mb-4 text-sm">
+                Restart VS Code, then paste a Figma frame URL in Copilot Chat:
+              </p>
               <div className="bg-gray-950 border border-gray-700 rounded-lg p-4">
                 <code className="text-studio-pink text-sm">
                   Implement this design exactly: [Figma URL]
@@ -8660,16 +8625,6 @@ When unsure, ask before inventing styles.`}</pre>
       ],
     },
     {
-      id: 'design-fidelity',
-      title: 'Design Fidelity',
-      items: [
-        { id: 'matching-your-vision', title: 'Achieving Design Fidelity', path: '/docs/matching-your-vision' },
-        { id: 'design-system-prompts', title: 'Design System Prompts', path: '/docs/design-system-prompts' },
-        { id: 'figma-mcp', title: 'Figma MCP Integration', path: '/docs/figma-mcp' },
-        { id: 'custom-assets', title: 'Adding Custom Assets', path: '/docs/custom-assets' },
-      ],
-    },
-    {
       id: 'core-concepts',
       title: 'Core Concepts',
       items: [
@@ -8678,6 +8633,16 @@ When unsure, ask before inventing styles.`}</pre>
         { id: 'context-management', title: 'Managing Project Context', path: '/docs/context-management' },
         { id: 'starter-prompts', title: 'Starter Prompts for Non-Designers', path: '/docs/starter-prompts' },
         { id: 'anti-patterns-constitution', title: 'Design Anti-Patterns', path: '/docs/design-anti-patterns' },
+        { id: 'fixing-errors', title: 'Fixing Errors', path: '/docs/fixing-errors' },
+      ],
+    },
+    {
+      id: 'design-fidelity',
+      title: 'Design Fidelity',
+      items: [
+        { id: 'matching-your-vision', title: 'Achieving Design Fidelity', path: '/docs/matching-your-vision' },
+        { id: 'design-system-prompts', title: 'Design System Prompts', path: '/docs/design-system-prompts' },
+        { id: 'custom-assets', title: 'Adding Custom Assets', path: '/docs/custom-assets' },
       ],
     },
   ];
